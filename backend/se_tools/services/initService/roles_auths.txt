@@ -1,0 +1,4 @@
+admin:read,write,delete
+contributor:read,write
+user:read
+guest:read
