@@ -19,6 +19,7 @@ type User struct {
 	LoginAttempts int                  `bson:"loginattempts" json:"loginattempts"`
 	Roles         []primitive.ObjectID `bson:"roles" json:"roles"`
 	Password      string               `bson:"password" json:"password"`
+	OAuth         string               `bson:"oauth" json:"oauth"`
 	Token         string               `bson:"token" json:"token"`
 	CsrfToken     string               `bson:"csrftoken" json:"csrftoken"`
 	LastSeen      time.Time            `bson:"lastseen" json:"lastseen"`

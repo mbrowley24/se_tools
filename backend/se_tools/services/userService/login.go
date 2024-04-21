@@ -20,7 +20,7 @@ type UserService struct {
 	utils      utils.Utilities
 }
 
-func (u *UserService) adminuser() (appUser.AdminUser, error) {
+func (u *UserService) adminuser(roleId primitive.ObjectID) (appUser.AdminUser, error) {
 
 	var superUser appUser.AdminUser
 
@@ -68,6 +68,8 @@ func (u *UserService) adminuser() (appUser.AdminUser, error) {
 
 	superUser.Password = password
 
+	superUser.Roles = []primitive.ObjectID{roleId}
+
 	return superUser, nil
 }
 
@@ -76,7 +78,7 @@ func (u *UserService) ComparePassword(password string, hash string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
 
-func (u *UserService) cookie(token string) (http.Cookie, error) {
+func (u *UserService) Cookie(token string) (http.Cookie, error) {
 
 	var cookie http.Cookie
 
@@ -90,9 +92,9 @@ func (u *UserService) cookie(token string) (http.Cookie, error) {
 
 }
 
-func (u *UserService) CreateAdminUser(ctx context.Context, roles []primitive.ObjectID) error {
+func (u *UserService) CreateAdminUser(ctx context.Context, roleId primitive.ObjectID) error {
 
-	adminUser, err := u.adminuser()
+	adminUser, err := u.adminuser(roleId)
 
 	if err != nil {
 		return err
@@ -119,25 +121,26 @@ func (u *UserService) CreateAdminUser(ctx context.Context, roles []primitive.Obj
 	collection := db.Collection(u.collection.Users())
 	now := time.Now()
 
-	user := appUser.User{
+	user := bson.M{
 
-		Username:      adminUser.Username,
-		FirstName:     adminUser.FirstName,
-		LastName:      adminUser.LastName,
-		Email:         adminUser.Email,
-		PublicId:      publicId,
-		Password:      hash,
-		ResetPassword: false,
-		Active:        true,
-		Locked:        false,
-		LoginAttempts: 0,
-		Roles:         roles,
-		Token:         "",
-		CsrfToken:     "",
-		LastSeen:      now,
-		LastLogin:     now,
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		"Username":      adminUser.Username,
+		"FirstName":     adminUser.FirstName,
+		"LastName":      adminUser.LastName,
+		"Email":         adminUser.Email,
+		"PublicId":      publicId,
+		"Password":      hash,
+		"ResetPassword": false,
+		"Active":        true,
+		"Locked":        false,
+		"LoginAttempts": 0,
+		"Roles":         adminUser.Roles,
+		"OAuth":         "",
+		"Token":         "",
+		"CsrfToken":     "",
+		"LastSeen":      now,
+		"LastLogin":     now,
+		"CreatedAt":     now,
+		"UpdatedAt":     now,
 	}
 
 	_, err = collection.InsertOne(ctx, user)
@@ -203,7 +206,7 @@ func (u *UserService) FindByUsername(ctx context.Context, username string) (appU
 
 	collection := db.Collection(u.collection.Users())
 
-	filter := bson.M{"username": username}
+	filter := bson.M{"Username": username}
 
 	err = collection.FindOne(ctx, filter).Decode(&user)
 
@@ -240,9 +243,9 @@ func (u *UserService) generatePublicId() (string, error) {
 
 }
 
-func (u *UserService) setCookieHandler(w http.ResponseWriter, cookie http.Cookie) {
+func (u *UserService) SetCookieHandler(w http.ResponseWriter, cookie *http.Cookie) {
 
-	http.SetCookie(w, &cookie)
+	http.SetCookie(w, cookie)
 
 }
 
@@ -273,19 +276,5 @@ func (u UserService) GenerateJWT(ctx context.Context, user appUser.User) (string
 	}
 
 	return string(token), nil
-
-}
-
-func (u *UserService) UserLogin(w http.ResponseWriter, token string) error {
-
-	cookie, err := u.cookie(token)
-
-	if err != nil {
-		return err
-	}
-
-	u.setCookieHandler(w, cookie)
-
-	return nil
 
 }

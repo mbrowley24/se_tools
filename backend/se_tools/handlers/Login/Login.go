@@ -33,11 +33,13 @@ func (l Login) Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
+	println(userCreds.Username)
 	//check if username exists if user not found return 403 error
 	user, err := l.userservice.FindByUsername(ctx, userCreds.Username)
 
 	if err != nil {
+		println("cannot find user")
+		println(err.Error())
 		invalid := errors.New("invalid username/password")
 
 		http.Error(w, invalid.Error(), http.StatusForbidden)
@@ -48,6 +50,8 @@ func (l Login) Login(w http.ResponseWriter, r *http.Request) {
 	err = l.userservice.ComparePassword(userCreds.Password, user.Password)
 
 	if err != nil {
+		println("passwords do not match")
+		println(err.Error())
 		invalid := errors.New("invalid username/password")
 
 		http.Error(w, invalid.Error(), http.StatusForbidden)
@@ -64,14 +68,15 @@ func (l Login) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//create and set cookie
-	err = l.userservice.UserLogin(w, token)
+	cookie, err := l.userservice.Cookie(token)
 
 	if err != nil {
-
 		internalError := errors.New("internal server error")
 		http.Error(w, internalError.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	http.SetCookie(w, &cookie)
 
 	err = l.utils.WriteJSON(w, http.StatusOK, "", "Login successful")
 

@@ -14,20 +14,22 @@ function FormLogin({}){
     const {httpRequest} = useHttp();
 
 
-    function handleSubmit(e){
+    async function handleSubmit(e){
 
         console.log(login)
         e.preventDefault();
 
-        fetch('http://localhost:8080/api/v1/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(login)
-        })
-        .then(response => response.json())
-        .catch(error => console.error('Error:', error))
+        const configRequest={
+            method: "POST",
+            url: "/api/v1/login",
+            data: login
+        }
+
+        function applyData(res){
+            console.log(res.cookies)
+        }
+
+        await httpRequest(configRequest, applyData);
     }
 
         

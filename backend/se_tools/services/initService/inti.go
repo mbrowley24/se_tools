@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	authoritiesservice "se_tools/services/authoritiesService"
 	roleservices "se_tools/services/roleServices"
+	userservice "se_tools/services/userService"
 	"se_tools/utils"
 	"strings"
 	"time"
@@ -13,9 +14,10 @@ import (
 )
 
 type InitData struct {
-	auth  authoritiesservice.Services
-	roles roleservices.Services
-	utils utils.Utilities
+	adminuser userservice.UserService
+	auth      authoritiesservice.Services
+	roles     roleservices.Services
+	utils     utils.Utilities
 }
 
 func (i *InitData) RolesAuths(ctx context.Context) error {
@@ -111,6 +113,20 @@ func (i *InitData) Init(ctx context.Context) error {
 
 	if err != nil {
 		println("Error creating roles and authorities")
+		return err
+	}
+
+	role, err := i.roles.FindByName(ctx, "admin")
+
+	if err != nil {
+		println("Error finding role")
+		return err
+	}
+
+	err = i.adminuser.CreateAdminUser(ctx, role.ID)
+
+	if err != nil {
+		println("Error creating admin user")
 		return err
 	}
 

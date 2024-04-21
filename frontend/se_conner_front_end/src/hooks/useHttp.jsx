@@ -15,7 +15,7 @@ const useHttp = () =>{
                 baseURL: "http://localhost:8080/",
                 url: requestConfig.url,
                 data: requestConfig.data,
-                
+                withCredentials: true,
                 headers:{
                     "Content-Type": 'application/json'
                     
