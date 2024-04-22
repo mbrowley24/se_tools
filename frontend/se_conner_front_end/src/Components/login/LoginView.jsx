@@ -15,8 +15,6 @@ function FormLogin({}){
 
 
     async function handleSubmit(e){
-
-        console.log(login)
         e.preventDefault();
 
         const configRequest={
@@ -26,7 +24,16 @@ function FormLogin({}){
         }
 
         function applyData(res){
-            console.log(res.cookies)
+            
+            if(res.status === 200){
+
+                navigate('/dashboard');    
+                
+            }else if (res.status === 403){
+            
+                alert("Invalid username or password");
+            
+            }
         }
 
         await httpRequest(configRequest, applyData);
@@ -36,35 +43,37 @@ function FormLogin({}){
 
 
     return(
-        <div className="login">
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <Input
-                        className="input"
-                        placeholder="Username"
-                        type="text"
-                        value={login.username}
-                        onChange={(e)=>setLogin({...login, username: e.target.value})}
-                        label="Username"
-                    />
-                </div>
-                <div>
-                    <Input
-                        className="input"
-                        placeholder="Password"
-                        type="password"
-                        value={login.password}
-                        onChange={(e)=>setLogin({...login, password: e.target.value})}
-                        label="Password"
-                    />
-                </div>
-                <div className="submit">
-                    <Button
-                        className="button"
-                        label="Login"
-                    />
-                </div>
-            </form>
+        <div className="login_container">
+            <div className="login">
+                <form  onSubmit={handleSubmit}>
+                    <div>
+                        <Input
+                            className="input"
+                            placeholder="Username"
+                            type="text"
+                            value={login.username}
+                            onChange={(e)=>setLogin({...login, username: e.target.value})}
+                            label="Username"
+                        />
+                    </div>
+                    <div>
+                        <Input
+                            className="input"
+                            placeholder="Password"
+                            type="password"
+                            value={login.password}
+                            onChange={(e)=>setLogin({...login, password: e.target.value})}
+                            label="Password"
+                        />
+                    </div>
+                    <div className="submit">
+                        <Button
+                            className="button"
+                            label="Login"
+                        />
+                    </div>
+                </form>
+            </div>
         </div>
     )
 }

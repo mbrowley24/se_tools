@@ -100,6 +100,16 @@ func (u *UserService) CreateAdminUser(ctx context.Context, roleId primitive.Obje
 		return err
 	}
 
+	exists, err := u.existsByUsername(ctx, adminUser.Username)
+
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		return nil
+	}
+
 	hash, err := u.createPassword(adminUser.Password)
 
 	if err != nil {
@@ -162,6 +172,27 @@ func (u *UserService) createPassword(password string) (string, error) {
 	}
 
 	return string(hash), nil
+}
+
+func (u *UserService) existsByUsername(ctx context.Context, username string) (bool, error) {
+
+	db, err := u.db.Database(ctx)
+
+	if err != nil {
+		return false, err
+	}
+
+	collection := db.Collection(u.collection.Users())
+
+	filter := bson.M{"Username": username}
+
+	count, err := collection.CountDocuments(ctx, filter)
+
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
 }
 
 func (u *UserService) existsByPublicId(ctx context.Context, publicId string) (bool, error) {

@@ -1,0 +1,167 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.container{
+    display: block;
+    margin: 0% auto;
+    height: 100vh;
+    background-image: url('https://seconnerimages.nyc3.cdn.digitaloceanspaces.com/isp.jpg');
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: auto;
+    
+}
+.isp_panel{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    justify-content: center;
+    align-items: center;
+    height: 40%;
+    width: 95vw;
+    background-color: rgba(255, 255, 255, 0.5); /* Adjust opacity here */
+    /* opacity: 90%; */
+    border-radius: .35rem;
+    animation: fadeEffect infinite alternate;
+    border: 1px solid black;
+    
+}
+
+.isp{
+    height: 95%;
+    width: 95%;
+    background-color: rgba(255, 255, 255, 0); /* Adjust opacity here */
+    /* border: 1px solid green; */
+}
+
+
+.updated{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    height: 5%;
+    width: 25%;
+    background-color: rgba(255, 255, 255, .50); /* Adjust opacity here */
+    /* border: 1px solid green; */
+
+}
+
+
+.isp_title{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+    padding: .5% 0% .5% 0%;
+    background-color: rgba(255, 255, 255, 0); /* Adjust opacity here */
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+}
+.isp_links{
+    color: black;
+}
+.isp_services{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: start;
+    align-items: center;
+    height: 75%;
+    width: 95%;
+    background-color: rgba(255, 255, 255, 0); /* Adjust opacity here */
+}
+
+.services{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    padding: 1% 1% 1% 1%;
+    height: 90%;
+    width: 20%;
+    background-color: lightgray;
+    border-radius: .25rem;
+    border: 1px solid black;
+    overflow: auto;
+    opacity: 100%;
+}
+
+.services::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+}
+
+.services::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color of the thumb */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.services::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Darker color on hover */
+} 
+
+
+
+.div::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+    border-radius: 1rem;
+}
+
+.div::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color of the thumb */
+    border-radius: 1rem; /* Rounded corners */
+}
+
+.div::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Darker color on hover */
+    border-radius: 1rem;
+} 
+
+.service_title{
+    text-align: center;
+    text-transform: capitalize;
+}
+
+.service_links{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2%;
+    margin-bottom: 0%;
+    align-items: center;
+    padding: .5% .5% .5% .5%;
+    height: 80%;
+    width: 75%;
+
+}
+
+.pdf{
+    font-size: .5rem;
+}
+
+.service_links li{
+    padding: 1% 0% 1% 0%;
+    text-align: start;
+}
+
+.link{
+    font-size: .75rem;
+    color: black;
+}
+
+@keyframes fadeEffect {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.2; /* Adjust the final opacity value as needed */
+    }
+}

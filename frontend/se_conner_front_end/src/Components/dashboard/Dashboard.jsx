@@ -1,8 +1,11 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import useHttp from "../../hooks/useHttp";
+import "../../css/dashboard/dashboard.css";
+import ISPPannel from "./ISPPannel";
 
 
 function Dashboard(){
+    const [data, setData] = useState([]);
     const {httpRequest} = useHttp();
     useEffect(()=>{
         
@@ -12,7 +15,10 @@ function Dashboard(){
         }
 
         function applyData(res){
-            console.log(res)
+            
+            if (res.status == 200){
+                setData(res.data.data)
+            }
         }
 
         httpRequest(requestConfig, applyData)
@@ -20,8 +26,16 @@ function Dashboard(){
     },[])
 
     return(
-        <div>
-            <h1>Dashboard</h1>
+        <div className="container">
+            <div className="updated">
+                Last Updated: 04/01/2024
+            </div>
+
+            {
+                data.map((isp, index)=>{
+                    return <ISPPannel key={index} data={isp}/>
+                })
+            }
         </div>
     )
 }
