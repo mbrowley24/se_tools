@@ -1,0 +1,27 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.title_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.title_container h2{
+    font-size: 2rem;
+    font-weight: bold;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.no_questions{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+}

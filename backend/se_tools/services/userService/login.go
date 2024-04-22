@@ -20,6 +20,7 @@ type UserService struct {
 	utils      utils.Utilities
 }
 
+// adminuser gets the admin user from the environment variables
 func (u *UserService) adminuser(roleId primitive.ObjectID) (appUser.AdminUser, error) {
 
 	var superUser appUser.AdminUser
@@ -73,11 +74,13 @@ func (u *UserService) adminuser(roleId primitive.ObjectID) (appUser.AdminUser, e
 	return superUser, nil
 }
 
+// ComparePassword compares a password with a hash
 func (u *UserService) ComparePassword(password string, hash string) error {
 
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
 
+// Cookie creates a cookie
 func (u *UserService) Cookie(token string) (http.Cookie, error) {
 
 	var cookie http.Cookie
@@ -92,6 +95,7 @@ func (u *UserService) Cookie(token string) (http.Cookie, error) {
 
 }
 
+// CreateAdminUser creates an admin user
 func (u *UserService) CreateAdminUser(ctx context.Context, roleId primitive.ObjectID) error {
 
 	adminUser, err := u.adminuser(roleId)
@@ -163,6 +167,7 @@ func (u *UserService) CreateAdminUser(ctx context.Context, roleId primitive.Obje
 
 }
 
+// createPassword creates a password hash
 func (u *UserService) createPassword(password string) (string, error) {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -174,6 +179,7 @@ func (u *UserService) createPassword(password string) (string, error) {
 	return string(hash), nil
 }
 
+// existsByUsername checks if a user exists by username
 func (u *UserService) existsByUsername(ctx context.Context, username string) (bool, error) {
 
 	db, err := u.db.Database(ctx)
@@ -195,6 +201,7 @@ func (u *UserService) existsByUsername(ctx context.Context, username string) (bo
 	return count > 0, nil
 }
 
+// existsByPublicId checks if a user exists by public id
 func (u *UserService) existsByPublicId(ctx context.Context, publicId string) (bool, error) {
 
 	exists := false
@@ -225,6 +232,31 @@ func (u *UserService) existsByPublicId(ctx context.Context, publicId string) (bo
 
 }
 
+// FindUserId finds a user by id
+func (u *UserService) FindUserById(ctx context.Context, id primitive.ObjectID) (appUser.User, error) {
+
+	var user appUser.User
+
+	db, err := u.db.Database(ctx)
+
+	if err != nil {
+		return user, err
+	}
+
+	collection := db.Collection(u.collection.Users())
+
+	filter := bson.M{"_id": id}
+
+	err = collection.FindOne(ctx, filter).Decode(&user)
+
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+// FindByUsername finds a user by username
 func (u *UserService) FindByUsername(ctx context.Context, username string) (appUser.User, error) {
 
 	var user appUser.User

@@ -7,6 +7,10 @@ func (c *Collection) Authorities() string {
 	return "authorities"
 }
 
+func (c *Collection) DiscoveryQuestions() string {
+	return "discovery_questions"
+}
+
 func (c *Collection) ISP() string {
 	return "isp"
 }
