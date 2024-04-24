@@ -7,12 +7,12 @@ import (
 )
 
 type Model struct {
-	ID        primitive.ObjectID   `bson:"_id,omitempty"`
-	PublicId  string               `bson:"public_id"`
-	Question  string               `bson:"question"`
-	Category  []primitive.ObjectID `bson:"category"` // Category ID
-	Industry  []primitive.ObjectID `bson:"industry"` // Industry ID
-	Author    primitive.ObjectID   `bson:"author"`   // User ID
-	CreatedAt time.Time            `bson:"created_at"`
-	UpdatedAt time.Time            `bson:"updated_at"`
+	ID         primitive.ObjectID   `bson:"_id,omitempty"`
+	PublicId   string               `bson:"public_id"`
+	Question   string               `bson:"question"`
+	Categories []primitive.ObjectID `bson:"categories"` // Category ID
+	Industries []primitive.ObjectID `bson:"industries"` // Industry ID
+	Author     primitive.ObjectID   `bson:"author"`     // User ID
+	CreatedAt  time.Time            `bson:"created_at"`
+	UpdatedAt  time.Time            `bson:"updated_at"`
 }

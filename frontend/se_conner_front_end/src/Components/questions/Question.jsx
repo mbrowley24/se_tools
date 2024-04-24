@@ -1,13 +1,14 @@
 import React from "react";
 import QuestionHeader from "./QuestionHeader";
-
+import QuestionBody from "./QuestionBody";
+import QuestionToolbar from "./QuestionToolbar";
 
 
 
 function Question({data}){
-
+    console.log(data)
     return(
-        <div className="footer_bar">
+        <div className="question_container">
             <QuestionHeader data={data}/>
             <QuestionBody data={data}/>
             <QuestionToolbar data={data}/>

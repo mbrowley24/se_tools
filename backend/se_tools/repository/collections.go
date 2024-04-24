@@ -32,9 +32,9 @@ func (c *Collection) ISPServiceCategories() string {
 	return "isp_service_categories"
 }
 
-func (c *Collection) Questions() string {
-	return "questions"
-}
+// func (c *Collection) Questions() string {
+// 	return "questions"
+// }
 
 func (c *Collection) Roles() string {
 	return "roles"

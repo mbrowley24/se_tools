@@ -92,8 +92,9 @@ func (s *Service) getQuestions(ctx context.Context,
 	pageData pagedata.DTO) ([]questions.Model, error) {
 
 	//questions model slice
-	var questions []questions.Model
+	var questionModels []questions.Model
 
+	println("pageData", pageData.Offset, pageData.Limit)
 	//get collection
 	collection := db.Collection(s.collection.DiscoveryQuestions())
 
@@ -106,14 +107,26 @@ func (s *Service) getQuestions(ctx context.Context,
 		return nil, err
 	}
 
+	for cursor.Next(ctx) {
+		var question questions.Model
+
+		err := cursor.Decode(&question)
+
+		if err != nil {
+			return nil, err
+		}
+
+		println("question", question.Question)
+	}
+
 	//decode cursor and check for error
-	err = cursor.All(ctx, &questions)
+	err = cursor.All(ctx, &questionModels)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return questions, nil
+	return questionModels, nil
 }
 
 func (s *Service) GetQuestions(ctx context.Context,
@@ -154,10 +167,32 @@ func (s *Service) GetQuestions(ctx context.Context,
 	return dtos, nil
 }
 
-func (s *Service) Save(ctx context.Context, db *mongo.Database, question interface{}) (*mongo.InsertOneResult, error) {
+func (s *Service) NewDiscoveryQuestion(ctx context.Context,
+	db *mongo.Database,
+	saveQuestion questions.SaveQuestion) (*mongo.InsertOneResult, error) {
+
+	// get discovery questions collection
+	collection := db.Collection(s.collection.DiscoveryQuestions())
+
+	//set public id
+	publicId, err := s.generatePublicId(ctx, db)
+
+	saveQuestion.PublicId = publicId
+
+	result, err := collection.InsertOne(ctx, saveQuestion)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+
+}
+
+func (s *Service) save(ctx context.Context, db *mongo.Database, question interface{}) (*mongo.InsertOneResult, error) {
 	// get questions from database
 
-	collection := db.Collection(s.collection.Questions())
+	collection := db.Collection(s.collection.DiscoveryQuestions())
 
 	result, err := collection.InsertOne(ctx, question)
 

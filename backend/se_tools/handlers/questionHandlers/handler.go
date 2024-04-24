@@ -55,7 +55,7 @@ func (h *Handler) GetQuestions(w http.ResponseWriter, r *http.Request) {
 
 	//send questions to client
 
-	err = h.utils.WriteJSON(w, http.StatusOK, questions, "questions")
+	err = h.utils.WriteJSON(w, http.StatusOK, questions, "data")
 
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
@@ -142,7 +142,7 @@ func (h *Handler) NewQuestion(w http.ResponseWriter, r *http.Request) {
 	question.Author = user.ID
 
 	//save question to database and check for error
-	_, err = h.questionservice.Save(ctx, db, question)
+	_, err = h.questionservice.NewDiscoveryQuestion(ctx, db, question)
 
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)

@@ -17,11 +17,11 @@ function Questions({}){
             signal : null
         }
 
-        function applyData(response){
-            
-            if(response.status === 200){
-                if(response.data.data){
-                    setQuestions(response.data.data)
+        function applyData(res){
+            console.log(res)
+            if(res.status === 200){
+                if(res.data.data){
+                    setQuestions(res.data.data)
                 }
             }
         }
@@ -38,7 +38,7 @@ function Questions({}){
     }, []);
 
     return(
-        <div>
+        <div className="questions_container">
             {
             questions.length > 0 &&   questions.map((question, index) => {
                     return(

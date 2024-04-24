@@ -161,6 +161,14 @@
     padding: .25rem;
 }
 
+.form_container form .attributes div select option:hover{
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-transform: capitalize;
+    background-color: rgb(64, 64, 64, .75);
+    padding: .25rem;
+}
 /* .form_container form .attributes div select:focus option:checked{
     display: block;
     width: 100%;
@@ -170,6 +178,98 @@
     color: white;
     padding: .25rem;
 } */
+
+.questions_container{
+    display: block;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 75%;
+    border-radius: .5rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3rem;
+    height: 70vh;
+    /* background-color: rgb(211, 211, 211, .55); */
+    overflow: auto;
+
+}
+
+.question_container{
+    display: block;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 75%;
+    border-radius: .5rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3rem;
+    height: 30vh;
+    padding: 1%;
+    background-color: rgb(211, 211, 211, .75);
+    overflow: auto;
+
+}
+
+
+.question_header{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.question_header div{
+    color: black;
+    font-weight: bold;
+}
+
+
+.question_body{
+    display: block;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    width: 75%;
+    border-radius: .5rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: .5rem;
+    height: 15vh;
+    background-color: rgb(211, 211, 211, .90);
+    overflow: auto;
+    color: black;
+    font-weight: 200;
+}
+
+
+.tool-bar{
+    display: flex;
+    
+    align-items: center;
+    margin-top: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+}
+
+
+.tool-bar div {
+
+}
+
+.tool-bar div button{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    width: 100%;
+    color: white;
+    padding: .25rem;
+    background-color: RGB(64, 64, 64, .75);
+    border-radius: .25rem;
+    border: 1px solid black;
+}
+
 
 select:focus option:checked{
     display: block;
@@ -181,16 +281,14 @@ select:focus option:checked{
     padding: .25rem;
 }
 
-
-
-.form_container form .attributes div select option:hover{
-    display: block;
-    width: 100%;
-    text-align: center;
-    text-transform: capitalize;
-    background-color: rgb(64, 64, 64, .75);
-    padding: .25rem;
+.vote_container{
+    display: flex;
+    width: 15%;
+    justify-content: space-between;
 }
+
+
+
 
 
 
