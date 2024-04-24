@@ -14,13 +14,12 @@ import (
 )
 
 type Services struct {
-	db         repository.DbRepository
 	collection repository.Collection
 	utils      utils.Utilities
 }
 
 // CreateRoles creates roles for inti values
-func (s *Services) CreateRoles(ctx context.Context) error {
+func (s *Services) CreateRoles(ctx context.Context, db *mongo.Database) error {
 	absPath, err := filepath.Abs("services/roleServices/roles.txt")
 
 	if err != nil {
@@ -30,13 +29,6 @@ func (s *Services) CreateRoles(ctx context.Context) error {
 	}
 
 	file, err := s.utils.OpenFile(absPath)
-
-	defer func() {
-		err := file.Close()
-		if err != nil {
-			println(err.Error())
-		}
-	}()
 
 	if err != nil {
 		return err
@@ -48,7 +40,7 @@ func (s *Services) CreateRoles(ctx context.Context) error {
 
 	for scanner.Scan() {
 		//check if role exists and check for error
-		exists, err := s.existsByName(ctx, scanner.Text())
+		exists, err := s.existsByName(ctx, db, scanner.Text())
 
 		if err != nil {
 			return err
@@ -76,7 +68,9 @@ func (s *Services) CreateRoles(ctx context.Context) error {
 
 	if len(roleSlice) > 0 {
 
-		_, err = s.saveMany(ctx, roleSlice)
+		collection := db.Collection(s.collection.Roles())
+
+		_, err = collection.InsertMany(ctx, roleSlice)
 
 		if err != nil {
 
@@ -89,17 +83,11 @@ func (s *Services) CreateRoles(ctx context.Context) error {
 }
 
 // check if role exists by name
-func (s *Services) existsByName(ctx context.Context, name string) (bool, error) {
+func (s *Services) existsByName(ctx context.Context, db *mongo.Database, name string) (bool, error) {
 
-	exists := false
-	collection, err := s.getCollection(ctx)
+	filter := bson.M{"name": name}
 
-	if err != nil {
-		println(err.Error())
-		return false, err
-	}
-
-	filter := map[string]string{"name": name}
+	collection := db.Collection(s.collection.Roles())
 
 	count, err := collection.CountDocuments(ctx, filter)
 
@@ -107,106 +95,25 @@ func (s *Services) existsByName(ctx context.Context, name string) (bool, error) 
 		return false, err
 	}
 
-	if count > 0 {
-		exists = true
-	}
-
-	return exists, nil
+	return count > 0, nil
 }
 
-// FindByName finds role by name
-func (s *Services) FindByName(ctx context.Context, name string) (roles.Role, error) {
+func (s *Services) FindByName(ctx context.Context, db *mongo.Database, filter bson.M) (roles.Role, error) {
 
 	var role roles.Role
 
-	collection, err := s.getCollection(ctx)
+	collection := db.Collection(s.collection.Roles())
+
+	err := collection.FindOne(ctx, filter).Decode(&role)
 
 	if err != nil {
-		println(err.Error())
-		return role, err
-	}
-
-	filter := bson.M{"name": name}
-
-	err = collection.FindOne(ctx, filter).Decode(&role)
-
-	if err != nil {
-		println(err.Error())
 		return role, err
 	}
 
 	return role, nil
 }
 
-// get roles collection
-func (s *Services) getCollection(ctx context.Context) (*mongo.Collection, error) {
+func (s *Services) FindByNameFilter(name string) bson.M {
 
-	db, err := s.db.Database(ctx)
-
-	if err != nil {
-		println(err.Error())
-		return nil, err
-	}
-
-	return db.Collection(s.collection.Roles()), nil
-}
-
-// Update role
-func (s *Services) Update(ctx context.Context, filter, update bson.M) (*mongo.UpdateResult, error) {
-
-	collection, err := s.getCollection(ctx)
-
-	if err != nil {
-		println(err.Error())
-		return nil, err
-	}
-
-	result, err := collection.UpdateOne(ctx, filter, update)
-
-	if err != nil {
-		println(err.Error())
-		return nil, err
-	}
-
-	return result, nil
-}
-
-// save role to db
-func (s *Services) save(ctx context.Context, role roles.Role) (*mongo.InsertOneResult, error) {
-
-	collection, err := s.getCollection(ctx)
-
-	if err != nil {
-		println(err.Error())
-		return nil, err
-	}
-
-	result, err := collection.InsertOne(ctx, role)
-
-	if err != nil {
-		println(err.Error())
-		return nil, err
-	}
-
-	return result, nil
-}
-
-// save many roles to db
-func (s *Services) saveMany(ctx context.Context, roles []interface{}) (*mongo.InsertManyResult, error) {
-
-	collection, err := s.getCollection(ctx)
-
-	if err != nil {
-		println(err.Error())
-		return nil, err
-	}
-
-	result, err := collection.InsertMany(ctx, roles)
-
-	if err != nil {
-		println(err.Error())
-		return nil, err
-	}
-
-	return result, nil
+	return bson.M{"name": name}
 }

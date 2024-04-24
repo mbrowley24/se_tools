@@ -2,6 +2,7 @@ package userservice
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"se_tools/models/appUser"
 	"se_tools/repository"
@@ -11,6 +12,7 @@ import (
 	"github.com/pascaldekloe/jwt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -232,6 +234,50 @@ func (u *UserService) existsByPublicId(ctx context.Context, publicId string) (bo
 
 }
 
+func (u *UserService) FilterById(id primitive.ObjectID) bson.M {
+
+	return bson.M{"_id": id}
+}
+
+// FindUserByToken finds a user by token
+func (u *UserService) FindUserByIdString(ctx context.Context, db *mongo.Database, idString string) (appUser.User, error) {
+
+	var user appUser.User
+
+	//get collection for users
+	collection := db.Collection(u.collection.Users())
+
+	// //get claims from token and check for error
+	// claims, err := u.getClaims(token)
+
+	// if err != nil {
+	// 	println(" the error is really here")
+	// 	return user, err
+	// }
+
+	//get object id from claims and check for error
+	id, err := u.getObjectId(idString)
+
+	if err != nil {
+		return user, err
+
+	}
+
+	//filter by public id
+	filter := u.FilterById(id)
+	println(id.Hex())
+	//find user decode and check for error
+	err = collection.FindOne(ctx, filter).Decode(&user)
+
+	if err != nil {
+
+		return user, err
+	}
+
+	return user, nil
+
+}
+
 // FindUserId finds a user by id
 func (u *UserService) FindUserById(ctx context.Context, id primitive.ObjectID) (appUser.User, error) {
 
@@ -306,6 +352,32 @@ func (u *UserService) generatePublicId() (string, error) {
 
 }
 
+func (u *UserService) getCookie(r *http.Request) (*http.Cookie, error) {
+
+	cookie, err := r.Cookie("yeomantoken")
+
+	if err != nil {
+		return nil, err
+	}
+
+	return cookie, nil
+
+}
+
+func (u *UserService) getObjectId(id string) (primitive.ObjectID, error) {
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+
+		return primitive.NilObjectID, err
+
+	}
+
+	return objectId, nil
+
+}
+
 func (u *UserService) SetCookieHandler(w http.ResponseWriter, cookie *http.Cookie) {
 
 	http.SetCookie(w, cookie)
@@ -340,4 +412,81 @@ func (u UserService) GenerateJWT(ctx context.Context, user appUser.User) (string
 
 	return string(token), nil
 
+}
+
+// get claims from token
+func (u *UserService) getClaims(token string) (*jwt.Claims, error) {
+
+	jwtSecret, err := u.utils.Env("JWT_SECRET")
+
+	// println(jwtSecret)
+	if err != nil {
+		return nil, err
+	}
+
+	claims, err := jwt.HMACCheck([]byte(token), []byte(jwtSecret))
+
+	if err != nil {
+		println("error checking token")
+		return nil, err
+	}
+
+	return claims, nil
+}
+
+// Check if cookie is still valid
+func (u *UserService) CookieStillValid(cookie *http.Cookie) error {
+
+	now := time.Now()
+
+	isAfter := cookie.Expires.After(now)
+
+	if isAfter {
+		println("cookie expired")
+		return errors.New("token expired")
+	}
+
+	return nil
+}
+
+func (u *UserService) ValidateTokenAndGetClaims(r *http.Request) (*jwt.Claims, error) {
+
+	//get cookie from request and check for error
+	cookie, err := u.getCookie(r)
+
+	if err != nil {
+		println("error getting cookie")
+		return nil, err
+	}
+
+	//check if cookie is still valid
+	err = u.CookieStillValid(cookie)
+
+	if err != nil {
+		println("cookie not valid")
+		return nil, err
+	}
+
+	token := cookie.Value
+
+	claims, err := u.getClaims(token)
+
+	if err != nil {
+		println("error getting claims")
+		return nil, err
+	}
+
+	if !claims.Valid(time.Now()) {
+		return nil, errors.New("token not valid")
+	}
+
+	if !claims.AcceptAudience("theaveragese.com") {
+		return nil, errors.New("invalid audience")
+	}
+
+	if claims.Issuer != "theaveragese.com" {
+		return nil, errors.New("invalid issuer")
+	}
+
+	return claims, nil
 }

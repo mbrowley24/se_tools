@@ -8,6 +8,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Service struct {
@@ -56,28 +57,9 @@ func (s *Service) findAll(ctx context.Context) ([]isp.Model, error) {
 
 }
 
-func (s *Service) findAllCategories(ctx context.Context, id primitive.ObjectID) ([]isp.Category, error) {
+func (s *Service) findAllCategories(ctx context.Context, collection *mongo.Collection, id primitive.M) ([]isp.Category, error) {
 
 	var categories []isp.Category
-
-	//get collection
-	db, err := s.db.Database(ctx)
-
-	if err != nil {
-		return categories, err
-	}
-
-	//defer closing db connection
-	defer func(ctx context.Context) {
-
-		err := db.Client().Disconnect(ctx)
-
-		if err != nil {
-			return
-		}
-	}(ctx)
-
-	collection := db.Collection(s.collection.ISPServiceCategories())
 
 	//find all categories
 	cursor, err := collection.Find(ctx, bson.M{"isp": id})
@@ -97,26 +79,9 @@ func (s *Service) findAllCategories(ctx context.Context, id primitive.ObjectID) 
 
 }
 
-func (s *Service) findAllServices(ctx context.Context, id primitive.ObjectID) ([]isp.Service, error) {
+func (s *Service) findAllServices(ctx context.Context, collection *mongo.Collection, id primitive.ObjectID) ([]isp.Service, error) {
 
 	var services []isp.Service
-
-	db, err := s.db.Database(ctx)
-
-	if err != nil {
-		return nil, err
-	}
-
-	defer func(ctx context.Context) {
-
-		err := db.Client().Disconnect(ctx)
-
-		if err != nil {
-			return
-		}
-	}(ctx)
-
-	collection := db.Collection(s.collection.ISPServices())
 
 	cursor, err := collection.Find(ctx, bson.M{"category": id})
 
@@ -179,42 +144,63 @@ func (s *Service) GetDashboardData(ctx context.Context) ([]isp.ModelDto, error) 
 
 	}
 	start := time.Now()
-	// //get db client and check for errors
-	// db, err := s.db.Database(ctx)
+	//get db client and check for errors
+	db, err := s.db.Database(ctx)
 
-	// if err != nil {
-	// 	return dtos, err
-	// }
+	if err != nil {
+		return dtos, err
+	}
 
-	// //defer closing the db connection
-	// defer func(ctx context.Context) {
+	//defer closing the db connection
+	defer func(ctx context.Context) {
 
-	// 	err := db.Client().Disconnect(ctx)
+		err := db.Client().Disconnect(ctx)
 
-	// 	if err != nil {
-	// 		return
-	// 	}
-	// }(ctx)
+		if err != nil {
+			return
+		}
+	}(ctx)
 
-	//get all ISPs models from db and check for errors
-	isps, err := s.findAll(ctx)
+	//get collection for ISP, ISPServiceCategories, and ISPServices
+	ispCollection := db.Collection(s.collection.ISP())
+	ispServiceCategoriesCollection := db.Collection(s.collection.ISPServiceCategories())
+	ispServicesCollection := db.Collection(s.collection.ISPServices())
+
+	ispResults, err := ispCollection.Find(ctx, bson.M{})
 
 	if err != nil {
 		println("Error finding ISPs")
 		return dtos, err
 	}
 
+	var isps []isp.Model
+
+	err = ispResults.All(ctx, &isps)
+
+	if err != nil {
+		println("Error decoding ISPs")
+		return dtos, err
+	}
+
 	//iterate over all ISPs
-	for _, isp := range isps {
+	for _, ispModel := range isps {
 
 		//convert ISP model to DTO
-		dto := isp.ToDTO()
+		dto := ispModel.ToDTO()
 
-		//find all categories for the ISP and check for errors
-		categories, err := s.findAllCategories(ctx, isp.ID)
+		categoryResults, err := ispServiceCategoriesCollection.Find(ctx, bson.M{"isp": ispModel.ID})
+
 		if err != nil {
-			println(err.Error())
 			println("Error finding categories")
+			return dtos, err
+		}
+
+		var categories []isp.Category
+
+		err = categoryResults.All(ctx, &categories)
+
+		if err != nil {
+			println("Error decoding categories")
 			return dtos, err
 		}
 
@@ -224,8 +210,15 @@ func (s *Service) GetDashboardData(ctx context.Context) ([]isp.ModelDto, error) 
 			//convert category model to DTO
 			categoryDto := category.ToDTO()
 
-			//find all services for the category and check for errors
-			services, err := s.findAllServices(ctx, category.ID)
+			serviceResults, err := ispServicesCollection.Find(ctx, bson.M{"category": category.ID})
+
+			if err != nil {
+				return dtos, err
+			}
+
+			var services []isp.Service
+
+			err = serviceResults.All(ctx, &services)
 
 			if err != nil {
 				return dtos, err

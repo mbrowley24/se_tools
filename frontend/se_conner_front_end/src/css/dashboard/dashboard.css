@@ -108,6 +108,21 @@
     background-color: #555; /* Darker color on hover */
 } 
 
+.submit{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    width: 20%;
+    border-radius: .25rem;
+    
+}
+
+
+
+
+
+
 
 
 .div::-webkit-scrollbar {

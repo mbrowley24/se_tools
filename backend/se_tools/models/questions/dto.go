@@ -19,7 +19,7 @@ type DTO struct {
 
 func (q *DTO) ValidateQuestion(notes string) bool {
 
-	match := regexp.MustCompile(`^[a-zA-Z0-9,.?\-"\s\)\(:;&%$#@!*]{0,250}$`)
+	match := regexp.MustCompile(`^[a-zA-Z0-9 :?\/{}\+\-&%$#@!)(;',_+."]{0,500}$`)
 
 	return match.MatchString(notes)
 }

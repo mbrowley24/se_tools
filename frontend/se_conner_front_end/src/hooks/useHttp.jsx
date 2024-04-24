@@ -7,7 +7,7 @@ const useHttp = () =>{
     const [isLoading, setIsLoading] = useState(false);
 
     const httpRequest = useCallback(async(requestConfig, applyData)=>{
-        console.log(requestConfig)
+        // console.log(requestConfig)
         try{
             setIsLoading(true);
             const httpResponse = await  axios({
@@ -23,19 +23,19 @@ const useHttp = () =>{
                 signal : requestConfig.signal
             })
             
-            console.log(httpResponse)
+            // console.log(httpResponse)
             if(httpResponse.status === 200){
                 applyData(httpResponse);
                 setIsLoading(false)
             }
             
         }catch(error){
-            console.log(error)
+            // console.log(error)
             if(error && error.response){
 
                 if(error.response.status === 403){
 
-                    navigate('/')
+                    navigate('/login')
                 }else{
 
                     applyData(error);

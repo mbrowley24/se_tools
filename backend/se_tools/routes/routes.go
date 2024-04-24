@@ -3,13 +3,17 @@ package routes
 import (
 	"net/http"
 	login "se_tools/handlers/Login"
+	categoryhandlers "se_tools/handlers/categoryHandlers"
 	"se_tools/handlers/dashboard"
+	"se_tools/handlers/industryhandler"
 	"se_tools/handlers/questionHandlers"
 )
 
 type Routes struct {
+	CategoryHandlers           categoryhandlers.Handler
 	DashboardHandlders         dashboard.Handler
 	DiscoveryQuestionsHandlers questionHandlers.Handler
+	IndustryHandlers           industryhandler.Handler
 	UserHandlers               login.Login
 }
 
@@ -52,6 +56,7 @@ func (rte Routes) Routes() http.Handler {
 		}
 	})
 
+	//dashboard functions
 	mux.HandleFunc("/api/v1/dashboard", func(w http.ResponseWriter, r *http.Request) {
 
 		switch r.Method {
@@ -70,12 +75,37 @@ func (rte Routes) Routes() http.Handler {
 		}
 	})
 
+	//questions Routes
 	mux.HandleFunc("/api/v1/questions", func(w http.ResponseWriter, r *http.Request) {
 
 		switch r.Method {
 
 		case http.MethodGet:
 			rte.DiscoveryQuestionsHandlers.GetQuestions(w, r)
+
+		case http.MethodPost:
+			rte.DiscoveryQuestionsHandlers.NewQuestion(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+
+	})
+
+	//industry Routes
+	mux.HandleFunc("/api/v1/industry", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+
+		case http.MethodGet:
+			rte.IndustryHandlers.GetIndustries(w, r)
 
 		case http.MethodOptions:
 			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
@@ -87,7 +117,23 @@ func (rte Routes) Routes() http.Handler {
 		default:
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
+	})
 
+	//category Routes
+	mux.HandleFunc("/api/v1/category", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+
+		case http.MethodGet:
+			rte.CategoryHandlers.GetCategories(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "GET")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+		}
 	})
 
 	//cors

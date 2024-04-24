@@ -17,26 +17,21 @@ import (
 )
 
 type Service struct {
-	db         repository.DbRepository
 	collection repository.Collection
 	user       userservice.UserService
 	utils      utils.Utilities
 }
 
-func (s *Service) CreateQuestion(ctx context.Context, question string, id primitive.ObjectID) (*mongo.InsertOneResult, error) {
-
-	// get database client and check for error
-	db, err := s.db.Database(ctx)
-
-	if err != nil {
-		return nil, err
-	}
+func (s *Service) CreateQuestion(ctx context.Context,
+	db *mongo.Database,
+	question string,
+	id primitive.ObjectID) (*mongo.InsertOneResult, error) {
 
 	//get colllection
 	collection := db.Collection(s.collection.DiscoveryQuestions())
 
 	//generate public id and check for error
-	publicId, err := s.generatePublicId(ctx)
+	publicId, err := s.generatePublicId(ctx, db)
 
 	if err != nil {
 
@@ -65,23 +60,9 @@ func (s *Service) CreateQuestion(ctx context.Context, question string, id primit
 	return result, nil
 }
 
-func (s *Service) generatePublicId(ctx context.Context) (string, error) {
+func (s *Service) generatePublicId(ctx context.Context, db *mongo.Database) (string, error) {
 
 	publicId := s.utils.RandomStringGenerator(30)
-
-	db, err := s.db.Database(ctx)
-
-	if err != nil {
-		return "", err
-	}
-
-	defer func(ctx context.Context) {
-
-		err := db.Client().Disconnect(ctx)
-		if err != nil {
-			panic(err)
-		}
-	}(ctx)
 
 	collection := db.Collection(s.collection.DiscoveryQuestions())
 
@@ -106,26 +87,12 @@ func (s *Service) generatePublicId(ctx context.Context) (string, error) {
 
 }
 
-func (s *Service) getQuestions(ctx context.Context, pageData pagedata.DTO) ([]questions.Model, error) {
+func (s *Service) getQuestions(ctx context.Context,
+	db *mongo.Database,
+	pageData pagedata.DTO) ([]questions.Model, error) {
 
 	//questions model slice
 	var questions []questions.Model
-
-	//get database client and check for error
-	db, err := s.db.Database(ctx)
-
-	if err != nil {
-		return nil, err
-	}
-
-	//defer disconnecting client
-	defer func(ctx context.Context) {
-
-		err := db.Client().Disconnect(ctx)
-		if err != nil {
-			panic(err)
-		}
-	}(ctx)
 
 	//get collection
 	collection := db.Collection(s.collection.DiscoveryQuestions())
@@ -149,11 +116,13 @@ func (s *Service) getQuestions(ctx context.Context, pageData pagedata.DTO) ([]qu
 	return questions, nil
 }
 
-func (s *Service) GetQuestions(ctx context.Context, pageData pagedata.DTO) ([]questions.DTO, error) {
+func (s *Service) GetQuestions(ctx context.Context,
+	db *mongo.Database,
+	pageData pagedata.DTO) ([]questions.DTO, error) {
 
 	var dtos []questions.DTO
 
-	questionModels, err := s.getQuestions(ctx, pageData)
+	questionModels, err := s.getQuestions(ctx, db, pageData)
 
 	if err != nil {
 		return nil, err
@@ -183,4 +152,19 @@ func (s *Service) GetQuestions(ctx context.Context, pageData pagedata.DTO) ([]qu
 	}
 
 	return dtos, nil
+}
+
+func (s *Service) Save(ctx context.Context, db *mongo.Database, question interface{}) (*mongo.InsertOneResult, error) {
+	// get questions from database
+
+	collection := db.Collection(s.collection.Questions())
+
+	result, err := collection.InsertOne(ctx, question)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+
 }
