@@ -7,14 +7,14 @@ import (
 )
 
 type DTO struct {
-	PublicId string    `json:"public_id,omitempty"`
+	ID       string    `json:"id,omitempty"`
 	Question string    `json:"question"`
 	Author   string    `json:"author,omitempty"`
 	Created  time.Time `json:"created_at,omitempty"`
-	MyVote   bool      `json:"my_vote,omitempty"`
-	Voted    bool      `json:"voted,omitempty"`
-	VoteUP   int       `json:"vote_up,omitempty"`
-	VoteDown int       `json:"vote_down,omitempty"`
+	MyVote   bool      `json:"my_vote"`
+	Voted    bool      `json:"voted"`
+	VoteUP   int64     `json:"vote_up"`
+	VoteDown int64     `json:"vote_down"`
 }
 
 func (q *DTO) ValidateQuestion(notes string) bool {

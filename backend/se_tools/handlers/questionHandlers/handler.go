@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	discoveryquestionlikes "se_tools/models/discovery_question_likes"
 	pagedata "se_tools/models/pageData"
 	"se_tools/models/questions"
 	"se_tools/repository"
@@ -13,6 +14,8 @@ import (
 	userservice "se_tools/services/userService"
 	"se_tools/utils"
 	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Handler struct {
@@ -61,6 +64,139 @@ func (h *Handler) GetQuestions(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
+}
+
+func (h *Handler) LikeQuestion(w http.ResponseWriter, r *http.Request) {
+
+	//get context and cancel function set timeout to 3 seconds
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
+	//get like data from request body and check for error
+	var like discoveryquestionlikes.DTO
+
+	err := json.NewDecoder(r.Body).Decode(&like)
+
+	if err != nil {
+		http.Error(w, "invalid request", http.StatusBadRequest)
+		return
+
+	}
+
+	//get claims form token and check for error
+	claims, err := h.userservice.ValidateTokenAndGetClaims(r)
+
+	if err != nil {
+		println(err.Error())
+		println("error claims")
+		http.Error(w, "invalid user", http.StatusForbidden)
+		return
+	}
+
+	//get database connection and check for error
+	db, err := h.db.Database(ctx)
+
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	//find user by token and check for error
+	user, err := h.userservice.FindUserByIdString(ctx, db, claims.Subject)
+
+	if err != nil {
+		println("error here")
+		println(err.Error())
+		http.Error(w, "invalid user", http.StatusForbidden)
+		return
+	}
+
+	//get discovery question collection
+	discoveryQuestionCollection := db.Collection(h.questionservice.DiscoveryQuestionCollection())
+
+	//query question by public id and check for error
+	result := discoveryQuestionCollection.FindOne(ctx, h.questionservice.FilterByPublicId(like.ID))
+
+	if result.Err() != nil {
+		http.Error(w, "invalid question", http.StatusBadRequest)
+		return
+
+	}
+
+	//decode question and check for error
+	question, err := h.questionservice.OneDiscoveryQuestion(result)
+
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+
+	}
+
+	//get discovery question likes collection
+	discoveryQuestionLikesCollection := db.Collection(h.questionservice.DiscoveryQuestionLikesCollection())
+
+	//my like filter
+	myLikeFilter := h.questionservice.FilterMyLike(user.ID, question.ID)
+
+	//query like by user and question and check for error
+	likeResult, err := h.questionservice.FindMyLike(ctx, discoveryQuestionLikesCollection, myLikeFilter)
+
+	//check for error excluding not found error
+	if err != nil && err.Error() != mongo.ErrNoDocuments.Error() {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	//if like not found create new like
+	if err != nil && err.Error() == mongo.ErrNoDocuments.Error() {
+		println("like not found")
+		//create new like object
+		newLike := h.questionservice.NewLikeDiscoveryQuestion(question.ID, user.ID, like.Liked)
+
+		//insert like to database and check for error
+		_, err = discoveryQuestionLikesCollection.InsertOne(ctx, newLike)
+
+		if err != nil {
+			http.Error(w, "internal error", http.StatusInternalServerError)
+			return
+		}
+
+	} else {
+
+		//get Like model from like result
+		likeModel, err := h.questionservice.MyLikeModel(likeResult)
+
+		if err != nil {
+			http.Error(w, "internal error", http.StatusInternalServerError)
+			return
+		}
+
+		if likeModel.Liked == like.Liked {
+			http.Error(w, "invalid request", http.StatusConflict)
+			return
+		}
+
+		//update like to database and check for error
+		updatedLike := h.questionservice.UpdateLike(like.Liked)
+
+		updateFilter := h.questionservice.FilterById(likeModel.ID)
+
+		_, err = discoveryQuestionLikesCollection.UpdateOne(ctx, updateFilter, updatedLike)
+
+		if err != nil {
+			http.Error(w, "internal error", http.StatusInternalServerError)
+			return
+
+		}
+	}
+
+	err = h.utils.WriteJSON(w, http.StatusOK, "success", "message")
+
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
 }
 
 func (h *Handler) NewQuestion(w http.ResponseWriter, r *http.Request) {
@@ -134,15 +270,15 @@ func (h *Handler) NewQuestion(w http.ResponseWriter, r *http.Request) {
 	//create question object for new questions
 	var question questions.SaveQuestion
 
-	println(len(categories))
-	println(len(industries))
+	questionCollection := db.Collection(h.questionservice.DiscoveryQuestionCollection())
+
 	question.Question = newQUestion.Question
 	question.Categories = append(question.Categories, categories...)
 	question.Industries = append(question.Industries, industries...)
 	question.Author = user.ID
 
 	//save question to database and check for error
-	_, err = h.questionservice.NewDiscoveryQuestion(ctx, db, question)
+	_, err = h.questionservice.NewDiscoveryQuestion(ctx, questionCollection, question)
 
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)

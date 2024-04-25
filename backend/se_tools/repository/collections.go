@@ -15,6 +15,10 @@ func (c *Collection) DiscoveryQuestions() string {
 	return "discovery_questions"
 }
 
+func (c *Collection) DiscoveryQuestionLikes() string {
+	return "discovery_question_likes"
+}
+
 func (c *Collection) Industry() string {
 	return "industry"
 }

@@ -49,7 +49,8 @@ const useHttp = () =>{
     return(
         {
             httpRequest,
-            isLoading
+            isLoading,
+            setIsLoading,
         }
     )
 

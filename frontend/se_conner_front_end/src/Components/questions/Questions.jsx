@@ -4,7 +4,7 @@ import Question from "./Question";
 
 
 function Questions({}){
-    const {isLoading, httpRequest} = useHttp();
+    const {isLoading, setIsLoading, httpRequest} = useHttp();
     const [questions, setQuestions] = useState([]);
 
     useEffect(() => {
@@ -18,7 +18,7 @@ function Questions({}){
         }
 
         function applyData(res){
-            console.log(res)
+
             if(res.status === 200){
                 if(res.data.data){
                     setQuestions(res.data.data)
@@ -33,6 +33,7 @@ function Questions({}){
         })()
 
         return () => {
+            setIsLoading(false)
         }
 
     }, []);
@@ -40,15 +41,21 @@ function Questions({}){
     return(
         <div className="questions_container">
             {
-            questions.length > 0 &&   questions.map((question, index) => {
-                    return(
-                        <Question key={index} data={question}/>
-                    )
-                })
+                !isLoading && questions.length > 0 &&   questions.map((question, index) => {
+                        return(
+                            <Question key={index} data={question}/>
+                        )
+                    })
             }
             {
-                questions.length === 0 && <h3 className="no_questions">No questions found</h3>
+                !isLoading && questions.length === 0 && <h3 className="no_questions">No questions found</h3>
             }
+            {
+                isLoading && <div className="loader_conainer">
+                                <div className="loader"></div>
+                            </div>
+            }
+            
         </div>
     )
 }

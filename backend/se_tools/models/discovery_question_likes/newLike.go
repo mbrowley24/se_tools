@@ -6,8 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type Model struct {
-	ID         primitive.ObjectID `bson:"_id,omitempty"`
+type Like struct {
 	QuestionId primitive.ObjectID `bson:"question_id"`
 	UserId     primitive.ObjectID `bson:"user_id"`
 	Liked      bool               `bson:"liked"` // true for like, false for dislike

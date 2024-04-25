@@ -254,7 +254,8 @@
 
 
 .tool-bar div {
-
+    margin-left: .5%;
+    margin-right: .5%;
 }
 
 .tool-bar div button{
@@ -268,6 +269,7 @@
     background-color: RGB(64, 64, 64, .75);
     border-radius: .25rem;
     border: 1px solid black;
+    cursor: pointer;
 }
 
 

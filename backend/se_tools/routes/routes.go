@@ -99,6 +99,22 @@ func (rte Routes) Routes() http.Handler {
 
 	})
 
+	mux.HandleFunc("/api/v1/questions/like", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+
+		case http.MethodPost:
+			rte.DiscoveryQuestionsHandlers.LikeQuestion(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "POST")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+		}
+	})
+
 	//industry Routes
 	mux.HandleFunc("/api/v1/industry", func(w http.ResponseWriter, r *http.Request) {
 
