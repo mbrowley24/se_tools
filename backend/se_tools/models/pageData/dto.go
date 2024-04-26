@@ -6,9 +6,15 @@ import (
 )
 
 type DTO struct {
-	Page   int64 `json:"page"`
-	Limit  int64 `json:"limit"`
-	Offset int64 `json:"offset"`
+	Page       int64 `json:"page"`
+	Limit      int64 `json:"limit"`
+	Offset     int64 `json:"offset"`
+	TotalItems int64 `json:"totalItems"`
+	TotalPages int64 `json:"totalPages"`
+	IsFirst    bool  `json:"isFirst"`
+	HasNext    bool  `json:"hasNext"`
+	HasPrev    bool  `json:"hasPrev"`
+	IsLast     bool  `json:"isLast"`
 }
 
 func (d *DTO) GeneratePageData(r *http.Request) error {
@@ -53,4 +59,19 @@ func (d *DTO) GeneratePageData(r *http.Request) error {
 	d.Offset = (d.Page * d.Limit)
 
 	return nil
+}
+
+func (d *DTO) CalculatePageData(totalItems int64) {
+
+	d.TotalItems = totalItems
+	d.TotalPages = d.TotalItems / d.Limit
+
+	if d.TotalItems%d.Limit != 0 {
+		d.TotalPages++
+	}
+
+	d.IsFirst = d.Page == 0
+	d.IsLast = d.Page == d.TotalPages-1
+	d.HasNext = !d.IsLast
+	d.HasPrev = !d.IsFirst
 }

@@ -10,10 +10,10 @@ function QuestionHeader({data}){
             </div>
             <div className="vote_container">
                 <div>
-                    <p><span>Likes:</span> {data.voteup}</p>
+                    <p><span>Likes:</span> {data.vote_up}</p>
                 </div>
                 <div>
-                    <p>Dislikes: {data.votedown}</p>
+                    <p>Dislikes: {data.vote_down}</p>
                 </div>
             </div>
     </div>

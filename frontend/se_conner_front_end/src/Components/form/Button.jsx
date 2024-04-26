@@ -2,10 +2,15 @@ import React from "react";
 
 
 
-function Button({className, onClick, label}) {
+function Button({className, onClick, label, disabled}) {
     return (
         <>
-            <button className={className} onClick={onClick}>{label}</button>
+            <button
+                disabled={disabled}
+                className={className}
+                onClick={onClick}>
+                    {label}
+            </button>
         </>
     )
 

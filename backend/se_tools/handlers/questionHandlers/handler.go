@@ -15,6 +15,7 @@ import (
 	"se_tools/utils"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -27,8 +28,10 @@ type Handler struct {
 	userservice     userservice.UserService
 }
 
+// GetQuestions get questions from database and send to client
 func (h *Handler) GetQuestions(w http.ResponseWriter, r *http.Request) {
 
+	var questionData questions.DiscoveryQuestionPage
 	ctx, cancel := context.WithTimeout(r.Context(), 10*time.Second)
 	defer cancel()
 
@@ -48,8 +51,23 @@ func (h *Handler) GetQuestions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	questionCollection := db.Collection(h.questionservice.DiscoveryQuestionCollection())
+
+	//get total questions from database
+	total, err := questionCollection.CountDocuments(ctx, bson.D{}) //get total questions from database
+
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	//set total items to page data
+	pageData.CalculatePageData(total)
+
+	questionData.PageInfo = pageData
+
 	//get questions from database
-	questions, err := h.questionservice.GetQuestions(ctx, db, pageData)
+	questionData.Questions, err = h.questionservice.GetQuestions(ctx, db, pageData)
 
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
@@ -58,7 +76,7 @@ func (h *Handler) GetQuestions(w http.ResponseWriter, r *http.Request) {
 
 	//send questions to client
 
-	err = h.utils.WriteJSON(w, http.StatusOK, questions, "data")
+	err = h.utils.WriteJSON(w, http.StatusOK, questionData, "data")
 
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
@@ -66,6 +84,7 @@ func (h *Handler) GetQuestions(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// LikeQuestion like or unlike question and returns updated question
 func (h *Handler) LikeQuestion(w http.ResponseWriter, r *http.Request) {
 
 	//get context and cancel function set timeout to 3 seconds
@@ -124,7 +143,7 @@ func (h *Handler) LikeQuestion(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//decode question and check for error
-	question, err := h.questionservice.OneDiscoveryQuestion(result)
+	question, err := h.questionservice.GetDiscoveryQuestionModel(result)
 
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
@@ -188,9 +207,30 @@ func (h *Handler) LikeQuestion(w http.ResponseWriter, r *http.Request) {
 			return
 
 		}
+
 	}
 
-	err = h.utils.WriteJSON(w, http.StatusOK, "success", "message")
+	//send success message to client
+	questionFilter := h.questionservice.FilterById(question.ID)
+
+	updatedQuestion := discoveryQuestionCollection.FindOne(ctx, questionFilter)
+
+	updatedQuestionModel, err := h.questionservice.GetDiscoveryQuestionModel(updatedQuestion)
+
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	updatedQuestionDto, err := h.questionservice.GetModelTODto(ctx, updatedQuestionModel, db)
+
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+
+	}
+
+	err = h.utils.WriteJSON(w, http.StatusOK, updatedQuestionDto, "data")
 
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)

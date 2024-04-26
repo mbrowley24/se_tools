@@ -82,6 +82,90 @@ func (s *Service) FilterMyLike(userId, questionId primitive.ObjectID) bson.M {
 	return bson.M{"user_id": userId, "question_id": questionId}
 }
 
+func (s *Service) GetDiscoveryQuestionModel(result *mongo.SingleResult) (questions.Model, error) {
+	var question questions.Model
+
+	err := result.Decode(&question)
+
+	if err != nil {
+		return question, err
+	}
+
+	return question, nil
+}
+
+func (s *Service) GetModelTODto(ctx context.Context, question questions.Model, db *mongo.Database) (questions.DTO, error) {
+
+	var dto questions.DTO
+
+	likeQuestionCollection := db.Collection(s.DiscoveryQuestionLikesCollection())
+
+	dto.ID = question.PublicId
+	dto.Question = question.Question
+
+	user, err := s.user.FindUserById(ctx, db, question.Author)
+
+	if err != nil {
+		return dto, err
+	}
+
+	dto.Author = s.user.GetAuthorName(user)
+	dto.Created = question.UpdatedAt
+
+	//get my vote filter
+	myVoteFilter := s.FilterMyLike(user.ID, question.ID)
+
+	//query like by user and question and check for error
+	likeResult, err := s.FindMyLike(ctx, likeQuestionCollection, myVoteFilter)
+
+	//check for error excluding not found error
+	if err != nil && err.Error() != mongo.ErrNoDocuments.Error() {
+		return dto, err
+	}
+
+	//like and dislike filters
+	//if like not found my vote is false indicating user has not voted
+	//if like found get like and set my vote to like.Liked true or false
+	if err != nil && err.Error() == mongo.ErrNoDocuments.Error() {
+
+		dto.MyVote = false
+		dto.Voted = false
+
+	} else {
+
+		like, err := s.MyLikeModel(likeResult)
+
+		if err != nil {
+			return dto, err
+		}
+
+		dto.Voted = true
+		dto.MyVote = like.Liked
+	}
+
+	//like and dislike filters
+	dislike := s.FilterLike(false)
+	like := s.FilterLike(true)
+
+	//get count of likes and dislikes and check for error
+	dislikeCount, err := likeQuestionCollection.CountDocuments(ctx, dislike)
+
+	if err != nil {
+		return dto, err
+	}
+
+	likeCount, err := likeQuestionCollection.CountDocuments(ctx, like)
+
+	if err != nil {
+		return dto, err
+	}
+
+	dto.VoteUP = likeCount
+	dto.VoteDown = dislikeCount
+
+	return dto, nil
+}
+
 func (s *Service) generatePublicId(ctx context.Context, collection *mongo.Collection) (string, error) {
 
 	publicId := s.utils.RandomStringGenerator(30)
@@ -176,7 +260,7 @@ func (s *Service) GetQuestions(ctx context.Context,
 		dto.Question = question.Question
 
 		//get user by id and check for error
-		user, err := s.user.FindUserById(ctx, question.Author)
+		user, err := s.user.FindUserById(ctx, db, question.Author)
 
 		if err != nil {
 			return nil, err
@@ -307,18 +391,6 @@ func (s *Service) NewDiscoveryQuestion(ctx context.Context,
 
 	return result, nil
 
-}
-
-func (s *Service) OneDiscoveryQuestion(result *mongo.SingleResult) (questions.Model, error) {
-	var question questions.Model
-
-	err := result.Decode(&question)
-
-	if err != nil {
-		return question, err
-	}
-
-	return question, nil
 }
 
 func (s *Service) save(ctx context.Context, collection *mongo.Collection, question interface{}) (*mongo.InsertOneResult, error) {

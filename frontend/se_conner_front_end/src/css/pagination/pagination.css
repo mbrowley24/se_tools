@@ -1,0 +1,103 @@
+*{
+    padding: 0%;
+    margin: 0%;
+}
+
+.page_pannel{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding: .5%;
+    width: 75%;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.page_pannel div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40%;
+    padding: .25%;
+    margin-left: .25%;
+    margin-right: .25%;
+    background-color: rgb(64, 64, 64);
+}
+
+.arrow button{
+    padding: .25%;
+    font-size: .25rem;
+    padding: .30%;
+    width: 75%;
+    background-color: rgb(64, 64, 64);
+}
+
+.arrow button:disabled{
+    padding: .25%;
+    font-size: .25rem;
+    padding: .30%;
+    width: 75%;
+    background-color: rgb(64, 64, 64);
+    cursor: not-allowed;
+}
+
+.arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 10%;
+    padding: .25%;
+    margin-left: .25%;
+    margin-right: .25%;
+    background-color: rgb(64, 64, 64);
+}
+
+
+.arrow button span{
+    padding: .5%;
+    font-size: 1rem;
+    color: white;
+    border: 1px solid rgb(64, 64, 64);
+    cursor: pointer;
+}
+.arrow button:disabled span{
+    padding: .5%;
+    font-size: 1rem;
+    color: rgb(105, 105, 105);
+    border: 1px solid rgb(64, 64, 64);
+    cursor: not-allowed;
+}
+
+.page-drop-down{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25%;
+    padding: .25%;
+    margin-left: .25%;
+    margin-right: .25%;
+    background-color: rgb(64, 64, 64);
+}
+
+.page-drop-down p{
+    width: 100%;
+    padding: .5%;
+    font-size: .75rem;
+    border-radius: .25rem;
+    margin-left: .25%;
+    margin-right: .25%;
+    background-color: rgb(211, 211, 211);
+}
+
+.page-drop-down select:disabled{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: .5%;
+    border-radius: .25rem;
+    margin-left: .25%;
+    margin-right: .25%;
+    background-color: rgb(105, 105, 105);
+}

@@ -1,11 +1,11 @@
 import React from "react";
 import Button from "../form/Button";
 import useHttp from "../../hooks/useHttp";
+import "../../css/small_spinner.css";
 
 
-
-function LikeButton({url, label, question_id, like}){
-    const {httpRequest} = useHttp();
+function LikeButton({url, label, question_id, like, setQuestion, disabled}){
+    const {httpRequest, isLoading} = useHttp();
 
     async function onClick(e){
         console.log("clicked")
@@ -21,6 +21,12 @@ function LikeButton({url, label, question_id, like}){
 
         function applyData(res){
             console.log(res)
+            if(res.status === 200){
+
+                setQuestion(res.data.data)
+                
+            }
+            
         }
 
         await httpRequest(requestConfig, applyData)
@@ -28,8 +34,9 @@ function LikeButton({url, label, question_id, like}){
 
     return(
         <div>
-            
-            <Button onClick={onClick} label={label}/>
+            { isLoading &&  <div className="loader"></div>}
+            { !isLoading && <Button disabled={disabled}  onClick={onClick} label={label}/>}
+
         </div>
     )
 }

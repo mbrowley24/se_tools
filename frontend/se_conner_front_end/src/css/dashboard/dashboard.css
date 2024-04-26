@@ -40,6 +40,9 @@
     /* border: 1px solid green; */
 }
 
+.question_body{
+    padding: 1% 1% 1% 1%;
+}
 
 .updated{
     display: flex;
@@ -117,12 +120,6 @@
     border-radius: .25rem;
     
 }
-
-
-
-
-
-
 
 
 .div::-webkit-scrollbar {

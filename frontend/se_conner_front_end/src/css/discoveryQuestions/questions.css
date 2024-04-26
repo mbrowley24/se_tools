@@ -272,6 +272,20 @@
     cursor: pointer;
 }
 
+.tool-bar div button:disabled{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    width: 100%;
+    color: gray;
+    padding: .25rem;
+    background-color: RGB(64, 64, 64, .75);
+    border-radius: .25rem;
+    border: 1px solid gray;
+    cursor: none;
+}
+
 
 select:focus option:checked{
     display: block;
@@ -285,8 +299,15 @@ select:focus option:checked{
 
 .vote_container{
     display: flex;
-    width: 15%;
+    width: 30%;
     justify-content: space-between;
+    overflow-x: hidden;
+}
+
+.vote_container div{
+    margin-left: 1%;
+    margin-right: 1%;
+    width: 50%;
 }
 
 

@@ -6,6 +6,7 @@
     align-items: center;
 }
 
+
 .loader {
     box-sizing: border-box;
     display: inline-block;
@@ -19,6 +20,9 @@
     background-position: 50% 0px;
     animation: spinx 5s linear infinite;
 }
+
+
+
 .loader:before, .loader:after {
     content: "";
     width: 40px;

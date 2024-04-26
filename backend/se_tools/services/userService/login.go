@@ -7,6 +7,7 @@ import (
 	"se_tools/models/appUser"
 	"se_tools/repository"
 	"se_tools/utils"
+	"strings"
 	"time"
 
 	"github.com/pascaldekloe/jwt"
@@ -279,21 +280,15 @@ func (u *UserService) FindUserByIdString(ctx context.Context, db *mongo.Database
 }
 
 // FindUserId finds a user by id
-func (u *UserService) FindUserById(ctx context.Context, id primitive.ObjectID) (appUser.User, error) {
+func (u *UserService) FindUserById(ctx context.Context, db *mongo.Database, id primitive.ObjectID) (appUser.User, error) {
 
 	var user appUser.User
-
-	db, err := u.db.Database(ctx)
-
-	if err != nil {
-		return user, err
-	}
 
 	collection := db.Collection(u.collection.Users())
 
 	filter := bson.M{"_id": id}
 
-	err = collection.FindOne(ctx, filter).Decode(&user)
+	err := collection.FindOne(ctx, filter).Decode(&user)
 
 	if err != nil {
 		return user, err
@@ -349,6 +344,17 @@ func (u *UserService) generatePublicId() (string, error) {
 	}
 
 	return publicId, nil
+
+}
+
+// get Author name from user
+func (u *UserService) GetAuthorName(user appUser.User) string {
+
+	//get use (Author) first and last name and capitalize first letter of first and last name
+	firstName := strings.ToUpper(user.FirstName[0:1]) + strings.ToLower(user.FirstName[1:])
+	lastName := strings.ToUpper(user.LastName[0:1]) + strings.ToLower(user.LastName[1:])
+
+	return firstName + " " + lastName
 
 }
 
