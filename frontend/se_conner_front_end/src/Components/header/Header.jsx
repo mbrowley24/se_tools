@@ -22,7 +22,7 @@ function Header() {
                             <a>Discovery Questions</a>
                             <div className="dropdown-content">
                                 <Link to='/discoveryquestions'>Questions</Link>
-                                <Link to=''>Templates</Link>
+                                <Link to='/discoveryquestions/templates'>Templates</Link>
                             </div>
                         </li>
                         {/* <li className="dropdown">

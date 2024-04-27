@@ -106,8 +106,7 @@ func (h *Handler) LikeQuestion(w http.ResponseWriter, r *http.Request) {
 	claims, err := h.userservice.ValidateTokenAndGetClaims(r)
 
 	if err != nil {
-		println(err.Error())
-		println("error claims")
+
 		http.Error(w, "invalid user", http.StatusForbidden)
 		return
 	}
@@ -124,8 +123,7 @@ func (h *Handler) LikeQuestion(w http.ResponseWriter, r *http.Request) {
 	user, err := h.userservice.FindUserByIdString(ctx, db, claims.Subject)
 
 	if err != nil {
-		println("error here")
-		println(err.Error())
+
 		http.Error(w, "invalid user", http.StatusForbidden)
 		return
 	}
@@ -168,7 +166,7 @@ func (h *Handler) LikeQuestion(w http.ResponseWriter, r *http.Request) {
 
 	//if like not found create new like
 	if err != nil && err.Error() == mongo.ErrNoDocuments.Error() {
-		println("like not found")
+
 		//create new like object
 		newLike := h.questionservice.NewLikeDiscoveryQuestion(question.ID, user.ID, like.Liked)
 
@@ -239,6 +237,7 @@ func (h *Handler) LikeQuestion(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// NewQuestion create new question and save to database
 func (h *Handler) NewQuestion(w http.ResponseWriter, r *http.Request) {
 
 	//get context and cancel function set timeout to 3 seconds
@@ -249,8 +248,6 @@ func (h *Handler) NewQuestion(w http.ResponseWriter, r *http.Request) {
 	claims, err := h.userservice.ValidateTokenAndGetClaims(r)
 
 	if err != nil {
-		println(err.Error())
-		println("error claims")
 		http.Error(w, "invalid user", http.StatusForbidden)
 		return
 	}
@@ -301,8 +298,7 @@ func (h *Handler) NewQuestion(w http.ResponseWriter, r *http.Request) {
 	user, err := h.userservice.FindUserByIdString(ctx, db, claims.Subject)
 
 	if err != nil {
-		println("error here")
-		println(err.Error())
+
 		http.Error(w, "invalid user", http.StatusForbidden)
 		return
 	}

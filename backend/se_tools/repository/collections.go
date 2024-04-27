@@ -44,6 +44,10 @@ func (c *Collection) Roles() string {
 	return "roles"
 }
 
+func (c *Collection) TemplateQuestion() string {
+	return "discovery_question_templates"
+}
+
 func (c *Collection) Users() string {
 
 	return "users"

@@ -4,6 +4,7 @@ import Dashboard from './Components/dashboard/Dashboard'
 import About from './Components/about/about'
 import QuestionView from './Components/questions/QuestionView'
 import NewQuestion from './Components/questions/NewQuestion'
+import TemplateView from './Components/discoveryQuestionTemplate/TemplateView'
 
 function App() {
 
@@ -17,6 +18,9 @@ function App() {
           <Route path='/discoveryquestions'>
             <Route path="" element={<QuestionView/>}/>
             <Route path="new" element={<NewQuestion/>}/>
+            <Route path={"templates"}>
+              <Route path={''} element={<TemplateView/>}/>
+            </Route>
           </Route>
         </Routes>
       </Router>

@@ -34,7 +34,7 @@ function LikeButton({url, label, question_id, like, setQuestion, disabled}){
 
     return(
         <div>
-            { isLoading &&  <div className="loader"></div>}
+            { isLoading &&  <div className="loader_small"></div>}
             { !isLoading && <Button disabled={disabled}  onClick={onClick} label={label}/>}
 
         </div>
