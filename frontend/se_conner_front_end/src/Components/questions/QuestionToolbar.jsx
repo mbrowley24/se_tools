@@ -1,10 +1,11 @@
 import React from "react";
 import LikeButton from "./LikeButton";
 import CommentButton from "./CommentButton";
+import AddToTemplate from "./AddToTemplate";
 
 
 
-function QuestionToolbar({data, setQuestion}){
+function QuestionToolbar({data, setQuestion, template}){
     
     
     return(
@@ -23,6 +24,9 @@ function QuestionToolbar({data, setQuestion}){
                 setQuestion={setQuestion}
                 disabled={!data.my_vote}
                 />
+            { template &&  <AddToTemplate/>}
+
+
         </div>
     )
 }

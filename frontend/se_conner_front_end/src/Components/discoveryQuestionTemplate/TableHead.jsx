@@ -9,6 +9,8 @@ function TableHead({}){
                 <th>Name</th>
                 <th>Author</th>
                 <th># Questions</th>
+                <th>Updated</th>
+                <th>Actions</th>
             </tr>
         </thead>
     )

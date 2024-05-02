@@ -4,7 +4,7 @@ import React from "react";
 
 
 function ISPService({data}){
-    console.log(data)
+   
     return(
         <div className="services">
             <h5 className="service_title">{data.name}</h5>

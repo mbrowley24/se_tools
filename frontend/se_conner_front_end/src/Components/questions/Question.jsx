@@ -5,7 +5,7 @@ import QuestionToolbar from "./QuestionToolbar";
 
 
 
-function Question({data, setUpdate}){
+function Question({data, template}){
     const [question, setQuestion] = useState({
         "author": "",
         "created_at": "",
@@ -29,7 +29,7 @@ function Question({data, setUpdate}){
         <div className="question_container">
             <QuestionHeader data={question}/>
             <QuestionBody data={question} />
-            <QuestionToolbar data={question} setQuestion={setQuestion}/>
+            <QuestionToolbar data={question} setQuestion={setQuestion} template={template}/>
         </div>
     )
 

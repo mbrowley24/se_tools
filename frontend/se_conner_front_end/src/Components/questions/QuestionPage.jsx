@@ -6,13 +6,11 @@ import "../../css/pagination/pagination.css";
 
 
 function QuestionPagination({pageInfo, dispatch, names}){
+	
 
 	function pagination(name){
 		dispatch({type: names, payload: null})
-		console.log(name)
 	}
-
-	console.log(pageInfo)
 	return(
 		<div className='page_pannel'>
 			<div>

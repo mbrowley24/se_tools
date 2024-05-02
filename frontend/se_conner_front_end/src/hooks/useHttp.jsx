@@ -23,14 +23,14 @@ const useHttp = () =>{
                 signal : requestConfig.signal
             })
             
-            // console.log(httpResponse)
+            console.log(httpResponse)
             if(httpResponse.status === 200){
                 applyData(httpResponse);
                 setIsLoading(false)
             }
             
         }catch(error){
-            // console.log(error)
+            console.log(error)
             if(error && error.response){
 
                 if(error.response.status === 403){

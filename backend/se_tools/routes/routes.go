@@ -7,12 +7,14 @@ import (
 	"se_tools/handlers/dashboard"
 	"se_tools/handlers/industryhandler"
 	"se_tools/handlers/questionHandlers"
+	templatediscoveryhandlers "se_tools/handlers/templateDiscoveryHandlers"
 )
 
 type Routes struct {
 	CategoryHandlers           categoryhandlers.Handler
 	DashboardHandlders         dashboard.Handler
 	DiscoveryQuestionsHandlers questionHandlers.Handler
+	DiscoveryTemplateHandlers  templatediscoveryhandlers.Handler
 	IndustryHandlers           industryhandler.Handler
 	UserHandlers               login.Login
 }
@@ -122,7 +124,11 @@ func (rte Routes) Routes() http.Handler {
 
 		switch r.Method {
 
+		case http.MethodPost:
+			rte.DiscoveryTemplateHandlers.CreateTemplateDiscovery(w, r)
+
 		case http.MethodGet:
+			rte.DiscoveryTemplateHandlers.GetTemplateDiscoverySummary(w, r)
 
 		case http.MethodOptions:
 			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")

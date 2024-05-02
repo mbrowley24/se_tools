@@ -266,7 +266,6 @@ func (u *UserService) FindUserByIdString(ctx context.Context, db *mongo.Database
 
 	//filter by public id
 	filter := u.FilterById(id)
-	println(id.Hex())
 	//find user decode and check for error
 	err = collection.FindOne(ctx, filter).Decode(&user)
 

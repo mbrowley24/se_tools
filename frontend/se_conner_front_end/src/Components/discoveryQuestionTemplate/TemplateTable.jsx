@@ -5,12 +5,12 @@ import TableHead from "./TableHead";
 
 
 
-function TemplateTable({}){
+function TemplateTable({data}){
 
     return(
         <table>
             <TableHead/>
-            <TableBody/>
+            <TableBody data={data}/>
         </table>
     )
 }

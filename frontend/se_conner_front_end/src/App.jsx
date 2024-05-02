@@ -5,6 +5,7 @@ import About from './Components/about/about'
 import QuestionView from './Components/questions/QuestionView'
 import NewQuestion from './Components/questions/NewQuestion'
 import TemplateView from './Components/discoveryQuestionTemplate/TemplateView'
+import NewTemplateView from './Components/discoveryQuestionTemplate/NewTemplateView'
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="new" element={<NewQuestion/>}/>
             <Route path={"templates"}>
               <Route path={''} element={<TemplateView/>}/>
+              <Route path={"new"} element={<NewTemplateView/>}/>
             </Route>
           </Route>
         </Routes>

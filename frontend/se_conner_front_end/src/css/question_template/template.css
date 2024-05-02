@@ -14,7 +14,7 @@
 
 .template table{
     background-color: rgb(255, 255, 255, .85);
-    height: 50vh;
+    /* height: 50vh; */
     width: 75%;
     border-radius: .25rem;
     margin-left: auto;
@@ -22,9 +22,28 @@
     padding: .5%;
 }
 
-.template table tr{
-    height: 5vh;
+/* .template table tr{
+    
+} */
+
+
+.template h1{
+    text-align: center;
+    padding: .5rem;
+    font-size: 1.5vw;
+    font-weight: bold;
+    text-wrap: nowrap;
+    color: black;
+    width: 35%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border-radius: .25rem;
+    overflow: hidden;
+    background-color: rgb(255, 255, 255, .70);
 }
+
 
 .template table tr th{
     padding: 1rem;
@@ -32,8 +51,103 @@
     border: 1px solid black;
 }
 
-.template table tr td{
+.template table tbody tr td{
     padding: 1rem;
+    height: 5vh;
     text-align: center;
     border: 1px solid black;
 }
+
+.new_template{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1%;
+    margin-top: 1%;
+    padding-bottom: auto;
+    background-color: rgb(255, 255, 255, .75);
+    width: 30%;
+    height: 5vh;
+    border-radius: .25rem;
+    text-align: center;
+    overflow: hidden;
+}
+
+
+.new_template form{
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    color: black;
+    width: 95%;
+    height: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1%;
+    font-weight: 500;
+    font-size: 1vw;
+    text-wrap: nowrap;
+    overflow: hidden;
+}
+
+.new_template_name{
+    width: 75%;
+    height: 90%;
+    overflow: hidden;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.new_template_name input{
+    width: 90%;
+    height: 90%;
+    padding: 1%;
+    border-radius: .25rem;
+    text-align: center;
+    border: 1px solid darkgray;
+}
+
+.new_template_submit{
+    width: 25%;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.new_template_submit button{
+    padding: 3%;
+    border-radius: .25rem;
+    background-color: rgb(64, 64, 64, .75);
+    color: white;
+}
+
+.new_template_submit button:hover{
+    padding: 3%;
+    border-radius: .25rem;
+    background-color: black;
+    color: white;
+}
+
+.new_template_submit button:disabled{
+    padding: 3%;
+    border-radius: .25rem;
+    background-color: white;
+    color: darkgray;
+}
+
+.new_template_submit button:hover:disabled{
+    padding: 3%;
+    border-radius: .25rem;
+    background-color: white;
+    color: darkgray;
+}
+
+
+
+.new_tempalte:hover a{
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+}
+
+
+

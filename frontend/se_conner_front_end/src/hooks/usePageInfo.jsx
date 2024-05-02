@@ -91,18 +91,20 @@ function usePageInfo() {
                 return data;
             
             case PAGE_FIELDS.LOAD_PAGE:
+                
                 const page_info = action.payload.pageInfo;
                 const page_data = action.payload.data;
                 
+                
                 data.total_pages = page_info.totalPages;
-                data.total_items = page_data.totalItems
+                data.total_items = page_info.totalItems
                 data.page = page_info.page;
                 data.limit = page_info.limit;
                 data.hasNext = page_info.hasNext;
                 data.hasPrev = page_info.hasPrev;
                 data.isFirst = page_info.isFirst;
                 data.isLast = page_info.isLast;
-                data.data = [...page_data];
+                data.data = page_data? [...page_data] : [];
                 
                 return data;
 
