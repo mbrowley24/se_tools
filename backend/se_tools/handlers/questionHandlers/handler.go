@@ -308,10 +308,14 @@ func (h *Handler) NewQuestion(w http.ResponseWriter, r *http.Request) {
 
 	questionCollection := db.Collection(h.questionservice.DiscoveryQuestionCollection())
 
+	now := time.Now()
+
 	question.Question = newQUestion.Question
 	question.Categories = append(question.Categories, categories...)
 	question.Industries = append(question.Industries, industries...)
 	question.Author = user.ID
+	question.CreatedAt = now
+	question.UpdatedAt = now
 
 	//save question to database and check for error
 	_, err = h.questionservice.NewDiscoveryQuestion(ctx, questionCollection, question)

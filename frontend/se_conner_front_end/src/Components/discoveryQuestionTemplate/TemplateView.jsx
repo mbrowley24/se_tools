@@ -26,8 +26,9 @@ function TemplateView({}){
         }
 
         function applyData(res){
-            
+            console.log(res)
             if (res.status === 200) {
+                
                 dispatch({type: PAGE_FIELDS.LOAD_PAGE, payload: res.data.data})
             }
             
@@ -44,7 +45,7 @@ function TemplateView({}){
             <Header/>
             <div className="template">
                 <h1>Discovery Question Templates</h1>
-                <div className="new_template">
+                <div className="new_template_sm">
                     <NewTemplateForm setUpdate={setUpdate}/>
                 </div>
                 <TemplateTable data={data.data}/>

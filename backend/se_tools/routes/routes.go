@@ -143,6 +143,64 @@ func (rte Routes) Routes() http.Handler {
 		}
 	})
 
+	mux.HandleFunc("/api/v1/questions/templates/{id}", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+		case http.MethodGet:
+			rte.DiscoveryTemplateHandlers.GetTemplateQuestions(w, r)
+
+		case http.MethodPut:
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "POST")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+
+	})
+
+	mux.HandleFunc("/api/v1/questions/templates/{id}/name", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+
+		case http.MethodPost:
+			rte.DiscoveryTemplateHandlers.ChangeTemplateName(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "POST")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	mux.HandleFunc("/api/v1/questions/templates/{id}/summary", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+		case http.MethodGet:
+			rte.DiscoveryTemplateHandlers.GetQuestionsForTemplateForm(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "POST")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
 	//industry Routes
 	mux.HandleFunc("/api/v1/industry", func(w http.ResponseWriter, r *http.Request) {
 
@@ -173,10 +231,13 @@ func (rte Routes) Routes() http.Handler {
 
 		case http.MethodOptions:
 			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-			w.Header().Set("Access-Control-Allow-Methods", "GET")
+			w.Header().Set("Access-Control-Allow-Methods", "POST")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
 

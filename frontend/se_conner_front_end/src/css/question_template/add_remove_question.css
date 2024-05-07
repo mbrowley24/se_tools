@@ -1,0 +1,60 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.add_remove_questions{
+    margin-top: 5%;
+    padding: 1%;
+    border-radius: .25rem;
+    height: 90%;
+    background-color: rgb(64, 64, 64, .5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.add_remove_questions::-webkit-scrollbar {
+    width: 5%; /* width of the vertical scrollbar */
+    height: 5%; /* height of the horizontal scrollbar */
+}
+
+
+
+
+.question_header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .5% .5% .5% 2%;
+    border-radius: .25rem;
+    background-color: rgb(64, 64, 64, 1);
+    border-bottom: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+
+.question_header div{
+    color: rgb(255, 255, 255, 1);
+    width: 25%;
+}
+
+.question_header div label{
+    margin-right: .25rem;
+    font-size: 1rem;
+}
+.question_header div p{
+    margin-right: .25rem;
+    font-size: 1rem;
+}
+
+.question{
+    margin-top: 1%;
+    height: 25vh;
+    border-radius: .25rem;
+    background-color: rgb(211, 211, 211, 1);
+}
+
+.question_body{
+    margin-top: 1%;
+    height: 15vh;
+    border-radius: .25rem;
+    background-color: rgb(200, 200, 200, 1);
+}

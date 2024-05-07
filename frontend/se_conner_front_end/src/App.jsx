@@ -6,6 +6,7 @@ import QuestionView from './Components/questions/QuestionView'
 import NewQuestion from './Components/questions/NewQuestion'
 import TemplateView from './Components/discoveryQuestionTemplate/TemplateView'
 import NewTemplateView from './Components/discoveryQuestionTemplate/NewTemplateView'
+import TemplateFormView from './Components/discoveryQuestionTemplate/TemplateFormView'
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
             <Route path={"templates"}>
               <Route path={''} element={<TemplateView/>}/>
               <Route path={"new"} element={<NewTemplateView/>}/>
+              <Route path={':id'} element={<TemplateFormView/>}/>
             </Route>
           </Route>
         </Routes>

@@ -7,6 +7,8 @@ function useTemplate() {
         QUESTION_IDS: 'questionIds',
         QUESTIONS : 'questions',
         EDIT_NAME: 'editName',
+        EDIT_QUESTIONS: 'editQuestions',
+        LOAD_TEMPLATE: 'loadTemplate',
     } 
 
 
@@ -35,6 +37,10 @@ function useTemplate() {
 
         //checks name state
         editName: false,
+
+        //add/remove questions to the template
+
+        editQuestions: false,
         
         //holds the data from the api
         questionData: [],
@@ -66,6 +72,7 @@ function useTemplate() {
         let data = JSON.parse(JSON.stringify(state));
 
         switch (action.type) {
+
             case TEMPLATE_FIELDS.NAME:
                 
                 data.template.name = action.payload;
@@ -92,6 +99,31 @@ function useTemplate() {
                     
                     data.editName = !data.editName;
     
+                    return data;
+
+            case TEMPLATE_FIELDS.LOAD_TEMPLATE:
+                
+                data.template.name = action.payload.name;
+
+                if(action.payload.questions){
+                    
+                    const questions = [...action.payload.questions]
+
+                    for(let i = 0; i < questions.length; i++){
+
+                        data.template.questionIds.push(questions[i].id);
+                        data.questionData.push(questions[i]);
+                    }
+                }
+                
+                return data;
+
+                case TEMPLATE_FIELDS.EDIT_QUESTIONS:
+                    
+                    console.log('edit questions')
+                    data.editQuestions = !data.editQuestions;
+
+                    console.log(data)
                     return data;
 
             default:

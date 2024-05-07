@@ -66,6 +66,20 @@ func (s *Service) CreateQuestion(ctx context.Context,
 	return result, nil
 }
 
+// Crusor to model converts a mongo cursor to a slice of models and checks for error
+func (s *Service) CursorToModel(ctx context.Context, results *mongo.Cursor) ([]questions.Model, error) {
+
+	var questions []questions.Model
+
+	err := results.All(ctx, &questions)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return questions, nil
+}
+
 func (s *Service) FilterById(id primitive.ObjectID) bson.M {
 	return bson.M{"_id": id}
 }
@@ -82,6 +96,56 @@ func (s *Service) FilterMyLike(userId, questionId primitive.ObjectID) bson.M {
 	return bson.M{"user_id": userId, "question_id": questionId}
 }
 
+// FindAll returns all questions with pagination
+func (s *Service) FindAll(ctx context.Context, db *mongo.Database, pageInfo pagedata.DTO) (*mongo.Cursor, error) {
+
+	collection := db.Collection(s.DiscoveryQuestionCollection())
+
+	//find options
+	opts := options.Find().SetLimit(pageInfo.Limit).SetSkip(pageInfo.Offset)
+
+	cursor, err := collection.Find(ctx, bson.M{}, opts)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return cursor, nil
+}
+
+// FindById returns a single question by id
+func (s *Service) FindById(ctx context.Context, db *mongo.Database, id primitive.ObjectID) (*mongo.SingleResult, error) {
+
+	collection := db.Collection(s.DiscoveryQuestionCollection())
+
+	filter := s.FilterById(id)
+
+	result := collection.FindOne(ctx, filter)
+
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
+
+	return result, nil
+}
+
+// FindByPublicId returns a single question by public id
+func (s *Service) FindByPublicId(ctx context.Context, db *mongo.Database, publicId string) (*mongo.SingleResult, error) {
+
+	collection := db.Collection(s.DiscoveryQuestionCollection())
+
+	filter := s.FilterByPublicId(publicId)
+
+	result := collection.FindOne(ctx, filter)
+
+	if result.Err() != nil {
+		return nil, result.Err()
+	}
+
+	return result, nil
+}
+
+// FindByPublicId returns a single question decoding a mongo single result to a model
 func (s *Service) GetDiscoveryQuestionModel(result *mongo.SingleResult) (questions.Model, error) {
 	var question questions.Model
 
@@ -94,6 +158,7 @@ func (s *Service) GetDiscoveryQuestionModel(result *mongo.SingleResult) (questio
 	return question, nil
 }
 
+// GetModelTODto converts a question model to a question dto and checks for error
 func (s *Service) GetModelTODto(ctx context.Context, question questions.Model, db *mongo.Database) (questions.DTO, error) {
 
 	var dto questions.DTO
@@ -110,7 +175,7 @@ func (s *Service) GetModelTODto(ctx context.Context, question questions.Model, d
 	}
 
 	dto.Author = s.user.GetAuthorName(user)
-	dto.Created = question.UpdatedAt
+	dto.Updated = question.UpdatedAt
 
 	//get my vote filter
 	myVoteFilter := s.FilterMyLike(user.ID, question.ID)
@@ -321,7 +386,7 @@ func (s *Service) GetQuestions(ctx context.Context,
 		dto.VoteDown = dislikeCount
 
 		dto.Author = firstName + " " + lastName
-		dto.Created = question.UpdatedAt
+		dto.Updated = question.UpdatedAt
 
 		println("dto", dto.Voted)
 		dtos = append(dtos, dto)
@@ -391,6 +456,20 @@ func (s *Service) NewDiscoveryQuestion(ctx context.Context,
 
 	return result, nil
 
+}
+
+// ResultToModel converts a mongo result to a model and checks for error
+func (s *Service) ResultToModel(result *mongo.SingleResult) (questions.Model, error) {
+
+	var model questions.Model
+
+	err := result.Decode(&model)
+
+	if err != nil {
+		return model, err
+	}
+
+	return model, nil
 }
 
 func (s *Service) save(ctx context.Context, collection *mongo.Collection, question interface{}) (*mongo.InsertOneResult, error) {

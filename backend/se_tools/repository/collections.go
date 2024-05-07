@@ -48,6 +48,10 @@ func (c *Collection) TemplateQuestion() string {
 	return "discovery_question_templates"
 }
 
+func (c *Collection) TemplateQuestionOrder() string {
+	return "discovery_question_order"
+}
+
 func (c *Collection) Users() string {
 
 	return "users"
