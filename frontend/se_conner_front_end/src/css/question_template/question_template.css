@@ -48,6 +48,163 @@
     cursor: pointer;
 }
 
+.save_questions{
+    display: block;
+    font-size: large;
+    width: 25%;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    background-color: rgb(64, 64, 64, .70);
+    color: white;
+}
+
+.save_questions button{
+    border: 1px solid black;
+    margin-left: 1%;
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: .25%;
+    padding-bottom: .25%;
+    border-radius: .25rem;
+    background-color: rgb(211, 211, 211, .70);
+    color: black;
+    cursor: pointer;
+}
+
+.save_questions button:hover{
+    border: 1px solid black;
+    margin-left: 1%;
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: .25%;
+    padding-bottom: .25%;
+    border-radius: .25rem;
+    background-color: rgb(0, 0, 0, .70);
+    color: white;
+    cursor: pointer;
+}
+
+.save_questions button:disabled{
+    border: 1px solid black;
+    margin-left: 1%;
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: .25%;
+    padding-bottom: .25%;
+    border-radius: .25rem;
+    background-color: rgb(211, 211, 211, .70);
+    color: lightgray;
+    cursor: pointer;
+}
+
+
+.save_order{
+    display: flex;
+    font-size: large;
+    width: 50%;
+    justify-content: center;
+    margin-top: 2%;
+    margin-left: auto;
+    margin-right: auto;
+    border: none;
+    color: white;
+}
+
+.save_order button{
+    border: 1px solid black;
+    margin-left: 1%;
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: .25%;
+    padding-bottom: .25%;
+    border-radius: .25rem;
+    background-color: rgb(211, 211, 211, .70);
+    color: black;
+    cursor: pointer;
+}
+
+.save_order button:hover{
+    border: 1px solid black;
+    margin-left: 1%;
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: .25%;
+    padding-bottom: .25%;
+    border-radius: .25rem;
+    background-color: rgb(0, 0, 0, .70);
+    color: white;
+    cursor: pointer;
+}
+
+.save_order button:disabled{
+    border: 1px solid black;
+    margin-left: 1%;
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-top: .25%;
+    padding-bottom: .25%;
+    border-radius: .25rem;
+    background-color: rgb(211, 211, 211, .70);
+    color: lightgray;
+    cursor: pointer;
+}
+
+.order_selector{
+    display: flex;
+}
+
+.order_selector button{
+    height: 3vh;
+    width: 2vw;
+    cursor: pointer;
+    border-radius: .25rem;
+    background-color: rgb(255, 255, 255, 1);
+}
+
+
+.order_selector button:hover{
+    height: 3vh;
+    width: 2vw;
+    cursor: pointer;
+    border-radius: .25rem;
+    background-color: rgb(0, 0, 0, 1);
+}
+
+
+.order_selector p{
+    display: block;
+    text-align: center;
+    align-items: center;
+    height: 3vh;
+    font-size: small;
+    
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+.order_selector button span{
+    display: block;
+    font-size: x-large;
+    text-align: center;
+    align-items: center;
+    padding-top: 2%;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+}
+
+.order_selector button span:hover{
+    display: block;
+    font-size: x-large;
+    text-align: center;
+    align-items: center;
+    padding-top: 2%;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+}
+
 
 .template{
     display: block;
@@ -154,5 +311,18 @@
     margin-top: 1%;
 }
 
+div::-webkit-scrollbar {
+    width: 10px;
+}
 
+div::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: #e7e7e7;
+    border: 1px solid #cacaca;
+}
+
+div::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: rgb(64, 64, 64, 1);
+}
 

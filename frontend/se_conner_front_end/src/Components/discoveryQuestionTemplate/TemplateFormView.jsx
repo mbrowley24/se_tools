@@ -1,27 +1,39 @@
-import React, {useEffect, useReducer, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {useNavigate, useParams } from "react-router-dom";
 import Header from "../header/Header";
 import TemplateForm from "./TemplateForm";
 import useHttp from "../../hooks/useHttp";
-// import useTemplate from "../../hooks/useTemplate";
+import useTemplate from "../../hooks/useTemplate";
 import "../../css/question_template/question_template.css";
 
 function TemplateFormView(){
     const {id} = useParams();
     const navigate = useNavigate();
+    const {checkForChanges} = useTemplate();
     const [update, setUpdate] = useState(false);
+    const [orginalQuestionIds, setOrginalQuestionIds] = useState([]);
+    const [requery, setRequery] = useState(false);
     const [questions, setQuestions] = useState({
         id: '',
         name: '',
-        questions: []
+        questions: [],
+        questionsIds: [],
+        saveCounter: 0
     });
+    const isChanged = useMemo(() =>{
+        return checkForChanges(orginalQuestionIds, questions.questionsIds)
+    }, [questions, orginalQuestionIds]);
 
-    // const {initialTempState, templateReducer, TEMPLATE_FIELDS} = useTemplate();
-    // const [template, dispatchTemp] = useReducer(templateReducer, initialTempState);
+    
     const {httpRequest} = useHttp();
+    const changeUpdate = () => setUpdate((prev) => !prev);
+    const queryQuestions = () => setRequery((prev) => !prev);
+    const setOrginalIds = (ids) => setOrginalQuestionIds(ids);
+
+    
 
     useEffect(() => {
-
+        
         const configRequest = {
             url: `/api/v1/questions/templates/${id}`,
             method: 'GET'
@@ -33,13 +45,21 @@ function TemplateFormView(){
                 
                 if(res.data.data){
                     
-                    const {id, name, questions} = res.data.data;
+                    const data = {...res.data.data};
 
-                    setQuestions({
-                        id: id,
-                        name: name,
-                        questions: questions? questions : []
-                    });
+                    const questionIds = data.questions.map(question => question.id);
+                    
+                    const questionObj = {...questions}
+                    questionObj.id = data.id;
+                    questionObj.name = data.name;
+                    questionObj.questions = questions? [...data.questions] : [];
+                    questionObj.questionsIds = [...questionIds];
+                    questionObj.saveCounter = 0;
+
+                    setQuestions(questionObj);
+
+                    setOrginalIds([...questionIds]);
+                    
                 }
             }
 
@@ -52,7 +72,8 @@ function TemplateFormView(){
             await httpRequest(configRequest, applyData);
         })();
 
-    }, [update, id]);
+    }, [update, id, requery]);
+
 
     return(
         <div>
@@ -62,7 +83,11 @@ function TemplateFormView(){
                 <div className="new_template">
                     <TemplateForm 
                         data={questions}
-                        setUpdate={setUpdate}
+                        setData={setQuestions}
+                        setUpdate={changeUpdate}
+                        queryQuestions={queryQuestions}
+                        isChanged={isChanged}
+                        update={update}
                         id={id}
                         />
                 </div>

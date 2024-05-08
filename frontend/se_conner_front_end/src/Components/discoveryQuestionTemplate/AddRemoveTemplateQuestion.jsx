@@ -1,7 +1,7 @@
 import React from "react";
 import "../../css/question_template/add_remove_question.css"
 
-function AddRemoveTemplateQuestion({data, newQuestionIds, inputChange}){
+function AddRemoveTemplateQuestion({data, questionIds, inputChange}){
 
     
     return(
@@ -17,7 +17,7 @@ function AddRemoveTemplateQuestion({data, newQuestionIds, inputChange}){
                     <label>Add:</label>
                     <input type="checkbox"
                         value={data.id}
-                        checked={newQuestionIds.includes(data.id)}
+                        checked={questionIds? questionIds.includes(data.id) : false}
                         onChange={(e) => inputChange(e)} 
                         />
                 </div>

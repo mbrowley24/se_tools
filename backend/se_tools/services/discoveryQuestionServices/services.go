@@ -2,6 +2,7 @@ package discoveryquestionservices
 
 import (
 	"context"
+	discoveryquestiontemplate "se_tools/models/discoveryQuestionTemplate"
 	discoveryquestionlikes "se_tools/models/discovery_question_likes"
 	pagedata "se_tools/models/pageData"
 	"se_tools/models/questions"
@@ -23,8 +24,9 @@ type Service struct {
 	utils      utils.Utilities
 }
 
-func (s *Service) DiscoveryQuestionCollection() string {
-	return s.collection.DiscoveryQuestions()
+func (s *Service) DiscoveryQuestionCollection(db *mongo.Database) *mongo.Collection {
+
+	return db.Collection(s.collection.DiscoveryQuestions())
 }
 
 func (s *Service) DiscoveryQuestionLikesCollection() string {
@@ -99,7 +101,7 @@ func (s *Service) FilterMyLike(userId, questionId primitive.ObjectID) bson.M {
 // FindAll returns all questions with pagination
 func (s *Service) FindAll(ctx context.Context, db *mongo.Database, pageInfo pagedata.DTO) (*mongo.Cursor, error) {
 
-	collection := db.Collection(s.DiscoveryQuestionCollection())
+	collection := s.DiscoveryQuestionCollection(db)
 
 	//find options
 	opts := options.Find().SetLimit(pageInfo.Limit).SetSkip(pageInfo.Offset)
@@ -116,7 +118,7 @@ func (s *Service) FindAll(ctx context.Context, db *mongo.Database, pageInfo page
 // FindById returns a single question by id
 func (s *Service) FindById(ctx context.Context, db *mongo.Database, id primitive.ObjectID) (*mongo.SingleResult, error) {
 
-	collection := db.Collection(s.DiscoveryQuestionCollection())
+	collection := s.DiscoveryQuestionCollection(db)
 
 	filter := s.FilterById(id)
 
@@ -132,7 +134,7 @@ func (s *Service) FindById(ctx context.Context, db *mongo.Database, id primitive
 // FindByPublicId returns a single question by public id
 func (s *Service) FindByPublicId(ctx context.Context, db *mongo.Database, publicId string) (*mongo.SingleResult, error) {
 
-	collection := db.Collection(s.DiscoveryQuestionCollection())
+	collection := s.DiscoveryQuestionCollection(db)
 
 	filter := s.FilterByPublicId(publicId)
 
@@ -303,7 +305,7 @@ func (s *Service) GetQuestions(ctx context.Context,
 	var dtos []questions.DTO
 
 	//get question collection
-	questionsCollection := db.Collection(s.DiscoveryQuestionCollection())
+	questionsCollection := s.DiscoveryQuestionCollection(db)
 	//get get Like question collection
 	likeQuestionCollection := db.Collection(s.DiscoveryQuestionLikesCollection())
 
@@ -455,6 +457,47 @@ func (s *Service) NewDiscoveryQuestion(ctx context.Context,
 	}
 
 	return result, nil
+
+}
+
+func (s *Service) QuestionOrderToDto(ctx context.Context,
+	db *mongo.Database,
+	orders []discoveryquestiontemplate.QuestionOrder) ([]questions.DTO, error) {
+
+	var dtos []questions.DTO
+
+	//question dto slice
+	for _, order := range orders {
+
+		//get question by id and check for error
+		questionResult, err := s.FindById(ctx, db, order.QuestionId)
+
+		if err != nil {
+			return nil, err
+		}
+
+		//get question model and check for error
+		questionModel, err := s.ResultToModel(questionResult)
+
+		if err != nil {
+			return nil, err
+		}
+
+		//get question dto and check for error
+		dto, err := s.GetModelTODto(ctx, questionModel, db)
+
+		if err != nil {
+			return nil, err
+		}
+
+		//add order to dto
+		dto.Order = order.Order
+
+		//add dto to slice
+		dtos = append(dtos, dto)
+	}
+
+	return dtos, nil
 
 }
 

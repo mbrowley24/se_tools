@@ -20,6 +20,7 @@ function EditTemplateName({data, id}){
     useEffect(() => {
 
         if(data.name){
+            
             const nameObj = {...name};
             nameObj.name = data.name;
             setName(nameObj);

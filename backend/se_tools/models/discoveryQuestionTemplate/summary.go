@@ -7,5 +7,5 @@ type Summary struct {
 	Name      string    `json:"name"`
 	Author    string    `json:"author"`
 	Questions int64     `json:"questions"`
-	UpdateAt  time.Time `json:"updated_at,omitempty"`
+	UpdateAt  time.Time `json:"updated,omitempty"`
 }

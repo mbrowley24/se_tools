@@ -12,6 +12,43 @@ function useTemplate() {
     } 
 
 
+    
+    function checkForChanges(orglist, editableList){
+
+
+        if(orglist.length !== editableList.length){
+            return true;
+        }
+
+        for(let i = 0; i < orglist.length; i++){
+            
+            if(orglist[i] !== editableList[i]){
+                return true;
+            }
+        }
+        
+
+        return false;
+    }
+
+    function updateQuestionOrder(order, id, data){
+        const question_index = order - 1;
+        const question = data.find(question => question.id === id);
+        const filtered_list = data.filter(question => question.id !== id);
+        const new_order = []
+        
+        for(let i = 0; i < filtered_list.length; i++){
+            
+            if(i === question_index){
+                new_order.push(question);
+            }
+
+            new_order.push(filtered_list[i]);
+        }
+
+        return new_order;
+    }
+
     //name regex    
     const nameRegex = /^[a-zA-Z0-9\s()\-.]{0,75}$/;
 
@@ -132,9 +169,11 @@ function useTemplate() {
     }
 
     return ({
+        checkForChanges,
         initialTempState,
         templateReducer,
         TEMPLATE_FIELDS,
+        updateQuestionOrder,
         validateNameInput,
         validateName,
   })

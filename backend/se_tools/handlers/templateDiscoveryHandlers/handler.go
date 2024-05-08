@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Handler struct {
@@ -59,6 +60,8 @@ func (h *Handler) AddQuestionToTemplate(w http.ResponseWriter, r *http.Request) 
 	template, err := h.DiscoveryTemplateService.FindByPublicId(ctx, db, templatePublicId)
 
 	if err != nil {
+		println(err.Error())
+		println("mark 1")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -67,6 +70,8 @@ func (h *Handler) AddQuestionToTemplate(w http.ResponseWriter, r *http.Request) 
 	_, err = h.DiscoveryTemplateService.DeleteOrderModelByTemplateId(ctx, db, template.ID)
 
 	if err != nil {
+		println(err.Error())
+		println("mark 2")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -80,6 +85,8 @@ func (h *Handler) AddQuestionToTemplate(w http.ResponseWriter, r *http.Request) 
 		questionResult, err := h.DiscoveryQuestionsService.FindByPublicId(ctx, db, questionPublicId)
 
 		if err != nil {
+			println(err.Error())
+			println("mark 3")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -87,6 +94,8 @@ func (h *Handler) AddQuestionToTemplate(w http.ResponseWriter, r *http.Request) 
 		questionModel, err := h.DiscoveryTemplateService.ResultToModel(questionResult)
 
 		if err != nil {
+			println(err.Error())
+			println("mark 4")
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -96,15 +105,46 @@ func (h *Handler) AddQuestionToTemplate(w http.ResponseWriter, r *http.Request) 
 		newOrderModelBson = append(newOrderModelBson, bsonData)
 	}
 
-	templateCollection := h.DiscoveryTemplateService.TemplateQuestionOrderCollection(db)
+	println(len(newOrderModelBson))
+	//check if there are new questions to add to template
+	if len(newOrderModelBson) > 0 {
+		templateCollection := h.DiscoveryTemplateService.TemplateQuestionOrderCollection(db)
 
-	_, err = templateCollection.InsertMany(ctx, newOrderModelBson)
+		_, err = templateCollection.InsertMany(ctx, newOrderModelBson)
+
+		if err != nil {
+			println(err.Error())
+			println("mark 5")
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	templateQuestions, err := h.DiscoveryTemplateService.FindTemplateQuestions(ctx, db, template.ID)
 
 	if err != nil {
+		println(err.Error())
+		println("mark 6")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	summaries, err := h.DiscoveryTemplateService.TemplateQuestionsToTemplateSummaries(ctx, db, templateQuestions)
+
+	if err != nil {
+		println(err.Error())
+		println("mark 7")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = h.utils.WriteJSON(w, http.StatusOK, summaries, "data")
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+
+	}
 }
 
 func (h *Handler) ChangeTemplateName(w http.ResponseWriter, r *http.Request) {
@@ -142,8 +182,6 @@ func (h *Handler) ChangeTemplateName(w http.ResponseWriter, r *http.Request) {
 
 	name := template.Name
 
-	println(name)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -151,7 +189,7 @@ func (h *Handler) ChangeTemplateName(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if strings.Compare(templateName.Name, template.Name) != 0 {
-		println("Name changed")
+
 		name = templateName.Name
 
 		nameBson := bson.M{"$set": bson.M{"name": name}}
@@ -160,17 +198,15 @@ func (h *Handler) ChangeTemplateName(w http.ResponseWriter, r *http.Request) {
 
 		filter := h.DiscoveryTemplateService.FilterById(template.ID)
 
-		result, err := tempCollection.UpdateOne(ctx, filter, nameBson)
+		_, err := tempCollection.UpdateOne(ctx, filter, nameBson)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
-		println(result.ModifiedCount)
 	}
 
-	println(name)
 	err = h.utils.WriteJSON(w, http.StatusOK, name, "data")
 
 	if err != nil {
@@ -317,23 +353,45 @@ func (h *Handler) GetTemplateQuestions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templateQuestions, err := h.DiscoveryTemplateService.FindTemplateQuestions(ctx, db, template.ID)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	templateQuestionSummaries, err := h.DiscoveryTemplateService.TemplateQuestionsToTemplateSummaries(ctx, db, templateQuestions)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	templatePage.ID = template.PublicID
+	//set template name and publicId
 	templatePage.Name = template.Name
-	templatePage.Questions = templateQuestionSummaries
+	templatePage.ID = template.PublicID
+
+	//get template questions and check for error
+	discoveryTemplateService := h.DiscoveryTemplateService.TemplateQuestionOrderCollection(db)
+
+	//filter by template id
+	filter := h.DiscoveryTemplateService.FilterByTemplateId(template.ID)
+
+	//find options
+	opts := options.Find().SetSort(bson.D{{Key: "order", Value: 1}}).SetLimit(pageInfo.Limit).SetSkip(pageInfo.Offset)
+
+	//find template questions and check for error
+	templateQuestions, err := discoveryTemplateService.Find(ctx, filter, opts)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	//get template questions and check for error
+	questionsOrder, err := h.DiscoveryTemplateService.CrusorToQuestionOrder(ctx, templateQuestions)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	//get questions from template
+
+	dtos, err := h.DiscoveryQuestionsService.QuestionOrderToDto(ctx, db, questionsOrder)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	templatePage.Questions = dtos
 
 	err = h.utils.WriteJSON(w, http.StatusOK, templatePage, "data")
 
@@ -341,7 +399,6 @@ func (h *Handler) GetTemplateQuestions(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 }
 
 // get questions for template form godoc

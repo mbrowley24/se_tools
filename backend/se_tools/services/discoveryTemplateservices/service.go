@@ -46,6 +46,19 @@ func (s *Service) CountQuestionOrder(ctx context.Context, db *mongo.Database, te
 	return count, nil
 }
 
+func (s *Service) CrusorToQuestionOrder(ctx context.Context, results *mongo.Cursor) ([]discoveryquestiontemplate.QuestionOrder, error) {
+
+	var models []discoveryquestiontemplate.QuestionOrder
+
+	err := results.All(ctx, &models)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return models, nil
+}
+
 // DeleteOrderModel
 func (s *Service) DeleteOrderModelById(ctx context.Context, db *mongo.Database,
 	orderId primitive.ObjectID) (*mongo.DeleteResult, error) {
@@ -84,12 +97,6 @@ func (s *Service) DeleteOrderModelByTemplateId(ctx context.Context, db *mongo.Da
 
 }
 
-// TemplateQuestionOrderCollection returns a collection for template question order
-func (s *Service) TemplateQuestionOrderCollection(db *mongo.Database) *mongo.Collection {
-
-	return db.Collection(s.collection.TemplateQuestionOrder())
-}
-
 // existsByPublicId checks if a publicId exists in a collection and checks for errors
 func (s *Service) existsByPublicId(ctx context.Context, collection *mongo.Collection, publicId string) (bool, error) {
 
@@ -125,6 +132,113 @@ func (s *Service) FilterByTemplateIdAndQuestionId(templateId primitive.ObjectID,
 func (s *Service) FilterForPublicId(publicId string) bson.M {
 
 	return bson.M{"public_id": publicId}
+}
+
+// FindAllTemplates returns all discovery question templates
+func (s *Service) FindAllTemplates(ctx context.Context,
+	db *mongo.Database,
+	pageData pagedata.DTO) (discoveryquestiontemplate.DiscoveryTempSummaryPage, error) {
+
+	var returnData discoveryquestiontemplate.DiscoveryTempSummaryPage
+
+	//get discovery question template collection
+	collection := s.Collection(db)
+
+	//count total documents and check for errors
+	count, err := collection.CountDocuments(ctx, bson.M{})
+
+	if err != nil {
+		return returnData, err
+	}
+
+	//calculate page data total values
+	pageData.CalculatePageData(count)
+
+	//set page info for return data
+	returnData.PageInfo = pageData
+
+	//get find options
+	opts := options.Find().SetSkip(pageData.Offset).SetLimit(pageData.Limit)
+
+	//get results and chck for errors
+	results, err := collection.Find(ctx, bson.M{}, opts)
+
+	if err != nil {
+		return returnData, err
+	}
+
+	models, err := s.ResultsToModels(ctx, results)
+
+	if err != nil {
+		return returnData, err
+	}
+
+	//convert models to summaries
+	summaries, err := s.ModelsToSummary(ctx, db, models)
+
+	if err != nil {
+		return returnData, err
+	}
+
+	returnData.Summaries = summaries
+
+	return returnData, nil
+}
+
+// FindById returns a discovery question template by id, checks for errors and returns a model
+func (s *Service) FindById(ctx context.Context, db *mongo.Database, id primitive.ObjectID) (discoveryquestiontemplate.Model, error) {
+
+	collection := s.Collection(db)
+
+	filter := s.FilterById(id)
+
+	result := collection.FindOne(ctx, filter)
+
+	return s.ResultToModel(result)
+}
+
+// FindByPublicId returns a discovery question template by public id, checks for errors and returns a model
+func (s *Service) FindByPublicId(ctx context.Context, db *mongo.Database, publicId string) (discoveryquestiontemplate.Model, error) {
+
+	collection := s.Collection(db)
+
+	filter := s.FilterForPublicId(publicId)
+
+	result := collection.FindOne(ctx, filter)
+
+	model, err := s.ResultToModel(result)
+
+	if err != nil {
+		return model, err
+	}
+
+	return model, nil
+}
+
+// FindTemplateQuestion returns a slice of template questions by template_id, checks for errors and returns a slice of template questions
+func (s *Service) FindTemplateQuestions(ctx context.Context,
+	db *mongo.Database,
+	id primitive.ObjectID) ([]discoveryquestiontemplate.TemplateQuestion, error) {
+
+	collection := s.TemplateQuestionOrderCollection(db)
+
+	filter := s.FilterByTemplateId(id)
+
+	results, err := collection.Find(ctx, filter)
+
+	if err != nil {
+		return nil, err
+
+	}
+
+	orderModels, err := s.ResultsToTemplateQuestions(ctx, results)
+
+	if err != nil {
+
+		return nil, err
+	}
+
+	return orderModels, nil
 }
 
 // generatePublicId generates a new publicId for a discovery question template
@@ -320,6 +434,12 @@ func (s *Service) ResultsToTemplateQuestions(ctx context.Context, results *mongo
 	return models, nil
 }
 
+// TemplateQuestionOrderCollection returns a collection for template question order
+func (s *Service) TemplateQuestionOrderCollection(db *mongo.Database) *mongo.Collection {
+
+	return db.Collection(s.collection.TemplateQuestionOrder())
+}
+
 // TemplateQuestionToTemplateSummary converts a template question to a template summary and checks for errors
 func (s *Service) TemplateQuestionToTemplateSummary(ctx context.Context,
 	db *mongo.Database,
@@ -364,113 +484,6 @@ func (s *Service) TemplateQuestionsToTemplateSummaries(ctx context.Context,
 	}
 
 	return summaries, nil
-}
-
-// FindAllTemplates returns all discovery question templates
-func (s *Service) FindAllTemplates(ctx context.Context,
-	db *mongo.Database,
-	pageData pagedata.DTO) (discoveryquestiontemplate.DiscoveryTempSummaryPage, error) {
-
-	var returnData discoveryquestiontemplate.DiscoveryTempSummaryPage
-
-	//get discovery question template collection
-	collection := s.Collection(db)
-
-	//count total documents and check for errors
-	count, err := collection.CountDocuments(ctx, bson.M{})
-
-	if err != nil {
-		return returnData, err
-	}
-
-	//calculate page data total values
-	pageData.CalculatePageData(count)
-
-	//set page info for return data
-	returnData.PageInfo = pageData
-
-	//get find options
-	opts := options.Find().SetSkip(pageData.Offset).SetLimit(pageData.Limit)
-
-	//get results and chck for errors
-	results, err := collection.Find(ctx, bson.M{}, opts)
-
-	if err != nil {
-		return returnData, err
-	}
-
-	models, err := s.ResultsToModels(ctx, results)
-
-	if err != nil {
-		return returnData, err
-	}
-
-	//convert models to summaries
-	summaries, err := s.ModelsToSummary(ctx, db, models)
-
-	if err != nil {
-		return returnData, err
-	}
-
-	returnData.Summaries = summaries
-
-	return returnData, nil
-}
-
-// FindById returns a discovery question template by id, checks for errors and returns a model
-func (s *Service) FindById(ctx context.Context, db *mongo.Database, id primitive.ObjectID) (discoveryquestiontemplate.Model, error) {
-
-	collection := s.Collection(db)
-
-	filter := s.FilterById(id)
-
-	result := collection.FindOne(ctx, filter)
-
-	return s.ResultToModel(result)
-}
-
-// FindByPublicId returns a discovery question template by public id, checks for errors and returns a model
-func (s *Service) FindByPublicId(ctx context.Context, db *mongo.Database, publicId string) (discoveryquestiontemplate.Model, error) {
-
-	collection := s.Collection(db)
-
-	filter := s.FilterForPublicId(publicId)
-
-	result := collection.FindOne(ctx, filter)
-
-	model, err := s.ResultToModel(result)
-
-	if err != nil {
-		return model, err
-	}
-
-	return model, nil
-}
-
-// FindTemplateQuestion returns a slice of template questions by template_id, checks for errors and returns a slice of template questions
-func (s *Service) FindTemplateQuestions(ctx context.Context,
-	db *mongo.Database,
-	id primitive.ObjectID) ([]discoveryquestiontemplate.TemplateQuestion, error) {
-
-	collection := s.TemplateQuestionOrderCollection(db)
-
-	filter := s.FilterByTemplateId(id)
-
-	results, err := collection.Find(ctx, filter)
-
-	if err != nil {
-		return nil, err
-
-	}
-
-	orderModels, err := s.ResultsToTemplateQuestions(ctx, results)
-
-	if err != nil {
-
-		return nil, err
-	}
-
-	return orderModels, nil
 }
 
 func (s *Service) QuestionExistsInTemplate(ctx context.Context,

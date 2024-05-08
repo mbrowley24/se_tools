@@ -51,7 +51,7 @@ func (h *Handler) GetQuestions(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	questionCollection := db.Collection(h.questionservice.DiscoveryQuestionCollection())
+	questionCollection := h.questionservice.DiscoveryQuestionCollection(db)
 
 	//get total questions from database
 	total, err := questionCollection.CountDocuments(ctx, bson.D{}) //get total questions from database
@@ -129,7 +129,7 @@ func (h *Handler) LikeQuestion(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//get discovery question collection
-	discoveryQuestionCollection := db.Collection(h.questionservice.DiscoveryQuestionCollection())
+	discoveryQuestionCollection := h.questionservice.DiscoveryQuestionCollection(db)
 
 	//query question by public id and check for error
 	result := discoveryQuestionCollection.FindOne(ctx, h.questionservice.FilterByPublicId(like.ID))
@@ -306,7 +306,7 @@ func (h *Handler) NewQuestion(w http.ResponseWriter, r *http.Request) {
 	//create question object for new questions
 	var question questions.SaveQuestion
 
-	questionCollection := db.Collection(h.questionservice.DiscoveryQuestionCollection())
+	questionCollection := h.questionservice.DiscoveryQuestionCollection(db)
 
 	now := time.Now()
 

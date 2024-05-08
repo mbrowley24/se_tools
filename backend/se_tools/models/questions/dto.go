@@ -11,6 +11,7 @@ type DTO struct {
 	Question    string    `json:"question,omitempty"`
 	Author      string    `json:"author,omitempty"`
 	Updated     time.Time `json:"updated,omitempty"`
+	Order       int       `json:"order,omitempty"`
 	InTemplated bool      `json:"in_template,"`
 	MyVote      bool      `json:"my_vote,omitempty"`
 	Voted       bool      `json:"voted,omitempty"`
