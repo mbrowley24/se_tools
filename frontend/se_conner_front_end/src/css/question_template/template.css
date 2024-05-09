@@ -33,10 +33,6 @@
     padding: .5%;
 }
 
-/* .template table tr{
-    
-} */
-
 
 .template h1{
     text-align: center;
@@ -55,6 +51,13 @@
     background-color: rgb(255, 255, 255, .70);
 }
 
+.download_template{
+    
+    border: none;
+    background-color: rgb(255, 255, 255, .0);
+    color: black;
+    cursor: pointer;
+}
 
 .template table tr th{
     padding: 1rem;

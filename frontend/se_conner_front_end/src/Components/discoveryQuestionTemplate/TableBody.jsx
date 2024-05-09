@@ -1,8 +1,42 @@
 import React from "react";
 import {Link} from "react-router-dom";
-
+import useHttp from "../../hooks/useHttp";
 
 function TableBody({data}){
+    const {httpRequest} = useHttp();
+
+    function downloadTemplate(id){
+
+        const configRequest = {
+            method: "GET",
+            url: `api/v1/questions/templates/${id}/addPDF`,
+            responseType: "blob",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        function applyData(res){
+            console.log(res);
+            if(res.status === 200){
+                const blob = new Blob([res.data], {type: "application/pdf"});
+                const link = document.createElement("a");
+                link.href = window.URL.createObjectURL(blob);
+                link.setAttribute("download", "template.pdf");
+                link.download = "template.pdf";
+                link.click();
+
+                window.URL.revokeObjectURL(link.href);
+                console.log("Downloaded");
+            }
+        }
+
+        (async () => {
+            await httpRequest(configRequest, applyData);
+        })();
+    }
+
+
     return(
         <tbody>
             {data && data.length > 0 && data.map((row, index) => (
@@ -25,11 +59,13 @@ function TableBody({data}){
                                 delete
                             </span>
                         </Link>
-                        <Link to={''}>
+                        <button className="download_template"
+                            onClick={() => downloadTemplate(row.id)}
+                        >
                             <span className="material-symbols-outlined">
                                 download
                             </span>
-                        </Link>
+                        </button>
                         
                     </td>
                 </tr>
@@ -37,7 +73,7 @@ function TableBody({data}){
             {
                 data && data.length === 0 && (
                     <tr className="table-row">
-                        <td colSpan="4">No data found</td>
+                        <td colSpan="5">No data found</td>
                     </tr>
                 )
             }

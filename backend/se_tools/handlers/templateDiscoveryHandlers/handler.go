@@ -1,8 +1,10 @@
 package templatediscoveryhandlers
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	discoveryquestiontemplate "se_tools/models/discoveryQuestionTemplate"
 	pagedata "se_tools/models/pageData"
@@ -15,6 +17,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/unidoc/unipdf/v3/common/license"
+	"github.com/unidoc/unipdf/v3/creator"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -281,6 +285,195 @@ func (h *Handler) CreateTemplateDiscovery(w http.ResponseWriter, r *http.Request
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (h *Handler) GeneratePDF(w http.ResponseWriter, r *http.Request) {
+
+	println("Generate PDF")
+	//get context from request and defer cancel
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
+	licenseKey, err := h.utils.Env("PDF_KEY")
+
+	if err != nil {
+		println(err.Error())
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	hasLicense := license.GetLicenseKey()
+
+	err = hasLicense.Validate()
+
+	if err != nil {
+
+		//verfiy pdf license
+		err = license.SetMeteredKey(licenseKey)
+
+		if err != nil {
+
+			http.Error(w, "internal error", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	//get pdf creator
+	c := creator.New()
+
+	//validate user claims, retrive claims and check for error
+	claims, err := h.userService.ValidateTokenAndGetClaims(r)
+
+	if err != nil {
+		println(err.Error())
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	//get database client and check for error
+	db, err := h.db.Database(ctx)
+
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return
+	}
+
+	//find user by id string and check for error
+	user, err := h.userService.FindUserByIdString(ctx, db, claims.Subject)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	println(user.Username)
+	//get template public id from path
+	templatePublicId := r.PathValue("id")
+
+	//get template by public id and check for error
+	template, err := h.DiscoveryTemplateService.FindByPublicId(ctx, db, templatePublicId)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	templateAuthor, err := h.userService.FindUserById(ctx, db, template.Author)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	heading := c.NewParagraph("Discovery Template")
+	heading.SetFontSize(25)
+	heading.SetPos(200, 25)
+	heading.SetWidth(500)
+
+	err = c.Draw(heading)
+
+	if err != nil {
+		println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	titleName := fmt.Sprintf("Title: %s", template.Name)
+
+	titleHeading := c.NewParagraph(titleName)
+	titleHeading.SetFontSize(10)
+	titleHeading.SetPos(250, 55)
+	titleHeading.SetWidth(500)
+
+	err = c.Draw(titleHeading)
+
+	if err != nil {
+		println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	authorName := fmt.Sprintf("Author: %s %s", templateAuthor.FirstName, templateAuthor.LastName)
+
+	authorHeading := c.NewParagraph(authorName)
+	authorHeading.SetFontSize(10)
+	authorHeading.SetPos(250, 70)
+	authorHeading.SetWidth(500)
+
+	err = c.Draw(authorHeading)
+
+	if err != nil {
+		println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	//get template questions and check for error
+	templateOrderCollection := h.DiscoveryTemplateService.TemplateQuestionOrderCollection(db)
+
+	//create filter for template id
+	templateFilter := h.DiscoveryTemplateService.FilterByTemplateId(template.ID)
+
+	//find template questions and check for error
+	results, err := templateOrderCollection.Find(ctx, templateFilter)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	//get questions order from crusor and check for error
+	questionOrder, err := h.DiscoveryTemplateService.CrusorToQuestionOrder(ctx, results)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	//get questions from order and check for error
+	questionsDto, err := h.DiscoveryQuestionsService.QuestionOrderToDto(ctx, db, questionOrder)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	pos := float64(150)
+
+	for i, dto := range questionsDto {
+
+		if i != 0 {
+			pos += 100
+		}
+
+		paragraph := c.NewParagraph(dto.Question)
+		paragraph.SetPos(50, pos)
+		paragraph.SetWidth(500)
+		c.Draw(paragraph)
+	}
+
+	buf := new(bytes.Buffer)
+
+	err = c.Write(buf)
+	if err != nil {
+		println("Error writing PDF: %v", err.Error())
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
+	println("PDF Generated here")
+
+	w.Header().Set("Content-Type", "application/pdf")
+	w.Header().Set("Content-Disposition", "attachment; filename=\"template.pdf\"")
+
+	_, err = w.Write(buf.Bytes())
+
+	if err != nil {
+		println(err.Error())
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
 }
 
 // GetTemplateDiscoverySummary godoc

@@ -220,6 +220,25 @@ func (rte Routes) Routes() http.Handler {
 		}
 	})
 
+	mux.HandleFunc("/api/v1/questions/templates/{id}/addPDF", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+
+		case http.MethodGet:
+			rte.DiscoveryTemplateHandlers.GeneratePDF(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "GET")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
 	//industry Routes
 	mux.HandleFunc("/api/v1/industry", func(w http.ResponseWriter, r *http.Request) {
 
