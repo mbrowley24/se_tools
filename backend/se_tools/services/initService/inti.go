@@ -9,6 +9,9 @@ import (
 	categoryservice "se_tools/services/categoryService"
 	industryservice "se_tools/services/industryService"
 	roleservices "se_tools/services/roleServices"
+	salesproductservice "se_tools/services/salesProductService"
+	"se_tools/services/salesopportunitystatusservice"
+	"se_tools/services/salesroleservice"
 	userservice "se_tools/services/userService"
 	"se_tools/utils"
 	"strings"
@@ -19,14 +22,17 @@ import (
 )
 
 type InitData struct {
-	adminuser  userservice.UserService
-	auth       authoritiesservice.Services
-	category   categoryservice.Service
-	collection repository.Collection
-	industry   industryservice.Service
-	db         repository.DbRepository
-	roles      roleservices.Services
-	utils      utils.Utilities
+	adminuser      userservice.UserService
+	auth           authoritiesservice.Services
+	category       categoryservice.Service
+	collection     repository.Collection
+	db             repository.DbRepository
+	industry       industryservice.Service
+	salesRoles     salesroleservice.Service
+	salesOppStatus salesopportunitystatusservice.Service
+	salesProducts  salesproductservice.Service
+	roles          roleservices.Services
+	utils          utils.Utilities
 }
 
 func (i *InitData) RolesAuths(ctx context.Context, db *mongo.Database) error {
@@ -164,6 +170,30 @@ func (i *InitData) Init(ctx context.Context) error {
 
 	if err != nil {
 		println("Error creating category")
+		println(err.Error())
+		return err
+	}
+
+	err = i.salesRoles.Init(ctx, db)
+
+	if err != nil {
+		println("Error creating sales roles")
+		println(err.Error())
+		return err
+	}
+
+	err = i.salesOppStatus.CreateStatuses(ctx, db)
+
+	if err != nil {
+		println("Error creating sales opportunity statuses")
+		println(err.Error())
+		return err
+	}
+
+	err = i.salesProducts.CreateProducts(ctx, db)
+
+	if err != nil {
+		println("Error creating sales products")
 		println(err.Error())
 		return err
 	}

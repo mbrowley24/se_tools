@@ -29,6 +29,15 @@ func (s *Services) CreateRoles(ctx context.Context, db *mongo.Database) error {
 	}
 
 	file, err := s.utils.OpenFile(absPath)
+	defer func() error {
+		err := file.Close()
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}()
 
 	if err != nil {
 		return err
@@ -48,7 +57,7 @@ func (s *Services) CreateRoles(ctx context.Context, db *mongo.Database) error {
 
 		//if role exists continue to next iteration
 		if exists {
-			println("Role already exists")
+
 			continue
 		}
 

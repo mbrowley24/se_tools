@@ -1,0 +1,73 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.sales_rep_container{
+    width: 100%;
+    height: 91vh;
+    background-image: url("https://seconnerimages.nyc3.cdn.digitaloceanspaces.com/new_user.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    overflow: auto;
+}
+
+.sales_rep_container h1{
+    text-align: center;
+    color: black;
+    width: 25%;
+    text-wrap: nowrap;
+    border-radius: .25rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    font-size: 2.5vh;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: rgb(211, 211, 211, .75);
+}
+
+.sales_rep_container table{
+    text-align: center;
+    color: black;
+    width: 75%;
+    border-radius: .25rem;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: auto;
+    
+}
+
+.sales_rep_container table thead tr th{
+    text-wrap: nowrap;
+    font-size: 75%;
+    padding: .5rem;
+    background-color: rgb(64, 64, 64, 1);
+    color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.sales_rep_container table tbody tr td{
+    font-size: 1.5vh;
+    padding: .5rem;
+    background-color: rgb(211, 211, 211, 1);
+}
+
+.add_rep{
+    display: block;
+    width: 10%;
+    border-radius: .25rem;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+    background-color: rgb(211, 211, 211, 1);
+}
+
+.add_rep a{
+    display: block;
+    background-color: rgb(211, 211, 211, 1);
+}

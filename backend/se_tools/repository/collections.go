@@ -44,6 +44,34 @@ func (c *Collection) Roles() string {
 	return "roles"
 }
 
+func (c *Collection) SalesReps() string {
+	return "sales_reps"
+}
+
+func (c *Collection) SalesMonths() string {
+	return "sales_months"
+}
+
+func (c *Collection) SalesOpportunities() string {
+	return "sales_opportunities"
+}
+
+func (c *Collection) SalesOpportunitiesStatus() string {
+	return "sales_opportunities_status"
+}
+
+func (c *Collection) SalesProducts() string {
+	return "sales_products"
+}
+
+func (c *Collection) SalesRoles() string {
+	return "sales_roles"
+}
+
+func (c *Collection) SalesYears() string {
+	return "sales_years"
+}
+
 func (c *Collection) TemplateQuestion() string {
 	return "discovery_question_templates"
 }

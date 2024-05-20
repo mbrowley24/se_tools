@@ -62,7 +62,6 @@ func (s *Services) CreateAuthorities(ctx context.Context, db *mongo.Database) er
 
 		//if auth name exists continue
 		if exists {
-			println("Authority already exists")
 			continue
 		}
 

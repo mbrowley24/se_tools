@@ -13,9 +13,10 @@ function Header() {
                     <ul>
                         <li><Link to="/dashboard">Dashboard</Link></li>
                         <li className="dropdown">
-                            <a href="#">Education</a>
+                            <a href="#">Sales</a>
                             <div className="dropdown-content">
-                                <Link to={""}>DDoS</Link>
+                                <Link to={"/sales/opportunities"}>Opportunities</Link>
+                                <Link to={"/sales/reps"}>Sales Reps</Link>
                             </div>
                         </li>
                         <li className="dropdown">

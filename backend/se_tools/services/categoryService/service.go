@@ -44,8 +44,6 @@ func (s *Service) CreateCategory(ctx context.Context, db *mongo.Database) error 
 		// do something with the line
 		line := scanner.Text()
 
-		println(line)
-
 		text := strings.Split(line, ":")
 
 		//check if role exists and check for error
@@ -57,7 +55,6 @@ func (s *Service) CreateCategory(ctx context.Context, db *mongo.Database) error 
 
 		//if role exists continue to next iteration
 		if exists {
-			println("category already exists")
 			continue
 		}
 

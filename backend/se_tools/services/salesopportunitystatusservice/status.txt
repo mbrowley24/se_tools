@@ -1,0 +1,6 @@
+Demo Completed: Indicating that a product/service demo has been conducted for the Lead.
+Proposal Sent: Indicating that a proposal has been sent to the prospect.
+Contract Sent: Indicating that a contract is pending, or awaiting signature.
+Negotiation: Indicating that the deal is in the process of being negotiated.
+Closed/Won: Indicating that the Opportunity has been Closed, and a deal has been won.
+Closed/Lost: Indicating that the Opportunity has been Closed, and a deal has been lost.

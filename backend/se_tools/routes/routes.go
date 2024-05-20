@@ -7,6 +7,10 @@ import (
 	"se_tools/handlers/dashboard"
 	"se_tools/handlers/industryhandler"
 	"se_tools/handlers/questionHandlers"
+	salesoppstatushandler "se_tools/handlers/salesOppStatusHandler"
+	salesopportunityhandlers "se_tools/handlers/salesOpportunityHandlers"
+	salesrolehandlers "se_tools/handlers/salesRoleHandlers"
+	"se_tools/handlers/salesrephandler"
 	templatediscoveryhandlers "se_tools/handlers/templateDiscoveryHandlers"
 )
 
@@ -16,6 +20,10 @@ type Routes struct {
 	DiscoveryQuestionsHandlers questionHandlers.Handler
 	DiscoveryTemplateHandlers  templatediscoveryhandlers.Handler
 	IndustryHandlers           industryhandler.Handler
+	SalesOpp                   salesopportunityhandlers.Handler
+	SalesOppStatus             salesoppstatushandler.Handler
+	SalesRepHandlers           salesrephandler.Handler
+	SalesRoleHandlers          salesrolehandlers.Handler
 	UserHandlers               login.Login
 }
 
@@ -239,6 +247,65 @@ func (rte Routes) Routes() http.Handler {
 		}
 	})
 
+	mux.HandleFunc("/api/v1/sales/reps", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+
+		case http.MethodGet:
+			rte.SalesRepHandlers.GetSalesReps(w, r)
+
+		case http.MethodPost:
+			rte.SalesRepHandlers.NewSalesRep(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "GET,POST")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	mux.HandleFunc("/api/v1/sales/reps/email/{email}", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+
+		case http.MethodGet:
+			rte.SalesRepHandlers.CheckEmail(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "GET")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	mux.HandleFunc("/api/v1/sales/roles", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+		case http.MethodGet:
+			rte.SalesRoleHandlers.GetSalesRoles(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "GET")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
 	//industry Routes
 	mux.HandleFunc("/api/v1/industry", func(w http.ResponseWriter, r *http.Request) {
 
@@ -270,6 +337,45 @@ func (rte Routes) Routes() http.Handler {
 		case http.MethodOptions:
 			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 			w.Header().Set("Access-Control-Allow-Methods", "POST")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	mux.HandleFunc("/api/v1/opportunity", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+
+		case http.MethodGet:
+			rte.SalesOpp.GetOpportunities(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "GET")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+
+		}
+	})
+
+	mux.HandleFunc("/api/v1/opportunity/status", func(w http.ResponseWriter, r *http.Request) {
+
+		switch r.Method {
+
+		case http.MethodGet:
+			rte.SalesOppStatus.GetStatusOptions(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "GET")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			w.WriteHeader(http.StatusOK)

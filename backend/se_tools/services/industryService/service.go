@@ -49,7 +49,6 @@ func (s *Service) CreateIndustry(ctx context.Context, db *mongo.Database) error 
 
 		//if role exists continue to next iteration
 		if exists {
-			println("Role already exists")
 			continue
 		}
 

@@ -1,0 +1,104 @@
+*{
+    padding: 0%;
+    margin: 0%;
+}
+
+.new_sales_rep{
+    width: 100%;
+    height: 91vh;
+    background-image: url("https://seconnerimages.nyc3.cdn.digitaloceanspaces.com/new_user.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    overflow: auto;
+}
+
+.new_sales_rep h1{
+    text-align: center;
+    color: black;
+    width: 25%;
+    margin-top: 1%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: .25rem;
+    background-color: rgb(255, 255, 255, 1);
+    font-size: 2rem;
+    padding-top: 2%;
+}
+
+.new_sales_rep form{
+    width: 35%;
+    margin-top: 1%;
+    border-radius: .5rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 1%;
+    border: 1px solid darkgray;
+    background-color: rgb(255, 255, 255, 0.75);
+}
+
+.new_sales_rep form div{
+    padding: 1%;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.new_sales_rep form div label{
+    display: block;
+    font-size: 1rem;
+    color: black;
+    padding: 1%;
+}
+.new_sales_rep form div input{
+    width: 50%;
+    border-radius: .25rem;
+    padding: 1%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+.new_sales_rep form div select{
+    width: 50%;
+    border-radius: .25rem;
+    padding: 1%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+.new_sales_rep form div select option{
+    width: 90%;
+    border-radius: .25rem;
+    text-align: center;
+    padding: 1%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+.new_sales_rep form div button{
+    padding: 1%;
+    background-color: rgb(64, 64, 64, 0.75);
+    text-align: center;
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.submit{
+    width: 50%;
+    
+}
+
+.error{
+    text-align: center;
+    font-size: 1rem;
+    margin-bottom: 1.5%;
+}
+
+.error p{
+    font-size: smaller;
+    color: red;
+}
+
+.submit button{
+    display: block;
+    width: 50%;
+}

@@ -7,12 +7,21 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
 )
 
 type Utilities struct {
+}
+
+func (u *Utilities) Capitalize(s string) string {
+
+	if len(s) == 0 {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
 }
 
 func (u *Utilities) WriteJSON(w http.ResponseWriter, status int, data interface{}, wrap string) error {

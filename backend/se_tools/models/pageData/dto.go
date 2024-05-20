@@ -71,7 +71,7 @@ func (d *DTO) CalculatePageData(totalItems int64) {
 	}
 
 	d.IsFirst = d.Page == 0
-	d.IsLast = d.Page == d.TotalPages-1
-	d.HasNext = !d.IsLast
+	d.IsLast = d.Page == d.TotalPages
+	d.HasNext = d.Page < d.TotalPages
 	d.HasPrev = !d.IsFirst
 }
