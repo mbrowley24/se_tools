@@ -1,34 +1,26 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useReducer} from "react";
 import OpportunityName from "./OpportunityName";
 import OpportunityAmount from "./OpportunityAmount";
 import OpportunityStatus from "./OpportunityStatus";
 import OpportunityClose from "./OpportunityClose";
 import OpportunityActions from "./OpportunityActions";
+import useSalesRep from "../../../../hooks/useSalesRep";
 
 function OpportunityTableRow({opportunity}){
     const [update, setUpdate] = useState(false);
-    const [opportunityData, setOpportunityData] = useState({
-        name: "",
-        amount: 0,
-        status: "",
-        close: "",
-        sales_rep: "",
-        updated: ""
-    });
+    const {opportunityReducer, initialState, FIELDS} = useSalesRep();
+    const [opportunityData, dispatchOpp] = useReducer(opportunityReducer, initialState);
+    
 
     useEffect(()=>{
         
-        setOpportunityData({
-            name: opportunity.name,
-            amount: opportunity.amount,
-            status: opportunity.status,
-            close: opportunity.close,
-            sales_rep: opportunity.sales_rep,
-            updated: opportunity.updated
-        })
+        dispatchOpp({type: FIELDS.UPDATE, payload: opportunity});
 
     },[opportunity])
 
+    function inputChange(e){
+        
+    }
 
     
 
@@ -47,11 +39,11 @@ function OpportunityTableRow({opportunity}){
                 update={update}
             />
             <OpportunityClose
-                close={opportunityData.close}
+                close={opportunityData.close_date}
                 update={update}
             />
-            <td>{opportunity.sales_rep}</td>
-            <td>{opportunity.updated}</td>
+            <td>{opportunity.sales_rep.name}</td>
+            <td>{opportunityData.updated}</td>
             <OpportunityActions/>
         </tr>
     )

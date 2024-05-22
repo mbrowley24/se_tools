@@ -1,0 +1,169 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.error{
+    color: red;
+    font-size: small;
+}
+.opp_container{
+    height: 100vh;
+    background-image: url("https://seconnerimages.nyc3.cdn.digitaloceanspaces.com/new_user.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    overflow: auto;
+    
+}
+
+.opp_container h1{
+    text-align: center;
+    margin-top: 50px;
+    width: 25%;
+    border-radius: .2rem;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgb(255, 255, 255);
+}
+.opp_container form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1%;
+    width: 25%;
+    height: 75vh;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: .25rem;
+    border: #000 1px solid;
+    background-color: rgb(255, 255, 255, .75);
+    padding-top: .5%;
+    overflow: auto;
+}
+
+.opp_container form::-webkit-scrollbar {
+    width: 10px;
+}
+
+.opp_container form::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: #e7e7e7;
+    border: 1px solid #cacaca;
+}
+
+.opp_container form::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: rgb(64, 64, 64, 1);
+}
+
+.opp_container form div{
+    margin-top: 2%;
+    width: 75%;
+    text-align: center;
+    /* border: 1px solid #000; */
+}
+
+.opp_container form div input{
+    display: block;
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 2vh;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: .75rem;
+}
+
+.opp_container form div select{
+    display: block;
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 3vh;
+    font-size: small;
+    color: black;
+    text-align: center;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: .15rem;
+}
+
+.opp_container form div select:focus{
+    color: black;
+}
+
+.opp_container form div select option{
+    color: black;
+}
+
+.opp_container form div textarea{
+    display: block;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 75%;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: .75rem;
+}
+
+
+.opp_container form div textarea::-webkit-scrollbar {
+    width: 10px;
+}
+
+.opp_container form div textarea::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: #e7e7e7;
+    border: 1px solid #cacaca;
+}
+
+.opp_container form div textarea::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: rgb(64, 64, 64, 1);
+}
+
+
+.opp_container form div label{
+    display: block;
+    text-align: center;
+}
+
+.opp_container form div button{
+    margin-top: 2%;
+    width: 50%;
+    text-align: center;
+    background-color: rgb(64, 64, 64, 1);
+    color: white;
+    border-radius: .25rem;
+    padding: .25rem;
+    cursor: pointer;
+}
+
+.opp_container form div button:disabled{
+    margin-top: 2%;
+    width: 50%;
+    text-align: center;
+    background-color: rgb(211, 211, 211, .75);
+    border-radius: .25rem;
+    padding: .25rem;
+    cursor: none;
+}
+.opp_container form div button:disabled{
+    margin-top: 2%;
+    width: 50%;
+    text-align: center;
+    border-radius: .25rem;
+    padding: .25rem;
+    cursor: pointer;
+}
+
+.count{
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    color: black;
+    text-align: end;
+}

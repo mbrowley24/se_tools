@@ -4,13 +4,14 @@ import useSalesRep from "../../../../hooks/useSalesRep";
 
 
 function TableBody({reps}){
-    const {phoneNumberFormat} = useSalesRep();
+    const {addCommas, phoneNumberFormat} = useSalesRep();
+    
     return(
         <tbody>
             {reps && reps.length > 0 && reps.map(rep => (
                 <tr key={rep.id}>
                     <td>{rep.name}</td>
-                    <td>${rep.quota}</td>
+                    <td>${addCommas(rep.quota)}</td>
                     <td>{rep.email}</td>
                     <td>{phoneNumberFormat(rep.phone)}</td>
                     <td>{rep.role}</td>

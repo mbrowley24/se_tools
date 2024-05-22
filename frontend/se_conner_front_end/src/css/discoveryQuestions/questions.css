@@ -287,15 +287,7 @@
 }
 
 
-select:focus option:checked{
-    display: block;
-    width: 100%;
-    text-align: center;
-    text-transform: capitalize;
-    background-color: green;
-    color: white;
-    padding: .25rem;
-}
+
 
 .vote_container{
     display: flex;

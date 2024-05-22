@@ -24,6 +24,11 @@ func (u *Utilities) Capitalize(s string) string {
 	return strings.ToUpper(s[:1]) + s[1:]
 }
 
+func (u *Utilities) DateFormat() string {
+
+	return "2006-01-02"
+}
+
 func (u *Utilities) WriteJSON(w http.ResponseWriter, status int, data interface{}, wrap string) error {
 	wrapper := make(map[string]interface{})
 

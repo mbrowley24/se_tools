@@ -269,6 +269,24 @@ func (rte Routes) Routes() http.Handler {
 		}
 	})
 
+	mux.HandleFunc("/api/v1/sales/reps/options", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+
+		case http.MethodGet:
+			rte.SalesRepHandlers.GetMySalesReps(w, r)
+
+		case http.MethodOptions:
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
+			w.Header().Set("Access-Control-Allow-Methods", "GET")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
+			w.WriteHeader(http.StatusOK)
+
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
 	mux.HandleFunc("/api/v1/sales/reps/email/{email}", func(w http.ResponseWriter, r *http.Request) {
 
 		switch r.Method {
@@ -352,6 +370,9 @@ func (rte Routes) Routes() http.Handler {
 
 		case http.MethodGet:
 			rte.SalesOpp.GetOpportunities(w, r)
+
+		case http.MethodPost:
+			rte.SalesOpp.NewOppotunity(w, r)
 
 		case http.MethodOptions:
 			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")

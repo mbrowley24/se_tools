@@ -1,15 +1,12 @@
 import React from "react";
-
+import useSalesRep from "../../../../hooks/useSalesRep";
 
 function OpportunityAmount({amount, update, inputChange}){
-
+    const {addCommas} = useSalesRep();
+    console.log(amount);
     return(
         <td>
-            {update?
-                <input type="text" value={amount} onChange={inputChange}/>
-            :
-                <td>{amount}</td>
-            }
+            <input type="text" value={addCommas(amount)} onChange={inputChange}/>
         </td>
     )
 }

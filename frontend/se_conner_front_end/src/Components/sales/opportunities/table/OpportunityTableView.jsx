@@ -4,6 +4,7 @@ import Header from "../../../header/Header";
 import useHttp from "../../../../hooks/useHttp";
 import OpportunityTable from "./OpportunityTable";
 import "../../../../css/opportunity/opportunity_table.css";
+import { Link } from "react-router-dom";
 
 
 function OpportunityTableView(){
@@ -17,7 +18,7 @@ function OpportunityTableView(){
         }
 
         function applyData(res){
-            setOppStatus(res.data.data.data);
+            setOppStatus(res.data.data);
         }
 
         (async()=>{
@@ -33,6 +34,9 @@ function OpportunityTableView(){
             <Header/>
             <div className="opportunity_table">
                 <h1 className="">Sales Opportunities</h1>
+                <div className="new_opp">
+                    <Link to="/sales/opportunities/create" className="btn btn-primary">Create Opportunity</Link>
+                </div>
                 <OpportunityTable/>
             </div>
         </div>

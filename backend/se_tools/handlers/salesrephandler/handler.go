@@ -3,7 +3,9 @@ package salesrephandler
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	optionsdto "se_tools/models/optionsDto"
 	"se_tools/models/salesrep"
 	"se_tools/repository"
 	salesrepservice "se_tools/services/salesRepService"
@@ -110,8 +112,7 @@ func (h *Handler) GetSalesReps(w http.ResponseWriter, r *http.Request) {
 	salesRepModels, err := h.SalesRepService.CrusorToModel(ctx, salesRepsResult)
 
 	if err != nil {
-		println(err.Error())
-		println("error2")
+
 		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
@@ -131,6 +132,76 @@ func (h *Handler) GetSalesReps(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "", http.StatusInternalServerError)
 		return
 	}
+}
+
+// get my sales reps
+func (h *Handler) GetMySalesReps(w http.ResponseWriter, r *http.Request) {
+
+	// Get sales reps
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
+	db, err := h.DB.Database(ctx)
+
+	if err != nil {
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
+	claims, err := h.loginService.ValidateTokenAndGetClaims(r)
+
+	if err != nil {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	engineerIdString := claims.Subject
+
+	EngineerObjectId, err := primitive.ObjectIDFromHex(engineerIdString)
+
+	if err != nil {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+
+	salesEngineerFilter := h.SalesRepService.FilterBySalesEngineer(EngineerObjectId)
+
+	saleRepCollection := h.SalesRepService.SalesRepCollection(db)
+
+	salesRepsResult, err := saleRepCollection.Find(ctx, salesEngineerFilter)
+
+	if err != nil {
+		println("error1")
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
+	salesRepModels, err := h.SalesRepService.CrusorToModel(ctx, salesRepsResult)
+
+	if err != nil {
+
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
+	var salesRepsDtos []optionsdto.Option
+
+	for _, salesRepModel := range salesRepModels {
+
+		salesRepsDtos = append(salesRepsDtos, optionsdto.Option{
+			Value: salesRepModel.PublicId,
+			Name:  fmt.Sprintf("%s %s", h.utils.Capitalize(salesRepModel.FirstName), h.utils.Capitalize(salesRepModel.LastName)),
+		})
+	}
+
+	err = h.utils.WriteJSON(w, http.StatusOK, salesRepsDtos, "data")
+
+	if err != nil {
+		println("error4")
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
 }
 
 // new sales rep

@@ -12,7 +12,7 @@ import ComcastView from './Components/education/comcast/ComcastView'
 import RepTableView from './Components/sales/reps/table/RepTableView'
 import NewRepView from './Components/sales/reps/new/NewRepView'
 import OpportunityTableView from './Components/sales/opportunities/table/OpportunityTableView'
-
+import NewOpportunityView from './Components/sales/opportunities/new/NewOpportunityView';
 
 function App() {
 
@@ -43,6 +43,7 @@ function App() {
               </Route>
               <Route path={"opportunities"}>
                 <Route path={''} element={<OpportunityTableView/>}/>
+                <Route path={"create"} element={<NewOpportunityView/>}/>
               </Route>
             </Route>
           </Routes>

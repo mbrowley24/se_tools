@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Service struct {
@@ -31,7 +32,7 @@ func (s *Service) CreateStatuses(ctx context.Context, db *mongo.Database) error 
 	absPath, err := filepath.Abs("services/salesopportunitystatusservice/status.txt")
 
 	if err != nil {
-		println(err.Error())
+
 		return err
 
 	}
@@ -72,7 +73,7 @@ func (s *Service) CreateStatuses(ctx context.Context, db *mongo.Database) error 
 		count, err := collection.CountDocuments(ctx, filter)
 
 		if err != nil {
-			println(err.Error())
+
 			return err
 		}
 
@@ -84,7 +85,7 @@ func (s *Service) CreateStatuses(ctx context.Context, db *mongo.Database) error 
 		publicId, err := s.GeneratePublicID(ctx, db)
 
 		if err != nil {
-			println(err.Error())
+
 			return err
 		}
 
@@ -106,7 +107,7 @@ func (s *Service) CreateStatuses(ctx context.Context, db *mongo.Database) error 
 		_, err = collection.InsertMany(ctx, statusObjSlice)
 
 		if err != nil {
-			println(err.Error())
+
 			return err
 		}
 	}
@@ -146,6 +147,23 @@ func (s *Service) FindById(ctx context.Context, db *mongo.Database, id primitive
 	return model, nil
 }
 
+func (s *Service) FindByPublicId(ctx context.Context, db *mongo.Database, publicId string) (opportunitystatus.Model, error) {
+
+	var model opportunitystatus.Model
+
+	collection := s.SalesOpportunityStatusCollection(db)
+
+	filter := s.FilterByPublicId(publicId)
+
+	err := collection.FindOne(ctx, filter).Decode(&model)
+
+	if err != nil {
+		return model, err
+	}
+
+	return model, nil
+}
+
 func (s *Service) GeneratePublicID(ctx context.Context, db *mongo.Database) (string, error) {
 
 	collection := s.SalesOpportunityStatusCollection(db)
@@ -174,7 +192,9 @@ func (s *Service) OpportunityStatusOptions(ctx context.Context, db *mongo.Databa
 
 	collection := s.SalesOpportunityStatusCollection(db)
 
-	cursor, err := collection.Find(ctx, bson.M{})
+	opts := options.Find().SetSort(bson.D{{Key: "name", Value: 1}})
+
+	cursor, err := collection.Find(ctx, bson.M{}, opts)
 
 	if err != nil {
 		return nil, err

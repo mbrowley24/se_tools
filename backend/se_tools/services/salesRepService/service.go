@@ -73,6 +73,25 @@ func (s *Service) FilterBySalesEngineer(enginerrId primitive.ObjectID) bson.M {
 	return bson.M{"sales_engineer": enginerrId}
 }
 
+func (s *Service) FindByPublicId(ctx context.Context, db *mongo.Database, publicId string) (salesrep.Model, error) {
+
+	var salesRep salesrep.Model
+
+	collection := s.SalesRepCollection(db)
+
+	filter := s.FilterByPublicId(publicId)
+
+	result := collection.FindOne(ctx, filter)
+
+	err := result.Decode(&salesRep)
+
+	if err != nil {
+		return salesrep.Model{}, err
+	}
+
+	return salesRep, nil
+}
+
 // Converts a mongo cursor to a slice of salesrep models
 func (s *Service) CrusorToModel(ctx context.Context, cursor *mongo.Cursor) ([]salesrep.Model, error) {
 
@@ -92,6 +111,25 @@ func (s *Service) CrusorToModel(ctx context.Context, cursor *mongo.Cursor) ([]sa
 	}
 
 	return salesReps, nil
+}
+
+func (s *Service) FindById(ctx context.Context, db *mongo.Database, id primitive.ObjectID) (salesrep.Model, error) {
+
+	var salesRep salesrep.Model
+
+	collection := s.SalesRepCollection(db)
+
+	filter := s.FilterById(id)
+
+	result := collection.FindOne(ctx, filter)
+
+	err := result.Decode(&salesRep)
+
+	if err != nil {
+		return salesrep.Model{}, err
+	}
+
+	return salesRep, nil
 }
 
 func (s *Service) ModelToDTO(ctx context.Context, salesRep salesrep.Model, db *mongo.Database) (salesrep.DTO, error) {
@@ -200,23 +238,12 @@ func (s *Service) ResultToModel(result *mongo.SingleResult) (salesrep.Model, err
 }
 
 // get sales rep name name
-func (s *Service) SalesRepName(ctx context.Context, db *mongo.Database, repId primitive.ObjectID) (optionsdto.Option, error) {
+func (s *Service) SalesRepName(model salesrep.Model) optionsdto.Option {
 
 	var option optionsdto.Option
-	collection := s.SalesRepCollection(db)
 
-	filter := s.FilterById(repId)
+	option.Value = model.PublicId
+	option.Name = fmt.Sprintf("%s %s", s.Utils.Capitalize(model.FirstName), s.Utils.Capitalize(model.LastName))
 
-	result := collection.FindOne(ctx, filter)
-
-	salesRep, err := s.ResultToModel(result)
-
-	if err != nil {
-		return option, err
-	}
-
-	option.Value = salesRep.PublicId
-	option.Name = fmt.Sprintf("%s %s", s.Utils.Capitalize(salesRep.FirstName), s.Utils.Capitalize(salesRep.LastName))
-
-	return option, nil
+	return option
 }

@@ -2,7 +2,6 @@ package salesopportunityservice
 
 import (
 	"context"
-	"fmt"
 	pagedata "se_tools/models/pageData"
 	salesopportunity "se_tools/models/salesOpportunity"
 	"se_tools/repository"
@@ -15,7 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Service struct {
@@ -23,6 +21,7 @@ type Service struct {
 	salesRepService       salesrepservice.Service
 	salesOppStatusService salesopportunitystatusservice.Service
 	userservice           userservice.UserService
+	seService             userservice.Service
 	utils                 utils.Utilities
 }
 
@@ -33,6 +32,30 @@ func (s *Service) SalesOpportunityCollection(db *mongo.Database) *mongo.Collecti
 
 func (s *Service) FilterBySalesEngineer(id primitive.ObjectID) bson.M {
 	return bson.M{"sales_engineer": id}
+}
+
+func (s *Service) GenerateByPublicId(ctx context.Context, db *mongo.Database) (string, error) {
+
+	//get collection
+	collection := s.SalesOpportunityCollection(db)
+
+	for {
+
+		//generate public id
+		publicId := s.utils.RandomStringGenerator(30)
+
+		//check if public id exists
+		count, err := collection.CountDocuments(ctx, bson.M{"public_id": publicId})
+
+		if err != nil {
+			return "", err
+		}
+
+		if count == 0 {
+			return publicId, nil
+		}
+
+	}
 }
 
 func (s *Service) FindBySalesEngineer(ctx context.Context, db *mongo.Database, id primitive.ObjectID, pageInfo pagedata.DTO) (pagedata.Page, error) {
@@ -47,12 +70,13 @@ func (s *Service) FindBySalesEngineer(ctx context.Context, db *mongo.Database, i
 	filter := s.FilterBySalesEngineer(id)
 
 	//set page options for mongo
-	opt := options.Find().SetLimit(pageInfo.Limit).SetSkip(pageInfo.Limit)
+	//opt := options.Find().SetLimit(pageInfo.Limit).SetSkip(pageInfo.Offset)
 
 	//get cursor and check for errors
-	cursor, err := collection.Find(ctx, filter, opt)
+	cursor, err := collection.Find(ctx, bson.M{}, nil)
 
 	if err != nil {
+
 		return page, err
 	}
 
@@ -70,7 +94,7 @@ func (s *Service) FindBySalesEngineer(ctx context.Context, db *mongo.Database, i
 	page.Page = pageInfo
 
 	//turn cursor into model
-	results, err := s.ResultsModel(ctx, cursor)
+	results, err := s.ResultsModels(ctx, cursor)
 
 	if err != nil {
 		return page, err
@@ -80,6 +104,7 @@ func (s *Service) FindBySalesEngineer(ctx context.Context, db *mongo.Database, i
 	summaries, err := s.SalesOpportunitiesSummaries(ctx, db, results)
 
 	if err != nil {
+
 		return page, err
 	}
 
@@ -89,7 +114,7 @@ func (s *Service) FindBySalesEngineer(ctx context.Context, db *mongo.Database, i
 	return page, nil
 }
 
-func (s *Service) ResultsModel(ctx context.Context, cursor *mongo.Cursor) ([]salesopportunity.Model, error) {
+func (s *Service) ResultsModels(ctx context.Context, cursor *mongo.Cursor) ([]salesopportunity.Model, error) {
 
 	var results []salesopportunity.Model
 
@@ -102,26 +127,26 @@ func (s *Service) ResultsModel(ctx context.Context, cursor *mongo.Cursor) ([]sal
 	return results, nil
 }
 
-func (s *Service) SalesOpportunitiesStatuses(ctx context.Context, db *mongo.Database) ([]salesopportunity.Model, error) {
+// func (s *Service) SalesOpportunitiesStatuses(ctx context.Context, db *mongo.Database) ([]salesopportunity.Model, error) {
 
-	//get collection
-	collection := s.salesOppStatusService.SalesOpportunityStatusCollection(db)
+// 	//get collection
+// 	collection := s.salesOppStatusService.SalesOpportunityStatusCollection(db)
 
-	//get all statuses
-	cursor, err := collection.Find(ctx, bson.M{})
+// 	//get all statuses
+// 	cursor, err := collection.Find(ctx, bson.M{})
 
-	if err != nil {
-		return nil, err
-	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	statuses, err := s.ResultsModel(ctx, cursor)
+// 	statuses, err := s.ResultsModels(ctx, cursor)
 
-	if err != nil {
-		return nil, err
-	}
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	return statuses, nil
-}
+// 	return statuses, nil
+// }
 
 // get opportunity summary collection
 func (s *Service) SalesOpportunitySummary(ctx context.Context, db *mongo.Database, opp salesopportunity.Model) (salesopportunity.Sumary, error) {
@@ -136,17 +161,18 @@ func (s *Service) SalesOpportunitySummary(ctx context.Context, db *mongo.Databas
 	summary.Description = opp.Description
 	summary.UpdatedAt = opp.UpdatedAt
 
-	salesRepName, err := s.salesRepService.SalesRepName(ctx, db, opp.SalesRep)
+	salesRepName, err := s.salesRepService.FindById(ctx, db, opp.SalesRep)
 
 	if err != nil {
 		return summary, err
 	}
 
-	summary.SalesRep = salesRepName
+	summary.SalesRep = s.salesRepService.SalesRepName(salesRepName)
 
 	status, err := s.salesOppStatusService.FindById(ctx, db, opp.Status)
 
 	if err != nil {
+
 		return summary, err
 	}
 
@@ -155,11 +181,11 @@ func (s *Service) SalesOpportunitySummary(ctx context.Context, db *mongo.Databas
 	salesEng, err := s.userservice.FindUserById(ctx, db, opp.SalesEngineer)
 
 	if err != nil {
+
 		return summary, err
 	}
 
-	summary.SalesEngineer.Name = fmt.Sprintf("%s %s", s.utils.Capitalize(salesEng.FirstName), s.utils.Capitalize(salesEng.LastName))
-	summary.SalesEngineer.Value = salesEng.PublicId
+	summary.SalesEngineer = s.seService.SaleEngineerOption(salesEng)
 
 	return summary, nil
 }
@@ -182,6 +208,23 @@ func (s *Service) SalesOpportunitiesSummaries(ctx context.Context,
 	}
 
 	return summaries, nil
+}
+
+func (s *Service) Save(ctx context.Context, db *mongo.Database, model interface{}) (*mongo.InsertOneResult, error) {
+
+	//get collection
+	collection := s.SalesOpportunityCollection(db)
+
+	//get sales opportunity model
+
+	//insert model into collection
+	_, err := collection.InsertOne(ctx, model)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return nil, err
 }
 
 // end of month date

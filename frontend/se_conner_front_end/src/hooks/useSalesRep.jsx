@@ -5,10 +5,12 @@ function useSalesRep() {
     
     const name_regex = /^[a-zA-Z]{2,75}$/;
     const name_regex_input = /^[a-zA-Z]{0,75}$/;
+    const description_regex = /^[a-zA-Z0-9."?()*&%$#@;'"!\/<>,:{}[\]+=_\- :&]{0,255}$/;
     const phone_regex = /^[0-9]{10}$/;
+    const date_regex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
     const phone_regex_input = /^[0-9]{0,10}$/;
     const quota_regex_input = /^[0-9]{0,15}$/;
-    const quota_regex = /^[0-9]{5,15}$/;
+    const quota_regex = /^[0-9]{4,15}$/;
     const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; 
 
     function assmblySalesRepObj(salesRep, value, name){
@@ -68,7 +70,132 @@ function useSalesRep() {
         }
         
     }
+
+    const FIELDS ={
+        AMOUNT: "amount",
+        CLOSE : "close",
+        DESCRIPTION: "description",
+        EMAIL: "email",
+        FIRST_NAME: "first_name",
+        LAST_NAME: "last_name",
+        NAME : "name",
+        PHONE: "phone",
+        QUOTA: "quota",
+        ROLE: "role",
+        SALESREP: "sales_Rep",
+        STATUS : "status",
+        UPDATE: "update"
+    }
+
+
+    const initialState = {
+        name: "",
+        amount: "",
+        description: "",
+        close_date: "",
+        status: "",
+        sales_rep: "",
+        updated: ""
+    }
     
+    function opportunityReducer(state, action){
+
+        const data = JSON.parse(JSON.stringify(state));
+
+        switch(action.type){
+
+            case FIELDS.NAME:
+
+                const name = action.payload; 
+                if(name_regex_input.test(name)){
+                    data.name = name;
+                }
+
+                return data;
+
+            case FIELDS.AMOUNT:
+        
+                const quota = removeQuotaFormat(action.payload);
+                
+                
+                if(quotaInputValidation(quota)){
+
+                    const formatted_quota = quotaInput(quota);
+                    
+
+                    data.amount = addCommas(formatted_quota);
+                }
+
+
+                return data;    
+
+            case FIELDS.DESCRIPTION:
+                    
+                const description = action.payload;
+
+                if(description_regex.test(description)){
+                    data.description = description;
+                }
+
+                return data;
+            
+            case FIELDS.CLOSE:
+
+                if(date_regex.test(action.payload)){
+                    data.close_date = action.payload; 
+                }
+
+                return data;
+
+            case FIELDS.STATUS:
+                
+                data.status = action.payload;
+
+                return data;
+            
+            case FIELDS.SALESREP:
+
+                data.sales_rep = action.payload;
+
+                return data;
+
+            case FIELDS.UPDATE:
+                
+                data.name = action.payload.name;
+                data.amount = action.payload.amount;
+                data.status = action.payload.status;
+                data.close_date = dateFormat(action.payload.close_date);
+                data.sales_rep = action.payload.sales_rep;
+                data.updated = dateFormat(action.payload.updated_at);
+                return data;
+            default:
+                return data;
+        }
+    }
+
+    function dateFormat(date){
+
+        return date.split("T")[0];
+    }
+
+    function dateValidation(date){
+
+        if(date_regex.test(date)){
+            return true;
+        }
+
+        return false;
+    }
+
+    function descriptionValidation(description){
+            
+            if(description_regex.test(description)){
+                return true;
+            }
+    
+            return false;
+    }
+
     function emailValidation(email){
 
         return email_regex.test(email);
@@ -92,6 +219,23 @@ function useSalesRep() {
         return false;
     }
 
+    function opportunityValidation(opportunity){
+
+        if(nameValidation(opportunity.name)){
+            if(quotaValidation(opportunity.amount)){
+                if(description_regex.test(opportunity.description)){
+                    if(date_regex.test(opportunity.close_date)){
+                        if(opportunity.status){
+                            if(opportunity.sales_rep){
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 
     function phoneInput(phone){
         
@@ -140,16 +284,44 @@ function useSalesRep() {
             return false;
     }
 
+    function addCommas(amount){
+        let amountString = String(amount);
+
+        if(!amountString ){
+            return
+        }
+
+        if(!amountString.includes(".")){
+            amountString += ".00";
+        }
+
+        const number_string = amountString.split("").reverse();
+
+        const commas = [6, 9, 12, 15, 18]
+
+        const new_number = [];
+
+        for(let i = 0; i < number_string.length; i++){
+            
+            
+            if(commas.includes(i)){
+                new_number.push(",");
+            }
+
+            new_number.push(number_string[i]);
+        }
+        return new_number.reverse().join("");
+    }
+
     function quotaInput(quota_number){
 
 
         quota_number = removeLeadingZeros(quota_number);
-        
 
         if(quota_number.length > 0 && quota_number.length === 1){
             
             quota_number = "0.0" + quota_number;
-            console.log(quota_number)
+            
         
         }else if(quota_number.length > 0 && quota_number.length === 2){
             
@@ -167,9 +339,12 @@ function useSalesRep() {
 
     }
 
+
     function quotaInputValidation(quota){
-        const quota_number = removeQuotaFormat(quota);
-        if(quota_regex_input.test(quota_number)){
+
+        const unformatted_quota = removeQuotaFormat(quota);
+
+        if(quota_regex_input.test(unformatted_quota)){
             return true;
         }
 
@@ -222,14 +397,23 @@ function useSalesRep() {
         return false;
     }
 
+    
+
     return({
+        addCommas,
         assmblySalesRepObj,
+        dateFormat,
+        dateValidation,
+        descriptionValidation,
         emailValidation,
+        formatForBackend,
+        FIELDS,
+        initialState,
         nameInput,
         nameValidation,
         phoneInput,
         phoneNumberFormat,
-        formatForBackend,
+        opportunityReducer,
         phoneNumberValidation,
         quotaValidation,
         validSalesRep,

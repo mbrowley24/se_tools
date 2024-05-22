@@ -4,20 +4,17 @@ import React from "react";
 
 
 function OpportunityClose({update, close, inputChange}){
-
+    console.log(close);
     return(
         <td>
-            {update?
 
-                <input
-                    type="date"
-                    name="close"
-                    value={close}
-                    onChange={(e)=>inputChange(e)}
-                />
-                :
-                close
-            }
+            <input
+                type="date"
+                name="close"
+                value={close}
+                onChange={(e)=>inputChange(e)}
+            />
+                
         </td>
     )
 }

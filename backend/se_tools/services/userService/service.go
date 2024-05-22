@@ -2,7 +2,11 @@ package userservice
 
 import (
 	"context"
+	"fmt"
+	"se_tools/models/appUser"
+	optionsdto "se_tools/models/optionsDto"
 	"se_tools/repository"
+	"se_tools/utils"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -10,6 +14,7 @@ import (
 
 type Service struct {
 	Collection repository.Collection
+	Utils      utils.Utilities
 }
 
 func (s *Service) CheckEmail(ctx context.Context, db *mongo.Database, email string) (bool, error) {
@@ -26,4 +31,14 @@ func (s *Service) CheckEmail(ctx context.Context, db *mongo.Database, email stri
 
 	return count > 0, nil
 
+}
+
+func (s *Service) SaleEngineerOption(se appUser.User) optionsdto.Option {
+
+	var option optionsdto.Option
+
+	option.Value = se.PublicId
+	option.Name = fmt.Sprintf("%s %s", se.FirstName, se.LastName)
+
+	return option
 }
