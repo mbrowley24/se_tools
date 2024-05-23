@@ -1,7 +1,6 @@
 package salesopportunity
 
 import (
-	optionsdto "se_tools/models/optionsDto"
 	"time"
 )
 
@@ -18,10 +17,12 @@ type Sumary struct {
 	Description string `json:"description"`
 	// Status is the status of the sales opportunity
 	Status string `json:"status"`
+	// Company is the company associated with the sales opportunity
+	Company string `json:"company"`
 	// SalesRep is the sales representative assigned to the sales opportunity
-	SalesRep optionsdto.Option `json:"sales_rep"`
+	SalesRep string `json:"sales_rep"`
 	//sales engineer is the sales engineer assigned to the sales opportunity
-	SalesEngineer optionsdto.Option `json:"sales_engineer"`
+	SalesEngineer string `json:"sales_engineer"`
 	// UpdatedAt is the date and time the sales opportunity was last updated
 	UpdatedAt time.Time `json:"updated_at"`
 }

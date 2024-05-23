@@ -13,6 +13,7 @@ import RepTableView from './Components/sales/reps/table/RepTableView'
 import NewRepView from './Components/sales/reps/new/NewRepView'
 import OpportunityTableView from './Components/sales/opportunities/table/OpportunityTableView'
 import NewOpportunityView from './Components/sales/opportunities/new/NewOpportunityView';
+import CompanyTableView from './Components/sales/companies/CompanyTableView'
 
 function App() {
 
@@ -44,6 +45,9 @@ function App() {
               <Route path={"opportunities"}>
                 <Route path={''} element={<OpportunityTableView/>}/>
                 <Route path={"create"} element={<NewOpportunityView/>}/>
+              </Route>
+              <Route path={"companies"}>
+                <Route path={''} element={<CompanyTableView/>}/>
               </Route>
             </Route>
           </Routes>

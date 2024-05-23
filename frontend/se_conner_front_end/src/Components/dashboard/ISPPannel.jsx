@@ -4,7 +4,7 @@ import ISPServices from "./ISPServices";
 
 
 function ISPPannel({data}){
-    console.log(data)
+    
     return(
         <div className="isp_panel">
             <div className="isp">

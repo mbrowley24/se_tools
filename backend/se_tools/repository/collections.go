@@ -11,6 +11,10 @@ func (c *Collection) Categories() string {
 	return "categories"
 }
 
+func (c *Collection) Companies() string {
+	return "companies"
+}
+
 func (c *Collection) DiscoveryQuestions() string {
 	return "discovery_questions"
 }

@@ -126,6 +126,14 @@ func (s *Service) FilterByName(name string) bson.M {
 	return bson.M{"name": name}
 }
 
+func (s *Service) FilterByWon() bson.M {
+	return bson.M{"name": "Closed/Won"}
+}
+
+func (s *Service) FilterByLost() bson.M {
+	return bson.M{"name": "Closed/Lost"}
+}
+
 func (s *Service) FilterByPublicId(publicId string) bson.M {
 	return bson.M{"public_id": publicId}
 }

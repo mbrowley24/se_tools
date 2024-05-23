@@ -140,24 +140,24 @@ func (u *UserService) CreateAdminUser(ctx context.Context, roleId primitive.Obje
 
 	user := bson.M{
 
-		"Username":      adminUser.Username,
-		"FirstName":     adminUser.FirstName,
-		"LastName":      adminUser.LastName,
-		"Email":         adminUser.Email,
-		"PublicId":      publicId,
-		"Password":      hash,
-		"ResetPassword": false,
-		"Active":        true,
-		"Locked":        false,
-		"LoginAttempts": 0,
-		"Roles":         adminUser.Roles,
-		"OAuth":         "",
-		"Token":         "",
-		"CsrfToken":     "",
-		"LastSeen":      now,
-		"LastLogin":     now,
-		"CreatedAt":     now,
-		"UpdatedAt":     now,
+		"username":       adminUser.Username,
+		"first_name":     adminUser.FirstName,
+		"lastname":       adminUser.LastName,
+		"email":          adminUser.Email,
+		"public_id":      publicId,
+		"password":       hash,
+		"reset_password": false,
+		"active":         true,
+		"locked":         false,
+		"login_attempts": 0,
+		"roles":          adminUser.Roles,
+		"oAuth":          "",
+		"token":          "",
+		"csrf_token":     "",
+		"last_seen":      now,
+		"last_login":     now,
+		"created_at":     now,
+		"updated_at":     now,
 	}
 
 	_, err = collection.InsertOne(ctx, user)
@@ -309,7 +309,7 @@ func (u *UserService) FindByUsername(ctx context.Context, username string) (appU
 
 	collection := db.Collection(u.collection.Users())
 
-	filter := bson.M{"Username": username}
+	filter := bson.M{"username": username}
 
 	err = collection.FindOne(ctx, filter).Decode(&user)
 

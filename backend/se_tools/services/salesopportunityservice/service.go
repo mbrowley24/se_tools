@@ -34,6 +34,14 @@ func (s *Service) FilterBySalesEngineer(id primitive.ObjectID) bson.M {
 	return bson.M{"sales_engineer": id}
 }
 
+func (s *Service) FilterOppPrice(company, status primitive.ObjectID) bson.M {
+	return bson.M{"company": company, "status": status}
+}
+
+func (s *Service) FilterByOpenStatus(won, lost, company primitive.ObjectID) bson.M {
+	return bson.M{"$or": []bson.M{{"status": bson.M{"$ne": won}}, {"status": bson.M{"$ne": lost}}, {"company": company}}}
+}
+
 func (s *Service) GenerateByPublicId(ctx context.Context, db *mongo.Database) (string, error) {
 
 	//get collection
@@ -114,6 +122,42 @@ func (s *Service) FindBySalesEngineer(ctx context.Context, db *mongo.Database, i
 	return page, nil
 }
 
+func (s *Service) OppPrice(ctx context.Context, db *mongo.Database, filter bson.M) (float64, error) {
+
+	value := 0.0
+
+	//get collection
+	collection := s.SalesOpportunityCollection(db)
+
+	//get cursor and check for errors
+	cursor, err := collection.Find(ctx, filter)
+
+	if err != nil {
+
+		return 0, err
+	}
+
+	//turn cursor into model
+	results, err := s.ResultsModels(ctx, cursor)
+
+	if err != nil {
+		return 0, err
+
+	}
+
+	for _, result := range results {
+
+		//result value
+		resultValue := result.Amount
+
+		//add result value to value
+		value += resultValue
+	}
+
+	return value, nil
+
+}
+
 func (s *Service) ResultsModels(ctx context.Context, cursor *mongo.Cursor) ([]salesopportunity.Model, error) {
 
 	var results []salesopportunity.Model
@@ -126,27 +170,6 @@ func (s *Service) ResultsModels(ctx context.Context, cursor *mongo.Cursor) ([]sa
 
 	return results, nil
 }
-
-// func (s *Service) SalesOpportunitiesStatuses(ctx context.Context, db *mongo.Database) ([]salesopportunity.Model, error) {
-
-// 	//get collection
-// 	collection := s.salesOppStatusService.SalesOpportunityStatusCollection(db)
-
-// 	//get all statuses
-// 	cursor, err := collection.Find(ctx, bson.M{})
-
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	statuses, err := s.ResultsModels(ctx, cursor)
-
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return statuses, nil
-// }
 
 // get opportunity summary collection
 func (s *Service) SalesOpportunitySummary(ctx context.Context, db *mongo.Database, opp salesopportunity.Model) (salesopportunity.Sumary, error) {
@@ -167,7 +190,7 @@ func (s *Service) SalesOpportunitySummary(ctx context.Context, db *mongo.Databas
 		return summary, err
 	}
 
-	summary.SalesRep = s.salesRepService.SalesRepName(salesRepName)
+	summary.SalesRep = salesRepName.PublicId
 
 	status, err := s.salesOppStatusService.FindById(ctx, db, opp.Status)
 
@@ -185,7 +208,7 @@ func (s *Service) SalesOpportunitySummary(ctx context.Context, db *mongo.Databas
 		return summary, err
 	}
 
-	summary.SalesEngineer = s.seService.SaleEngineerOption(salesEng)
+	summary.SalesEngineer = salesEng.PublicId
 
 	return summary, nil
 }

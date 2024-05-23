@@ -5,6 +5,7 @@ import OpportunityStatus from "./OpportunityStatus";
 import OpportunityClose from "./OpportunityClose";
 import OpportunityActions from "./OpportunityActions";
 import useSalesRep from "../../../../hooks/useSalesRep";
+import OpportunitySalesReps from "./OpportunitySalesReps";
 
 function OpportunityTableRow({opportunity}){
     const [update, setUpdate] = useState(false);
@@ -42,7 +43,7 @@ function OpportunityTableRow({opportunity}){
                 close={opportunityData.close_date}
                 update={update}
             />
-            <td>{opportunity.sales_rep.name}</td>
+            <OpportunitySalesReps value={opportunityData.sales_rep}/>
             <td>{opportunityData.updated}</td>
             <OpportunityActions/>
         </tr>

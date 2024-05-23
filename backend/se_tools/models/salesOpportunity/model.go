@@ -18,6 +18,8 @@ type Model struct {
 	CloseDate time.Time `bson:"close_date"`
 	// Description is the description of the sales opportunity
 	Description string `bson:"description"`
+	// Company is the company associated with the sales opportunity
+	Company primitive.ObjectID `bson:"company"`
 	// Status is the status of the sales opportunity
 	Status primitive.ObjectID `bson:"status"`
 	// SalesRep is the sales representative assigned to the sales opportunity
