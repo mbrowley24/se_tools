@@ -36,9 +36,10 @@ function NewRepForm({inputChange, submit, data}){
             </div>
             <div>
                 <EmailField email={data.email}
-                            inputChange={inputChange} 
-                            valid={valid}
-                            setValid={setValid}/>
+                    label={true}
+                    inputChange={inputChange} 
+                    valid={valid}
+                    setValid={setValid}/>
                 <div className="error">
                     <p>{emailValidation(data.email) ? "" : "Required"}</p>
                 </div>
@@ -58,6 +59,7 @@ function NewRepForm({inputChange, submit, data}){
             <div>
                 <RoleSelection
                     data={data.role}
+                    label={true}
                     validIsRole={setValid}
                     inputChange={inputChange}
                 />

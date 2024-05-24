@@ -6,8 +6,6 @@ import (
 	salesopportunity "se_tools/models/salesOpportunity"
 	"se_tools/repository"
 	salesrepservice "se_tools/services/salesRepService"
-	"se_tools/services/salesopportunitystatusservice"
-	userservice "se_tools/services/userService"
 	"se_tools/utils"
 	"time"
 
@@ -17,12 +15,9 @@ import (
 )
 
 type Service struct {
-	Collection            repository.Collection
-	salesRepService       salesrepservice.Service
-	salesOppStatusService salesopportunitystatusservice.Service
-	userservice           userservice.UserService
-	seService             userservice.Service
-	utils                 utils.Utilities
+	Collection      repository.Collection
+	salesRepService salesrepservice.Service
+	utils           utils.Utilities
 }
 
 // get opportunity collection
@@ -192,23 +187,9 @@ func (s *Service) SalesOpportunitySummary(ctx context.Context, db *mongo.Databas
 
 	summary.SalesRep = salesRepName.PublicId
 
-	status, err := s.salesOppStatusService.FindById(ctx, db, opp.Status)
+	summary.Status = opp.Status.PublicId
 
-	if err != nil {
-
-		return summary, err
-	}
-
-	summary.Status = status.PublicId
-
-	salesEng, err := s.userservice.FindUserById(ctx, db, opp.SalesEngineer)
-
-	if err != nil {
-
-		return summary, err
-	}
-
-	summary.SalesEngineer = salesEng.PublicId
+	summary.SalesEngineer = opp.SalesEngineer.PublicId
 
 	return summary, nil
 }

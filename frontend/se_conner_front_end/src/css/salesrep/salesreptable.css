@@ -28,6 +28,22 @@
     background-color: rgb(211, 211, 211, .75);
 }
 
+.sales_rep_container h4{
+    text-align: center;
+    color: black;
+    width: 25%;
+    text-wrap: nowrap;
+    border-radius: .25rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    font-size: 1.75vh;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: rgb(211, 211, 211, 1);
+}
+
 .sales_rep_container table{
     text-align: center;
     color: black;
@@ -36,7 +52,7 @@
     margin-left: auto;
     margin-right: auto;
     overflow: auto;
-    
+    background-color: rgb(255, 255, 255, 1);    
 }
 
 .sales_rep_container table thead tr th{
@@ -50,11 +66,64 @@
 }
 
 
-.sales_rep_container table tbody tr td{
+
+
+
+.sales_rep_container table tbody tr:nth-child(odd) td{
     font-size: 1.5vh;
     padding: .5rem;
     background-color: rgb(211, 211, 211, 1);
 }
+
+.sales_rep_container table tbody tr:nth-child(even) td{
+    font-size: 1.5vh;
+    padding: .5rem;
+    background-color: rgb(150, 150, 150, 1);
+}
+
+.sales_rep_container table tbody tr:nth-last-child(-n+1) td{
+    font-size: 1.5vh;
+    padding: .5rem;
+    background-color: rgb(120, 120, 120, 1);
+}
+
+
+#add_rep{
+    font-size: 1.5vh;
+    padding: .5rem;
+    background-color: rgb(64, 64, 64, 1);
+}
+
+.sales_rep_container table tbody tr td select{
+    font-size: 1.5vh;
+    padding: .2rem;
+    border-radius: .25rem;
+    text-align: center;
+    background-color: rgb(211, 211, 211, 1);
+}
+
+.sales_rep_container table tbody tr td input{
+    font-size: 1.5vh;
+    padding: .2rem;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: .25rem;
+    text-align: center;
+    background-color: rgb(211, 211, 211, 1);
+}
+
+.sales_rep_container table tbody tr td input:focus{
+    font-size: 1.5vh;
+    padding: .2rem;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: .25rem;
+    text-align: center;
+    background-color: rgb(255, 255, 255, 1);
+}
+
 
 .add_rep{
     display: block;
@@ -69,5 +138,23 @@
 
 .add_rep a{
     display: block;
+    background-color: rgb(211, 211, 211, 1);
+}
+
+.new_rep td{
+    border-radius: .25rem;
+    text-align: center;
+    background-color: rgb(64, 64, 64, 1);
+}
+
+
+.actions{
+    margin-top: 1rem;
+    padding: .15rem;
+    border-radius: .25rem;
+    text-align: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
     background-color: rgb(211, 211, 211, 1);
 }

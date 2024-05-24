@@ -142,7 +142,7 @@ func (u *UserService) CreateAdminUser(ctx context.Context, roleId primitive.Obje
 
 		"username":       adminUser.Username,
 		"first_name":     adminUser.FirstName,
-		"lastname":       adminUser.LastName,
+		"last_name":      adminUser.LastName,
 		"email":          adminUser.Email,
 		"public_id":      publicId,
 		"password":       hash,
@@ -193,7 +193,7 @@ func (u *UserService) existsByUsername(ctx context.Context, username string) (bo
 
 	collection := db.Collection(u.collection.Users())
 
-	filter := bson.M{"Username": username}
+	filter := bson.M{"username": username}
 
 	count, err := collection.CountDocuments(ctx, filter)
 
@@ -248,16 +248,8 @@ func (u *UserService) FindUserByIdString(ctx context.Context, db *mongo.Database
 	//get collection for users
 	collection := db.Collection(u.collection.Users())
 
-	// //get claims from token and check for error
-	// claims, err := u.getClaims(token)
-
-	// if err != nil {
-	// 	println(" the error is really here")
-	// 	return user, err
-	// }
-
 	//get object id from claims and check for error
-	id, err := u.getObjectId(idString)
+	id, err := primitive.ObjectIDFromHex(idString)
 
 	if err != nil {
 		return user, err
@@ -274,6 +266,7 @@ func (u *UserService) FindUserByIdString(ctx context.Context, db *mongo.Database
 		return user, err
 	}
 
+	println(user.FirstName)
 	return user, nil
 
 }

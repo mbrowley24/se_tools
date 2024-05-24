@@ -14,7 +14,12 @@ function CompanyTable(){
         }
 
         function applyData(res){
-            console.log(res.data);
+            console.log(res.data.data.items);
+            if(res.status === 200){
+                if(res.data.data.items){
+                    setData(res.data.data.items);
+                }
+            }
         }
 
         (async() =>{

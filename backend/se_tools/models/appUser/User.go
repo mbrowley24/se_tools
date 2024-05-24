@@ -7,23 +7,34 @@ import (
 )
 
 type User struct {
-	ID            primitive.ObjectID   `bson:"_id" json:"id"`
+	ID            primitive.ObjectID   `bson:"_id,omitempty" json:"id"`
 	Username      string               `bson:"username" json:"username"`
-	FirstName     string               `bson:"firstname" json:"firstname"`
-	LastName      string               `bson:"lastname" json:"lastname"`
+	FirstName     string               `bson:"first_name" json:"firstname"`
+	LastName      string               `bson:"last_name" json:"lastname"`
 	Email         string               `bson:"email" json:"email"`
 	PublicId      string               `bson:"public_id" json:"public_id"`
-	ResetPassword bool                 `bson:"resetpassword" json:"resetpassword"`
+	ResetPassword bool                 `bson:"reset_password" json:"reset_password"`
 	Active        bool                 `bson:"active" json:"active"`
 	Locked        bool                 `bson:"locked" json:"locked"`
-	LoginAttempts int                  `bson:"loginattempts" json:"loginattempts"`
+	LoginAttempts int                  `bson:"login_attempts" json:"login_attempts"`
 	Roles         []primitive.ObjectID `bson:"roles" json:"roles"`
 	Password      string               `bson:"password" json:"password"`
-	OAuth         string               `bson:"oauth" json:"oauth"`
+	OAuth         string               `bson:"oAuth" json:"oAuth"`
 	Token         string               `bson:"token" json:"token"`
-	CsrfToken     string               `bson:"csrftoken" json:"csrftoken"`
-	LastSeen      time.Time            `bson:"lastseen" json:"lastseen"`
-	LastLogin     time.Time            `bson:"lastlogin" json:"lastlogin"`
+	CsrfToken     string               `bson:"csrf_token" json:"csrftoken"`
+	LastSeen      time.Time            `bson:"last_seen" json:"lastseen"`
+	LastLogin     time.Time            `bson:"last_login" json:"lastlogin"`
 	CreatedAt     time.Time            `bson:"created_at" json:"created_at"`
 	UpdatedAt     time.Time            `bson:"updated_at" json:"updated_at"`
+}
+
+func (u *User) Embed() Embeded {
+	return Embeded{
+		ID:        u.ID,
+		PublicId:  u.PublicId,
+		FirstName: u.FirstName,
+		LastName:  u.LastName,
+		Email:     u.Email,
+		Username:  u.Username,
+	}
 }

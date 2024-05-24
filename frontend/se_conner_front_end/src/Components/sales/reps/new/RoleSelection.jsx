@@ -3,10 +3,10 @@ import useHttp from "../../../../hooks/useHttp";
 
 
 
-function RoleSelection({inputChange, data, validIsRole}){
+function RoleSelection({inputChange, data, validIsRole, label}){
     const {httpRequest} = useHttp();
     const [roles, setRoles] = useState([]);
-
+    
     useEffect(() => {
 
         const config = {
@@ -33,16 +33,21 @@ function RoleSelection({inputChange, data, validIsRole}){
     },[])
 
     useEffect(() => {
+        console.log(data)
+        if(data !== ""){
+            if(validIsRole){
+                const valid = roles.filter(role => role.value === data);
+                validIsRole((prev) =>{
+                    return {...prev, role: valid.length > 0}
+                })
+            }
+        }
 
-        const valid = roles.filter(role => role.value === data);
-        validIsRole((prev) =>{
-            return {...prev, role: valid.length > 0}
-        })
     }, [data])
 
     return(
         <>
-            <label>Roles</label>
+            {label && <label>Roles</label>}
             <select name="role"
                 value={data}
                 onChange={(e) => inputChange(e)}

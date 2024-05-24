@@ -67,6 +67,36 @@ func (h *Handler) CheckEmail(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *Handler) DeleteRep(w http.ResponseWriter, r *http.Request) {
+
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
+	repId := r.PathValue("id")
+
+	db, err := h.DB.Database(ctx)
+
+	if err != nil {
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = h.SalesRepService.DeleteSalesRep(ctx, db, repId)
+
+	if err != nil {
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
+	err = h.utils.WriteJSON(w, http.StatusOK, "", "data")
+
+	if err != nil {
+		http.Error(w, "", http.StatusInternalServerError)
+		return
+	}
+
+}
+
 // GetSalesReps gets sales reps
 func (h *Handler) GetSalesReps(w http.ResponseWriter, r *http.Request) {
 
@@ -117,7 +147,7 @@ func (h *Handler) GetSalesReps(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	salesRepsDtos, err := h.SalesRepService.ModelsToDTOs(ctx, salesRepModels, db)
+	salesRepsDtos, err := h.SalesRepService.ModelsToDTOs(ctx, salesRepModels)
 
 	if err != nil {
 		println("error3")
@@ -246,8 +276,7 @@ func (h *Handler) NewSalesRep(w http.ResponseWriter, r *http.Request) {
 	err = newRep.Validate()
 
 	if err != nil {
-		println(err.Error())
-		println("falied validation")
+
 		http.Error(w, "", http.StatusBadRequest)
 		return
 	}
@@ -259,6 +288,8 @@ func (h *Handler) NewSalesRep(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
+
+	println(user.FirstName)
 
 	salesRepCollection := h.SalesRepService.SalesRepCollection(db)
 
@@ -280,7 +311,7 @@ func (h *Handler) NewSalesRep(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//create new sales rep model bson and check for error
-	salesRepData, err := h.SalesRepService.NewSalesRep(ctx, salesRepCollection, newRep, user.ID, salesRoleModel.ID)
+	salesRepData, err := h.SalesRepService.NewSalesRep(ctx, salesRepCollection, newRep, user, salesRoleModel)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

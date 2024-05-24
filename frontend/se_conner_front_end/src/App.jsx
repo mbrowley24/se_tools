@@ -40,7 +40,6 @@ function App() {
             <Route path={"/sales"}>
               <Route path={"reps"}>
                 <Route path='' element={<RepTableView/>}/>
-                <Route path={"add"} element={<NewRepView/>}/>
               </Route>
               <Route path={"opportunities"}>
                 <Route path={''} element={<OpportunityTableView/>}/>

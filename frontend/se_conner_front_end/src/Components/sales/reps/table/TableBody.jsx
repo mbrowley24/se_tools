@@ -1,24 +1,23 @@
-import React from "react";
-import useSalesRep from "../../../../hooks/useSalesRep";
+import React, {useState} from "react";
+import SalesRepTableRow from "./SalesRepTableRow";
+import NewSalesRepTableRow from "./NewSalesRepTableRow";
 
 
 
-function TableBody({reps}){
-    const {addCommas, phoneNumberFormat} = useSalesRep();
+
+function TableBody({reps, deleteRep, setReset}){
     
+    
+
+    
+
     return(
         <tbody>
             {reps && reps.length > 0 && reps.map(rep => (
-                <tr key={rep.id}>
-                    <td>{rep.name}</td>
-                    <td>${addCommas(rep.quota)}</td>
-                    <td>{rep.email}</td>
-                    <td>{phoneNumberFormat(rep.phone)}</td>
-                    <td>{rep.role}</td>
-                    <td>{rep.sales_engineer}</td>
-                </tr>
+                <SalesRepTableRow rep={rep} key={rep.id} deleteRep={deleteRep}/>
             ))}
-            {reps && reps.length === 0 && <tr><td colSpan="7">No Reps Found</td></tr>}
+            {reps && reps.length === 0 && <tr><td colSpan="8">No Reps Found</td></tr>}
+            <NewSalesRepTableRow setReset={setReset}/>
         </tbody>
     )
 };

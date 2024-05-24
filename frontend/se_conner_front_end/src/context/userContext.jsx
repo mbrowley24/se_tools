@@ -1,25 +1,34 @@
-import { createContext, useState } from "react";
+import { createContext, useReducer } from "react";
 
 
 const UserContext = createContext();
 
-export const UserData = ({children}) => {
-    const [login, setLogin] = useState({
-        username: "",
-        password: "",
-    });
+const FIELDS = {
+    QUOTA: 'quota',
+}
 
-    const [register, setRegister] = useState({
-        username: "",
-        password: "",
-        confirm_password: "",
-        first_name: "",
-        last_name: "",
-        email: "",
-    });
+const initialState = {
+    quota: 0,
+}
+
+const reducer = (state, action) => {
+    
+    switch(action.type){
+        
+        case FIELDS.QUOTA:
+        
+        return {...state, quota: action.payload}
+        default:
+            return state;
+    }
+};
+
+export const UserData = ({children}) => {
+    
+    const [userdata, dispatchUser] = useReducer(reducer, initialState);
 
     return(
-        <UserContext.Provider value={{login, setLogin, register, setRegister}}>
+        <UserContext.Provider value={{userdata, dispatchUser}}>
             {children}
         </UserContext.Provider>
     )

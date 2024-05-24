@@ -12,6 +12,9 @@ function CompanyTableBody({data}){
                     )
                 })
             }
+            {
+                data.length === 0 && <tr><td colSpan="8">No companies found</td></tr>
+            }
         </tbody>
     )
 }

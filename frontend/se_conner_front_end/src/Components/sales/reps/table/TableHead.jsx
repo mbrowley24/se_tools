@@ -8,13 +8,14 @@ function TableHead({}){
     return(
         <thead>
             <tr>
-                <th>Rep Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
                 <th>Quota</th>
                 <th>Rep Email</th>
                 <th>Rep Phone</th>
                 <th>Rep Role</th>
                 <th>Sales Engineer</th>
-                
+                <th>Actions</th>
             </tr>
         </thead>
     )

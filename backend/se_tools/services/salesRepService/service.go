@@ -3,8 +3,10 @@ package salesrepservice
 import (
 	"context"
 	"fmt"
+	"se_tools/models/appUser"
 	optionsdto "se_tools/models/optionsDto"
 	"se_tools/models/salesrep"
+	"se_tools/models/salesroles"
 	"se_tools/repository"
 	"se_tools/services/salesroleservice"
 	userservice "se_tools/services/userService"
@@ -70,7 +72,7 @@ func (s *Service) FilterByPublicId(publicId string) bson.M {
 
 // FilterBySalesEngineer returns a bson.M filter for sales reps by sales engineer
 func (s *Service) FilterBySalesEngineer(enginerrId primitive.ObjectID) bson.M {
-	return bson.M{"sales_engineer": enginerrId}
+	return bson.M{"sales_engineer._id": enginerrId}
 }
 
 func (s *Service) FindByPublicId(ctx context.Context, db *mongo.Database, publicId string) (salesrep.Model, error) {
@@ -113,6 +115,21 @@ func (s *Service) CrusorToModel(ctx context.Context, cursor *mongo.Cursor) ([]sa
 	return salesReps, nil
 }
 
+func (s *Service) DeleteSalesRep(ctx context.Context, db *mongo.Database, publicId string) (*mongo.DeleteResult, error) {
+
+	collection := s.SalesRepCollection(db)
+
+	filter := s.FilterByPublicId(publicId)
+
+	deleteResult, err := collection.DeleteOne(ctx, filter)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return deleteResult, nil
+}
+
 func (s *Service) FindById(ctx context.Context, db *mongo.Database, id primitive.ObjectID) (salesrep.Model, error) {
 
 	var salesRep salesrep.Model
@@ -132,58 +149,34 @@ func (s *Service) FindById(ctx context.Context, db *mongo.Database, id primitive
 	return salesRep, nil
 }
 
-func (s *Service) ModelToDTO(ctx context.Context, salesRep salesrep.Model, db *mongo.Database) (salesrep.DTO, error) {
-
-	//find sales engineer and check for error
-	user, err := s.userservice.FindUserById(ctx, db, salesRep.SalesEngineer)
-
-	if err != nil {
-		return salesrep.DTO{}, err
-	}
+func (s *Service) ModelToDTO(ctx context.Context, salesRep salesrep.Model) (salesrep.DTO, error) {
 
 	//salesEngineer Name with capitalized first and last name
-	salesEngineer := fmt.Sprintf("%s %s", s.Utils.Capitalize(user.FirstName), s.Utils.Capitalize(user.LastName))
-
-	//get collection service
-	salesRoleCollection := s.salesRoleService.SalesRoleCollection(db)
-
-	//filter by role id
-	filter := s.salesRoleService.FilterById(salesRep.Role)
-
-	//find role by filter
-	roleResult := salesRoleCollection.FindOne(ctx, filter)
-
-	//result to model and check for error
-	roleModel, err := s.salesRoleService.ResultToModel(roleResult)
-
-	if err != nil {
-		return salesrep.DTO{}, err
-	}
+	salesEngineer := fmt.Sprintf("%s %s", s.Utils.Capitalize(salesRep.SalesEngineer.FirstName), s.Utils.Capitalize(salesRep.SalesEngineer.LastName))
 
 	//role name
-	roleName := s.Utils.Capitalize(roleModel.Name)
-
-	repName := fmt.Sprintf("%s %s", s.Utils.Capitalize(salesRep.FirstName), s.Utils.Capitalize(salesRep.LastName))
+	roleId := s.Utils.Capitalize(salesRep.Role.PublicId)
 
 	return salesrep.DTO{
 		ID:            salesRep.PublicId,
-		Name:          repName,
+		FirstName:     s.Utils.Capitalize(salesRep.FirstName),
+		LastName:      s.Utils.Capitalize(salesRep.LastName),
 		Email:         salesRep.Email,
 		Phone:         salesRep.Phone,
-		Role:          roleName,
+		Role:          roleId,
 		SalesEngineer: salesEngineer,
 		Quota:         salesRep.Quota,
 	}, nil
 }
 
 // Models to DTO
-func (s *Service) ModelsToDTOs(ctx context.Context, salesReps []salesrep.Model, db *mongo.Database) ([]salesrep.DTO, error) {
+func (s *Service) ModelsToDTOs(ctx context.Context, salesReps []salesrep.Model) ([]salesrep.DTO, error) {
 
 	var salesRepsDTO []salesrep.DTO
 
 	for _, salesRep := range salesReps {
 
-		dto, err := s.ModelToDTO(ctx, salesRep, db)
+		dto, err := s.ModelToDTO(ctx, salesRep)
 
 		if err != nil {
 			return nil, err
@@ -198,8 +191,8 @@ func (s *Service) ModelsToDTOs(ctx context.Context, salesReps []salesrep.Model, 
 func (s *Service) NewSalesRep(ctx context.Context,
 	collection *mongo.Collection,
 	newRep salesrep.NewSalesRep,
-	engingerId,
-	roleId primitive.ObjectID) (bson.D, error) {
+	eng appUser.User,
+	role salesroles.Model) (bson.D, error) {
 
 	publicId, err := s.GeneratePublicID(ctx, collection)
 
@@ -215,8 +208,8 @@ func (s *Service) NewSalesRep(ctx context.Context,
 		{Key: "last_name", Value: newRep.LastName},
 		{Key: "email", Value: newRep.Email},
 		{Key: "phone", Value: newRep.Phone},
-		{Key: "sales_engineer", Value: engingerId},
-		{Key: "role", Value: roleId},
+		{Key: "sales_engineer", Value: eng.Embed()},
+		{Key: "role", Value: role.Embed()},
 		{Key: "quota", Value: newRep.Quota},
 		{Key: "created_at", Value: now},
 		{Key: "updated_at", Value: now},

@@ -27,3 +27,13 @@ func (m *Model) GetOptions() optionsdto.Option {
 		Name:  m.Name,
 	}
 }
+
+func (m *Model) Embeded() Embeded {
+	return Embeded{
+		ID:          m.ID,
+		PublicId:    m.PublicId,
+		Name:        m.Name,
+		Description: m.Description,
+		UpdatedAt:   m.UpdatedAt,
+	}
+}

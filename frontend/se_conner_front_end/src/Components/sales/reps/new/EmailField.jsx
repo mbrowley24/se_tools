@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import useHttp from "../../../../hooks/useHttp";
 
 
-function EmailField({email, inputChange, valid, setValid}){
+function EmailField({email, inputChange, valid, setValid, label}){
     const {httpRequest} = useHttp();
     
     
@@ -44,7 +44,7 @@ function EmailField({email, inputChange, valid, setValid}){
 
     return(
         <>
-            <label>Email</label>
+            {label && <label>Email</label>}
             <input type="email"
                     value={email}
                     name="email"

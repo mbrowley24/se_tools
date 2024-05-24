@@ -75,7 +75,7 @@ func (h *Handler) GetCompanies(w http.ResponseWriter, r *http.Request) {
 	skip := page.Page.Offset
 	limit := page.Page.Limit
 
-	opts := options.Find().SetSkip(skip).SetLimit(limit)
+	opts := options.Find().SetSkip(skip).SetLimit(limit).SetSort(bson.D{{Key: "updated_at", Value: 1}})
 
 	salesEngineerFilter := h.companyService.FilterBySalesEngineer(saleEngId)
 

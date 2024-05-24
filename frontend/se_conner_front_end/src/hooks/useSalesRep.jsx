@@ -3,73 +3,6 @@
 
 function useSalesRep() {
     
-    const name_regex = /^[a-zA-Z]{2,75}$/;
-    const name_regex_input = /^[a-zA-Z]{0,75}$/;
-    const description_regex = /^[a-zA-Z0-9."?()*&%$#@;'"!\/<>,:{}[\]+=_\- :&]{0,255}$/;
-    const phone_regex = /^[0-9]{10}$/;
-    const date_regex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
-    const phone_regex_input = /^[0-9]{0,10}$/;
-    const quota_regex_input = /^[0-9]{0,15}$/;
-    const quota_regex = /^[0-9]{4,15}$/;
-    const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; 
-
-    function assmblySalesRepObj(salesRep, value, name){
-
-        const salesRepObj = {...salesRep};
-        
-        switch(name){
-
-            case "first_name":
-                
-                if(nameInput(value)){
-                    salesRepObj[name] = value;
-                }
-                return salesRepObj;
-
-            case "last_name":
-
-                if(nameInput(value)){
-                    salesRepObj[name] = value;
-                }
-                return salesRepObj;
-            
-            case "email":
-                
-                salesRepObj[name] = value;
-                return salesRepObj;
-
-            case "phone":
-                
-                const unformatted_phone = removePhoneFormat(value);
-
-                if(phoneInput(unformatted_phone)){
-                    salesRepObj[name] = phoneNumberFormat(unformatted_phone);
-                }
-                
-                return salesRepObj;
-
-            case "role":
-                    
-                    salesRepObj[name] = value;
-
-                    return salesRepObj;
-
-            case "quota":
-                    
-                const quota = removeQuotaFormat(value);
-                
-                if(quotaInputValidation(quota)){
-                    
-                    salesRepObj[name] = quotaInput(quota);
-                }
-
-                return salesRepObj;
-                    
-            default:
-                return salesRepObj;
-        }
-        
-    }
 
     const FIELDS ={
         AMOUNT: "amount",
@@ -84,8 +17,110 @@ function useSalesRep() {
         ROLE: "role",
         SALESREP: "sales_Rep",
         STATUS : "status",
-        UPDATE: "update"
+        UPDATE: "update",
+        FORMAT: "format",
+        RESET: "reset"
     }
+
+
+    const name_regex = /^[a-zA-Z]{2,75}$/;
+    const name_regex_input = /^[a-zA-Z]{0,75}$/;
+    const description_regex = /^[a-zA-Z0-9."?()*&%$#@;'"!\/<>,:{}[\]+=_\- :&]{0,255}$/;
+    const phone_regex = /^[0-9]{10}$/;
+    const date_regex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+    const phone_regex_input = /^[0-9]{0,10}$/;
+    const quota_regex_input = /^[0-9]{0,15}$/;
+    const quota_regex = /^[0-9]{4,15}$/;
+    const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; 
+
+    const salesRepInitialState = {
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        role: "",
+        quota: "0.00"
+    }
+
+    function assmblySalesRepReducer(state, action){
+
+        let salesRepObj = JSON.parse(JSON.stringify(state));
+        
+        switch(action.type){
+
+            case FIELDS.FIRST_NAME:
+                
+                const first_name = action.payload;
+
+                if(nameInput(first_name)){
+                    salesRepObj.first_name = first_name;
+                }
+                return salesRepObj;
+
+            case FIELDS.LAST_NAME:
+
+                const last_name = action.payload; 
+
+                if(nameInput(last_name)){
+                    salesRepObj.last_name = last_name;
+                }
+                return salesRepObj;
+            
+            case FIELDS.EMAIL:
+                
+                salesRepObj.email = action.payload;
+                return salesRepObj;
+
+            case FIELDS.PHONE:
+                const phone = action.payload;
+                const unformatted_phone = removePhoneFormat(phone);
+
+                if(phoneInput(unformatted_phone)){
+                    salesRepObj.phone = phoneNumberFormat(unformatted_phone);
+                }
+                
+                return salesRepObj;
+
+            case FIELDS.ROLE:
+                    
+                    salesRepObj.role = action.payload;
+
+                    return salesRepObj;
+
+            case FIELDS.QUOTA:
+                
+                const value = action.payload;
+                const quota = removeQuotaFormat(value);
+                
+                if(quotaInputValidation(quota)){
+                    
+                    salesRepObj.quota = quotaInput(quota);
+                }
+
+                return salesRepObj;
+
+            case FIELDS.FORMAT:
+
+                salesRepObj.phone = removePhoneFormat(salesRepObj.phone);
+
+                salesRepObj.quota = Number(salesRepObj.quota);
+
+                return salesRepObj;
+
+            
+            case FIELDS.RESET:
+
+                salesRepObj = {...salesRepInitialState};
+                
+                return salesRepObj;
+                    
+            default:
+                return salesRepObj;
+        }
+        
+    }
+
+    
 
 
     const initialState = {
@@ -173,6 +208,60 @@ function useSalesRep() {
         }
     }
 
+
+    const deleteInitialState = {
+        id: "",
+        first_name: "",
+        last_name: "",
+        email: "",
+        isOpen: false,
+        updated: false
+    }
+
+    function deleteSalesRepReducer(state, action){
+
+        const data = JSON.parse(JSON.stringify(state));
+
+        switch(action.type){
+
+            case FIELDS.UPDATE:
+
+                data.id = action.payload.id;
+                data.first_name = action.payload.first_name;
+                data.last_name = action.payload.last_name;
+                data.email = action.payload.email;
+                data.isOpen = true;
+                data.updated = data.updated;
+
+                return data;
+
+            case FIELDS.CLOSE:
+
+                data.id = "";
+                data.first_name = "";
+                data.last_name = "";
+                data.email = "";
+                data.isOpen = false;
+                data.updated = data.updated;
+
+                return data;
+
+            case FIELDS.RESET:
+
+                data.id = "";
+                data.first_name = "";
+                data.last_name = "";
+                data.email = "";
+                data.isOpen = false;
+                data.updated = !data.updated;
+
+                return data;
+
+            default:
+                return data;
+        }
+    }
+
     function dateFormat(date){
 
         return date.split("T")[0];
@@ -204,7 +293,7 @@ function useSalesRep() {
     function nameInput(name){
         
         if(name_regex_input.test(name)){
-            
+            console.log("name input")
             return true;
         }
         
@@ -317,8 +406,13 @@ function useSalesRep() {
 
 
         quota_number = removeLeadingZeros(quota_number);
-
-        if(quota_number.length > 0 && quota_number.length === 1){
+        console.log(quota_number)
+        
+        if(quota_number.length === 0){
+        
+            quota_number = "0.00"
+        
+        }else if(quota_number.length > 0 && quota_number.length === 1){
             
             quota_number = "0.0" + quota_number;
             
@@ -351,6 +445,17 @@ function useSalesRep() {
         return false
     }
 
+    function quotaValidation(quota){
+        let quota_string = String(quota);
+        const unformatted_quota = removeQuotaFormat(quota_string);
+
+        if(quota_regex_input.test(unformatted_quota)){
+            return true;
+        }
+
+        return false
+    }
+
     function removeLeadingZeros(quota){
         return quota.replace(/^0+/, "");
     }
@@ -372,7 +477,8 @@ function useSalesRep() {
     }
 
     function removeQuotaFormat(quota){
-        return quota.replace(/[,.]/g, "");
+        let quotaString = String(quota);
+        return quotaString.replace(/[,.]/g, "");
     }
 
     function validSalesRep(salesRep){
@@ -397,17 +503,51 @@ function useSalesRep() {
         return false;
     }
 
+    function hasChanged(salesRep, rep){
+            
+            const {first_name, last_name, email, phone, role, quota} = salesRep;
+            
+            if(first_name !== rep.first_name){
+                return true;
+            }
+    
+            if(last_name !== rep.last_name){
+                return true;
+            }
+    
+            if(email !== rep.email){
+                return true;
+            }
+    
+            if(phone !== rep.phone){
+                return true;
+            }
+    
+            if(role !== rep.role){
+                return true;
+            }
+    
+            if(quota !== rep.quota){
+                return true;
+            }
+    
+            return false;
+    }
+
     
 
     return({
         addCommas,
-        assmblySalesRepObj,
+        assmblySalesRepReducer,
         dateFormat,
         dateValidation,
+        deleteInitialState,
+        deleteSalesRepReducer,
         descriptionValidation,
         emailValidation,
         formatForBackend,
         FIELDS,
+        hasChanged,
         initialState,
         nameInput,
         nameValidation,
@@ -416,6 +556,7 @@ function useSalesRep() {
         opportunityReducer,
         phoneNumberValidation,
         quotaValidation,
+        salesRepInitialState,
         validSalesRep,
     })
 }
