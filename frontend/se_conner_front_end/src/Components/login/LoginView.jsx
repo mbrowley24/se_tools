@@ -19,14 +19,14 @@ function FormLogin({}){
 
         const configRequest={
             method: "POST",
-            url: "/api/v1/login",
+            url: "login",
             data: login
         }
 
         function applyData(res){
             
             if(res.status === 200){
-
+                console.log(res);
                 navigate('/dashboard');    
                 
             }else if (res.status === 403){

@@ -3,6 +3,7 @@ import CompanyTableHead from "./CompanyTableHead";
 import CompanyTableBody from "./CompanyTableBody";
 import useHttp from "../../../hooks/useHttp";
 
+
 function CompanyTable(){
     const [data, setData] = useState([]);
     const {httpRequest} = useHttp();    
@@ -14,7 +15,7 @@ function CompanyTable(){
         }
 
         function applyData(res){
-            console.log(res.data.data.items);
+            
             if(res.status === 200){
                 if(res.data.data.items){
                     setData(res.data.data.items);

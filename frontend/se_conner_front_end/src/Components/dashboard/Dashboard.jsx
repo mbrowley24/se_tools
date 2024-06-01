@@ -12,13 +12,14 @@ function Dashboard(){
         
         const requestConfig = {
             method: 'GET',
-            url: 'api/v1/dashboard'
+            url: 'api/v1/isp/dashboard'
         }
 
         function applyData(res){
             
             if (res.status == 200){
-                setData(res.data.data)
+                
+                // setData(res.data.data)
             }
         }
 

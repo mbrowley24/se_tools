@@ -54,7 +54,6 @@ function SalesRepTableRow({rep, deleteRep}){
         setSalesRep(saleRepObj)
     }
 
-   
     return(
         <>
             

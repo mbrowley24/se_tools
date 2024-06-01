@@ -5,10 +5,12 @@ const DataContext = createContext();
 
 const FIELDS = {
     QUOTA: 'quota',
+    ADMIN: "admin"
 }
 
 const initialState = {
     quota: 0,
+    admin: false
 }
 
 const reducer = (state, action) => {
@@ -17,7 +19,10 @@ const reducer = (state, action) => {
         
         case FIELDS.QUOTA:
         
-        return {...state, quota: action.payload}
+            return {...state, quota: action.payload}
+
+        case FIELDS.ADMIN:
+                return {...state, admin: action.payload}
         default:
             return state;
     }
@@ -27,9 +32,6 @@ const reducer = (state, action) => {
 export const AppDataContext = ({children}) => {
     const [userdata, dispatchUser] = useReducer(reducer, initialState);
     
-    const FIELDS = {
-        QUOTA: 'quota',
-    }
     
     return(
         <DataContext.Provider value={{userdata, dispatchUser, FIELDS}}>

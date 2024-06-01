@@ -10,10 +10,11 @@ import NewTemplateView from './Components/discoveryQuestionTemplate/NewTemplateV
 import TemplateFormView from './Components/discoveryQuestionTemplate/TemplateFormView'
 import ComcastView from './Components/education/comcast/ComcastView'
 import RepTableView from './Components/sales/reps/table/RepTableView'
-import NewRepView from './Components/sales/reps/new/NewRepView'
 import OpportunityTableView from './Components/sales/opportunities/table/OpportunityTableView'
 import NewOpportunityView from './Components/sales/opportunities/new/NewOpportunityView';
 import CompanyTableView from './Components/sales/companies/CompanyTableView'
+import ISPEdit from './Components/dashboard/edit/ISPEdit';
+import EditISPCategoryView from './Components/dashboard/editCategory/EditISPCategoryView';
 
 function App() {
 
@@ -47,6 +48,10 @@ function App() {
               </Route>
               <Route path={"companies"}>
                 <Route path={''} element={<CompanyTableView/>}/>
+              </Route>
+              <Route path={"isp"}>
+                <Route path={''} element={<ISPEdit/>}/>
+                <Route path={':id'} element={<EditISPCategoryView/>}/>
               </Route>
             </Route>
           </Routes>

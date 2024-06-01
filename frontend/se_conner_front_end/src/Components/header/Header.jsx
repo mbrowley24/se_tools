@@ -13,9 +13,10 @@ function Header() {
                     <ul>
                         <li><Link to="/dashboard">Dashboard</Link></li>
                         <li className="dropdown">
-                            <a href="#">Sales</a>
+                            <a>Sales</a>
                             <div className="dropdown-content">
                                 <Link to={"/sales/companies"}>Companies</Link>
+                                <Link to={"/sales/isp"}>ISPs</Link>
                                 <Link to={"/sales/opportunities"}>Opportunities</Link>
                                 <Link to={"/sales/reps"}>Sales Reps</Link>
                             </div>
@@ -37,7 +38,7 @@ function Header() {
                             </div>
                         </li> */}
                         <li className="dropdown">
-                            <a href="#">Help</a>
+                            <a>Help</a>
                             <div className="dropdown-content">
                             
                                     <a href="mailto:yeoman@yeomanswork.net?subject=Feature Request Average SE!">Request Feature</a>
@@ -48,7 +49,7 @@ function Header() {
                             </div>
                         </li>
                         <li className="dropdown">
-                            <a href="#">Account</a>
+                            <a>Account</a>
                             <div className="dropdown-content">
                                 
                                 <Link to="">Logout</Link>
