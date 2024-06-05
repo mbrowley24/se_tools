@@ -15,6 +15,7 @@ import NewOpportunityView from './Components/sales/opportunities/new/NewOpportun
 import CompanyTableView from './Components/sales/companies/CompanyTableView'
 import ISPEdit from './Components/dashboard/edit/ISPEdit';
 import EditISPCategoryView from './Components/dashboard/editCategory/EditISPCategoryView';
+import EditISPServicesView from './Components/dashboard/editServices/EditISPServicesView';
 
 function App() {
 
@@ -52,6 +53,7 @@ function App() {
               <Route path={"isp"}>
                 <Route path={''} element={<ISPEdit/>}/>
                 <Route path={':id'} element={<EditISPCategoryView/>}/>
+                <Route path={'categories/:id'} element={<EditISPServicesView/>}/>
               </Route>
             </Route>
           </Routes>

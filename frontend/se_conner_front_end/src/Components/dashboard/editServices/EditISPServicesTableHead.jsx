@@ -4,17 +4,16 @@ import React from "react";
 
 
 
-function EditISPCategoryTableHead(){
-    
+function EditISPServicesTableHead(){
     return(
         <thead>
             <tr>
-                <th>Name</th>
-                <th>#Services</th>
+                <th>Service</th>
+                <th>Link</th>
                 <th>Actions</th>
             </tr>
         </thead>
     )
 }
 
-export default EditISPCategoryTableHead;
+export default EditISPServicesTableHead;

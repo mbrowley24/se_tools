@@ -1,20 +1,29 @@
 import React from "react";
+import EditISPCategoryTableRow from "./EditISPCategoryTableRow";
+import NewCategoryRow from "./NewCategoryRow";
 
 
 
-function EditISPCategoryTableBody({data}){
+function EditISPCategoryTableBody({data,id}){
+    
     return(
         <tbody>
-            {data.map((service, index)=>{
-                return <tr key={index}>
-                    <td>{service.name}</td>
-                    <td>{service.link}</td>
-                    <td>
-                        <button>Edit</button>
-                        <button>Delete</button>
-                    </td>
+            {data.length > 0 && data.map((category, index)=>{
+                
+                return(
+                    <EditISPCategoryTableRow key={index} data={category} id={id} />
+                )
+                
+            })
+            }
+
+            {
+                data.length === 0 && 
+                <tr>
+                    <td colSpan="4">No data found</td>
                 </tr>
-            })}
+            }
+            <NewCategoryRow id={id} />
         </tbody>
     )
 }

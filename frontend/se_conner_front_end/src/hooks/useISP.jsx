@@ -6,104 +6,122 @@ import { useReducer } from "react";
 
 function useISP() {
 
-    const FIELDS = {
-        ISPS: "isps", 
-        MAPS: "maps",
-        NAME: "name",
-        UPDATE: "update",
-        URL: "url",
-        LOAD: "load",
 
+
+    function checkForErrors(data){
+        let errors = {}
+        if(data.name === ""){
+            errors.name = "Name is required";
+        }
+
+        if(!nameLength(data.name)){
+            errors.name = "Name must be 100 characters or less";
+        }
+
+        if(data.url === ""){
+            errors.url = "URL is required";
+        }
+
+
+        return errors;
     }
 
-    const initialState = {
-        isp:{
-            id: "",
-            name: "",
-            url: "",
-            maps: "",
-            categories: 0,
-        },
-        update: false,
-        isps: [],
-    }
 
     function nameLength(text){
+
+        if(!text) return text;
+        
         return text.length <= 100;
     }
 
-    const ispReducer = (state, action) => {
+    function ispObjFilter(name, value, obj){
 
-        const data = JSON.parse(JSON.stringify(state));
-
-        switch(action.type){
-
-            case FIELDS.NAME:
-                
-                if(nameLength(action.payload)){
-                    data.isp.name = action.payload;
-                }
-                return data;
-
-            case FIELDS.URL:
-                
-                data.isp.url = action.payload;
-                
-                return data;
-
-            case FIELDS.MAPS:
-                
-                data.isp.maps = action.payload;
-                
-                return data;
-
-            case FIELDS.UPDATE:
-
-                const current_isps = [...data.isps]; 
-                console.log(current_isps)
-                const filtered_isps = data.isps.filter((isp) => isp.id !== action.payload.id);
-                console.log(filtered_isps)
-                const current_ips_length = current_isps.length;
-                const filtered_isps_length = filtered_isps.length;
-
-                if(current_ips_length > filtered_isps_length){
-                    data.isps = [...filtered_isps, action.payload];
-                }
-                
-                
-                return data;
-
-            case FIELDS.ISPS:
-
-                if(action.payload){
-                    data.isps = [...action.payload];
-                }
-
-                return data;
-
-            case FIELDS.LOAD:
-
-                if(!action.payload){
-                    return data
-                }
-                data.isp.id = action.payload.id;
-                data.isp.name = action.payload.name;
-                data.isp.url = action.payload.url;
-                data.isp.maps = action.payload.maps;
-                data.isp.categories = action.payload.categories;
-                
-                return data;
-
-            default:
-                return state;
+        if(name === "name"){
+            
+            if(nameLength(value)){
+                obj[name] = value;
+            }
+        
+        }else{
+            obj[name] = value;
+        
         }
+
+
+        return obj;
+
+    }
+
+    function duplicateName(value, errors){
+        
+        if(value){
+            errors.nameExists = "Name already exists";
+        }
+
+        return errors;
+    }
+
+    function duplicateNameCurrentValue(current, name, value, errors){
+
+        if(!name || name.length === 0) return errors;
+
+        if(current !== name && value){
+            
+            errors.nameExists = "Name already exists";
+        }
+
+        return errors;
+
+    }
+
+    function duplicateURL(value, errors){
+        
+        if(value){
+            errors.url = "Url already exists";
+        }
+
+        return errors;
+    }
+
+    function duplicateNameCurrentUrl(current, url, value, errors){
+        
+        if(!url || url.length === 0) return errors;
+
+        if(current !== url && value){
+        
+            errors.url = "Url already exists";
+        }
+
+        return errors;
+    }
+
+    function duplicateMap(value, errors){
+        
+        if(value){
+            errors.mapExists = "Maps already exists";
+        }
+
+        return errors;
+    }
+
+    function duplicateNameCurrentMap(current, map, value, errors){
+        
+        if(!map || map.length === 0) return errors;
+
+        if(current !== map && value){
+        
+            errors.maps = "Maps already exists";
+        }
+
+        return errors;
+
     }
 
     function ispUpdate(data, newData){
         
-        if(data.isp === newData.isp){
+        if(data.name === newData.name){
             
-            if(data.isp === newData.isp){
+            if(data.url === newData.url){
                 
                 if(data.maps === newData.maps){
                     
@@ -124,10 +142,21 @@ function useISP() {
         return true;
     }
 
+
+    function removeHttp(url){
+        return url.replace(/^https?:\/\//, '');
+    }
+    
+
     return({
-        FIELDS,
-        initialState,
-        ispReducer,
+        checkForErrors,
+        duplicateName,
+        duplicateNameCurrentValue,
+        duplicateURL,
+        duplicateNameCurrentUrl,
+        duplicateMap,
+        duplicateNameCurrentMap,
+        ispObjFilter,
         ispUpdate,
         validUpdate,
     })

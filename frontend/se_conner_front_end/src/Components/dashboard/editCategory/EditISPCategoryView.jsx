@@ -1,17 +1,17 @@
-import React from "react";
+import React, {useReducer} from "react";
+import { useParams } from "react-router-dom";
 import Header from "../../header/Header";
 import EditISPCategoryTable from "./EditISPCategoryTable";
-import CategoryOptions from "./CategoryOptions";
+import '../../../css/table/table.css'
 
-
-function EditISPCategoryView({data}){
-
+function EditISPCategoryView({}){
+    const {id} = useParams();
+    
     return(
         <div>
-            <Header />
-            <div>
-                <CategoryOptions data={data} />
-                <EditISPCategoryTable />
+            <Header/>
+            <div className="container">
+                <EditISPCategoryTable id={id}/>
             </div>
         </div>
     )

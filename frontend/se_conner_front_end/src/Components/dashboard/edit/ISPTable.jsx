@@ -1,17 +1,15 @@
 import React, {useEffect, useReducer} from 'react';
 import ISPTableHead from './ISPTableHead';
 import ISPTableBody from './ISPTableBody';
-import useISP from '../../../hooks/useISP';
 import useHttp from '../../../hooks/useHttp';
-
+import { ispActions } from '../../../store/ispStore';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ISPTable() {
     const {httpRequest} = useHttp();
-    const {initialState, ispReducer, FIELDS} = useISP();
-    const [ispData, dispatchIspData] = useReducer(ispReducer, initialState);
+    const dispatch = useDispatch();
+    const ispData = useSelector(state=>state.ispData);
 
-
-    const reset = () => dispatchIspData({type: FIELDS.UPDATE});
 
     useEffect(() => {
 
@@ -23,7 +21,7 @@ function ISPTable() {
         function applyData(res){
             
             if(res.status === 200){
-                dispatchIspData({type: FIELDS.ISPS, payload: res.data.data});
+                dispatch(ispActions.setIspData(res.data));
             }
         }
 
@@ -37,9 +35,9 @@ function ISPTable() {
         <table>
             <ISPTableHead />
             <ISPTableBody   
-                isps={ispData.isps}
-                dispatch={dispatchIspData}
-                data={ispData.isp}
+                isps={ispData.ispData}
+                dispatch={dispatch}
+                actions={ispActions}
             />
         </table>
     )

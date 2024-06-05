@@ -1,29 +1,31 @@
 import React, {useMemo} from "react";
 import useHttp from "../../../hooks/useHttp";
-import useISP from "../../../hooks/useISP";
 
 
 
-function NewISPActions({isp, reset}) {
+
+function NewISPActions({isp, reset, errors, dispatch, actions}) {
     const {httpRequest} = useHttp();
-    const {validUpdate} = useISP();
-    const valid = useMemo(()=>validUpdate(isp), [isp]);
+    const valid = useMemo(()=>Object.keys(errors).length === 0, [errors]);
     function createISP(e){
 
         e.preventDefault();
         
+        const ispObj = {...isp};
+        reset();
+
         const configRequest = {
             method: "POST",
             url: "api/v1/isp",
-            data: isp
+            data: ispObj
         }
 
         function applyData(res){
 
             if(res.status === 200){
-                reset();
+                console.log(res.data);
+                dispatch(actions.addISP(res.data));
             }
-            console.log(res);
         }
 
         (async()=>{
@@ -35,7 +37,7 @@ function NewISPActions({isp, reset}) {
     return(
         <td colSpan={2}>
             <button 
-                    className="actions"
+                    className="actions update"
                     disabled={!valid}
                     onClick={(e)=>createISP(e)}
                     >Create</button>

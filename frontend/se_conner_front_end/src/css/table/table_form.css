@@ -204,3 +204,7 @@
     background-color: rgb(211, 211, 211, 1);
 }
 
+.errors{
+    color: darkred;
+    font-size: 1.25vh;
+}

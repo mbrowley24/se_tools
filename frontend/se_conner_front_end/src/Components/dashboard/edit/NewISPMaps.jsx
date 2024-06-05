@@ -1,14 +1,47 @@
-import React from "react";
+import React, {useEffect} from "react";
 import TextField from "../../form/TextField";
-import useISP from "../../../hooks/useISP";
+import useHttp from "../../../hooks/useHttp";
 
-function NewISPMaps({isp, inputChange}) {
-    const {FIELDS} = useISP();
+function NewISPMaps({data, inputChange, errors, setExists, exists}) {
+    const {httpRequest} = useHttp();
+    
+    useEffect(()=>{
 
+        if(exists === null || exists === undefined) return
+
+        const checkMaps  = setTimeout(()=>{
+            
+            const configRequest = {
+                url: `api/v1/isp/validate/check/map?map=${data}`,
+                method: "GET"
+            }
+
+            function applyData(res){
+                // console.log(res);
+                if(res.status === 200){
+                    
+                    setExists(res.data);
+                }
+            }
+    
+
+            (async()=>{
+                await httpRequest(configRequest, applyData);
+            })();
+
+        }, 100);
+    
+
+        return () => {
+            clearTimeout(checkMaps);
+        }
+
+    },[data]);
     
     return(
         <td>
-            <TextField type={'text'} name={FIELDS.MAPS} value={isp.maps} onChange={inputChange} />
+            <TextField type={'text'} name={"maps"} value={data} onChange={inputChange} />
+            {errors.maps && <p className="errors">{errors.maps}</p>}
         </td>
     )
 }

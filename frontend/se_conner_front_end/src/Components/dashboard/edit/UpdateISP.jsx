@@ -1,27 +1,28 @@
-import React, {useMemo} from "react";
+import React from "react";
 import useHttp from "../../../hooks/useHttp";
-import useISP from "../../../hooks/useISP";
-import { dispatch } from "d3";
 
 
 
-function UpdateISP({isp, ispData, dispatch}) {
+
+
+function UpdateISP({data, dispatch, update, actions}) {
     const {httpRequest} = useHttp();
-    const {ispUpdate, FIELDS} = useISP();
-    const updateISP = useMemo(()=>ispUpdate(isp, ispData.isp), [ispData]);
     
-    function update(e){
+    
+    function submit(e){
         e.preventDefault();
 
         const configRequest = {
             url: "api/v1/isp",
             method: "PUT",
-            data: ispData.isp
+            data: data
         }
 
         function applyData(res){
+
             if(res.status === 200){
-                dispatch({type: FIELDS.UPDATE, payload: res.data.data})
+                console.log(res.data);    
+                dispatch(actions.updateISP(res.data))
                 
             }
         }
@@ -36,8 +37,8 @@ function UpdateISP({isp, ispData, dispatch}) {
         <td>
             <button 
                 className="actions update"
-                disabled={!updateISP}
-                onClick={(e)=>update(e)}
+                disabled={!update}
+                onClick={(e)=>submit(e)}
                 >Update</button>
             <button className="actions">Delete</button>
         </td>
