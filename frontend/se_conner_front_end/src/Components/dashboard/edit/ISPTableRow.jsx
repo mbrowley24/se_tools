@@ -7,7 +7,7 @@ import UpdateISP from "./UpdateISP";
 import useISP from "../../../hooks/useISP";
 
 function ISPTableRow({isp, dispatch, actions}) {
-
+    
     const [categoryExists, setCategoryExists] = useState(false);
     const [urlExists, setUrlExists] = useState(false);
     const [mapExists, setMapExists] = useState(false);

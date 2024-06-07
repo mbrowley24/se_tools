@@ -22,7 +22,7 @@ function EditISPServicesView(){
         }
 
         function applyData(res){
-            console.log(res)
+            
             if(res.status === 200){
                 if(res.data){
                     dispatch(ispActions.setServiceData(res.data));
@@ -46,7 +46,7 @@ function EditISPServicesView(){
         <div>
             <Header/>
             <div className="container">
-                <h1>{data.category.name}</h1>
+                <h1>{data.category.name.toUpperCase()}</h1>
                 <div className="links">
                     <Link to={`/sales/isp/${data.isp.id}`}>back to categories</Link>
                 </div>

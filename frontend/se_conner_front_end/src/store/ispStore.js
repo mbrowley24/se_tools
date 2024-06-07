@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import UpdateISP from "../Components/dashboard/edit/UpdateISP";
+
 
 
 const ispData = {
@@ -11,8 +11,9 @@ const ispData = {
         name: "",
         id: "",
     },
-    ispData: [],
+    dashboardData: [],
     categoryData: [],
+    ispData: [],
     serviceData: [],    
 }
 
@@ -26,10 +27,15 @@ const ispSlice = createSlice({
             const category_list = [...state.categoryData];
             const category = {...action.payload};
 
-            const filter_list = category_list.filter(category=>category.id !== category.id); 
+            const filter_list = category_list.filter(item=>item.id !== category.id); 
             filter_list.push(category);
+            filter_list.sort((a,b)=>a.name.localeCompare(b.name));
 
             state.categoryData = [...filter_list];
+        },
+        addDashboardData(state, action) {
+
+            state.dashboardData = action.payload;
         },
         addISP(state, action) {
 
@@ -41,7 +47,7 @@ const ispSlice = createSlice({
 
             isp_list.push(action.payload);
 
-            isp_list.sort((a,b)=>a.name - b.name);
+            isp_list.sort((a,b)=>a.name.localeCompare(b.name));
 
             state.ispData = [...isp_list];
 
@@ -52,9 +58,13 @@ const ispSlice = createSlice({
 
             const filter_list = service_list.filter(service=>service.id !== new_service.id); 
             filter_list.push(new_service);
-
+            filter_list.sort((a,b)=>a.name.localeCompare(b.name));
             state.serviceData = [...filter_list];
-            console.log(JSON.parse(JSON.stringify(state)))
+            
+        },resetCategory(state) {
+            state.isp.id = "";
+            state.isp.name = "";
+            state.categoryData = [];
         },
         setIspData(state, action) {
             state.ispData = action.payload;
@@ -83,8 +93,6 @@ const ispSlice = createSlice({
             filter_list.push(isp);
 
             state.ispData = [...filter_list];
-
-            console.log(JSON.parse(JSON.stringify(state.ispData)))
         }
     }
 });

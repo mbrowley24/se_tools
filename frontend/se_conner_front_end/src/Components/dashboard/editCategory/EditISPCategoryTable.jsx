@@ -38,7 +38,7 @@ function EditISPCategoryTable({id}){
 
     return(
         <>
-            <h1>{ispData.category.name}</h1>
+            <h1>{ispData.category.name.toUpperCase()}</h1>
             <div className="links">
                 <Link to={"/sales/isp"}>Back to ISPs</Link>
             </div>

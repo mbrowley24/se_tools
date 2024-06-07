@@ -29,7 +29,7 @@ function useISP() {
 
     function nameLength(text){
 
-        if(!text) return text;
+        if(!text) return true;
         
         return text.length <= 100;
     }
@@ -55,7 +55,7 @@ function useISP() {
     function duplicateName(value, errors){
         
         if(value){
-            errors.nameExists = "Name already exists";
+            errors.name = "Name already exists";
         }
 
         return errors;
@@ -67,7 +67,7 @@ function useISP() {
 
         if(current !== name && value){
             
-            errors.nameExists = "Name already exists";
+            errors.name = "Name already exists";
         }
 
         return errors;

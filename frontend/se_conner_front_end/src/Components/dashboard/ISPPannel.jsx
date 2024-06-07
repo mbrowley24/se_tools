@@ -1,15 +1,23 @@
 import React from "react";
 import ISPTitle from "./ISPTitle";
-import ISPServices from "./ISPServices";
+import ISPCategory from "./ISPCategory";
 
 
 function ISPPannel({data}){
     
     return(
         <div className="isp_panel">
+            <ISPTitle data={data}/>
             <div className="isp">
-                <ISPTitle data={data}/>
-                <ISPServices data={data.categories}/>
+                
+                {
+                    data.categories.map((category, index)=>{
+                        
+                        return <ISPCategory key={index} data={category}/>
+                    })
+                }{
+                    data.categories.length === 0 && <div className="">No categories Listed</div>
+                }
             </div>
         </div>
     )

@@ -4,23 +4,16 @@ import React from "react";
 
 
 function ISPService({data}){
-   
+
     return(
-        <div className="services">
-            <h5 className="service_title">{data.name}</h5>
-            <ul className="service_links">
-                {data.services.map((service, index)=>{
-                    return <li key={index}>
-                        <a  className="link"
-                            href={service.link}
-                            target="_blank"
-                        >
-                            {service.name}
-                        </a>
-                    </li>
-                })}
-            </ul>
-        </div>
+        <li>
+            <a  className="link"
+                href={data.url}
+                target="_blank"
+            >
+                {data.name}
+            </a>
+        </li>
     )
 };
 export default ISPService

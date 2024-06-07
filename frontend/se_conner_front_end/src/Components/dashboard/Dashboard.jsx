@@ -1,13 +1,16 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import useHttp from "../../hooks/useHttp";
 import "../../css/dashboard/dashboard.css";
 import "../../css/spinner.css"
 import ISPPannel from "./ISPPannel";
 import Header from "../header/Header";
+import {useDispatch, useSelector} from "react-redux";
+import { ispActions } from "../../store/ispStore";
 
 function Dashboard(){
-    const [data, setData] = useState([]);
     const {httpRequest, isLoading} = useHttp();
+    const dispatch = useDispatch();
+    const data = useSelector(state=>state.ispData.dashboardData)
     useEffect(()=>{
         
         const requestConfig = {
@@ -16,10 +19,8 @@ function Dashboard(){
         }
 
         function applyData(res){
-            
             if (res.status == 200){
-                
-                // setData(res.data.data)
+                dispatch(ispActions.addDashboardData(res.data))
             }
         }
 
@@ -33,15 +34,15 @@ function Dashboard(){
             <div className="updated">
                 Last Updated: 04/01/2024
             </div>
-
             
-            {isLoading &&
+            {isLoading && data && data.length === 0 &&
                 <div className="loader_conainer">
                     <div className="loader"></div>
                 </div> 
             }
             {
                 data.map((isp, index)=>{
+    
                     return <ISPPannel key={index} data={isp}/>
                 })
             }

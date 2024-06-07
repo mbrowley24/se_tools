@@ -10,6 +10,10 @@ function ISPTable() {
     const dispatch = useDispatch();
     const ispData = useSelector(state=>state.ispData);
 
+    useEffect(() => {
+
+        
+    }), []
 
     useEffect(() => {
 

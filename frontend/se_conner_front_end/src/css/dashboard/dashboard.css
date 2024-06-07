@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 .container{
     display: block;
     margin: 0% auto;
@@ -15,8 +16,25 @@
     overflow: auto;
     
 }
-.isp_panel{
+
+.isp_category{
     display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    align-items: center;
+    height: 80%;
+    width: 15vw;
+    background-color: rgba(255, 255, 255, 0.75); /* Adjust opacity here */
+    border: 1px solid black;
+    border-radius: .35rem;
+    animation: fadeEffect infinite alternate;
+    overflow: auto;
+
+}
+
+.isp_panel{
+    display: block;
     margin-left: auto;
     margin-right: auto;
     margin-top: 1%;
@@ -30,14 +48,48 @@
     border-radius: .35rem;
     animation: fadeEffect infinite alternate;
     border: 1px solid black;
-    
+    overflow: auto;
+}
+
+.isp_services{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: start;
+    align-items: center;
+    text-align: center;
+    height: 75%;
+    width: 95%;
+}
+
+.isp_services ul{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.isp_services ul li{
+    list-style-type: none;
+}
+
+.isp_services ul li a{
+    text-transform: capitalize;
+}
+
+
+.category_name{
+    text-align: center;
+    text-transform: capitalize;
+
 }
 
 .isp{
-    height: 95%;
+    display: flex;
+    height: 75%;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: space-around;
     width: 95%;
     background-color: rgba(255, 255, 255, 0); /* Adjust opacity here */
-    /* border: 1px solid green; */
 }
 
 .question_body{
@@ -171,7 +223,7 @@
 
 @keyframes fadeEffect {
     0% {
-      opacity: 1;
+        opacity: 1;
     }
     100% {
       opacity: 0.2; /* Adjust the final opacity value as needed */

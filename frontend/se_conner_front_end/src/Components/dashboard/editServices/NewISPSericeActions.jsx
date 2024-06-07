@@ -2,8 +2,6 @@ import React, {useMemo} from "react";
 import useHttp from "../../../hooks/useHttp";
 
 
-
-
 function NewISPServiceActions({data, reset, id, errors, update, addService}){
     
     const {httpRequest} = useHttp();
@@ -23,7 +21,6 @@ function NewISPServiceActions({data, reset, id, errors, update, addService}){
 
 
         function applyData(res){
-            console.log(res);
 
             if(res.status === 200){
                 if(res.data){

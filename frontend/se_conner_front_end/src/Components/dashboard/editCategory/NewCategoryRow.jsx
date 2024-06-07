@@ -6,31 +6,21 @@ import useHttp from "../../../hooks/useHttp";
 
 function NewCategoryRow({id}){
     const {httpRequest} = useHttp();
-    
     const {validateCategory} = useISPCategory();
     const [exists, setExists] = useState(false);
     const [category, setCategory] = useState({
         name:"",
         services:0,
-    });
-    const errors = useMemo(()=>validateCategory(category),[category]);
-    const valid = useMemo(()=>{
-        const hasErrors = Object.keys(errors).length > 0;
-        
-        let isValid = true;
+    }); 
+
+    function reset(){
+        setCategory({
+            name:"",
+            services:0,
+        });
+    };
     
-        if(hasErrors){  
-            
-            isValid = false;
-
-        }else if(exists){
-            
-            isValid = false;
-        }
-
-        return isValid;
-
-    }, [errors, exists]);
+    const errors = useMemo(()=>validateCategory(category),[category]);
 
     function inputChange(e){;
         const {name, value} = e.target;
@@ -97,7 +87,8 @@ function NewCategoryRow({id}){
             {/* <td></td> */}
             <NewCategoryAction
                 data={category}
-                valid={valid}
+                reset={reset}
+                errors={errors}
                 id={id}
                 />
         </tr>

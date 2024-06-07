@@ -14,11 +14,9 @@ function NewISPName({data, inputChange, errors, exists, setExists}) {
 
     useEffect(()=>{
 
-        if(data.length === 0){
-            setExists(false);
-            return;
-        }
-        
+        if(exists === null || exists === undefined) return;
+        if(!data) return;
+        if(data === "") return;
         const checkNameInterval = setTimeout(()=>{
             
             const configRequest = {
@@ -47,9 +45,8 @@ function NewISPName({data, inputChange, errors, exists, setExists}) {
 
     return(
         <td>
-            <TextField type={'text'} name={"name"} value={data} onChange={inputChange} />
+            <TextField type={'text'} name={"name"} value={data.toUpperCase()} onChange={inputChange} />
             {errors.name && <p className="errors">{errors.name}</p>}
-            {errors.nameExists && <p className="errors">Category already exists</p>}
         </td>
     )
 }
