@@ -159,7 +159,25 @@
     margin-top: 1rem;
     padding: .15rem;
     width: 25%;
-    font-size: 75%;
+    font-size: 60%;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    border-radius: .25rem;
+    text-align: center;
+    margin-left: .5rem;
+    margin-right: .5rem;
+    margin-bottom: 1rem;
+}
+
+.delete{
+    margin-top: 1rem;
+    padding: .15rem;
+    width: 30%;
+    font-size: 60%;
+    color: white;
+    background-color: red;
+    text-overflow: ellipsis;
     text-wrap: nowrap;
     overflow: hidden;
     border-radius: .25rem;
@@ -171,8 +189,8 @@
 .update{
     margin-top: 1rem;
     padding: .15rem;
-    width: 25%;
-    font-size: 75%;
+    width: 30%;
+    text-overflow: ellipsis;
     text-wrap: nowrap;
     overflow: hidden;
     border-radius: .25rem;
@@ -187,7 +205,39 @@
 .update:disabled{
     background-color: rgb(128, 128, 128, 1);
     color: black;
+    margin-top: 1rem;
+    padding: 1%;
+    width: 30%;
+    font-size: 50%;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    border-radius: .25rem;
+    text-align: center;
+    /* margin-left: .5rem;
+    margin-right: .5rem; */
+    margin-bottom: 1rem;
+    color: white;
 }
+
+
+.reset{
+    margin-top: 1rem;
+    padding: .15rem;
+    width: 30%;
+    color: white;
+    font-size: 50%;
+    text-wrap: nowrap;
+    overflow: hidden;
+    border-radius: .25rem;
+    text-align: center;
+    margin-left: .5rem;
+    margin-right: .5rem;
+    margin-bottom: 1rem;
+    background-color: rgb(64, 64, 64, 1);
+}
+
+
 
 .actions:disabled{
     margin-top: 1rem;

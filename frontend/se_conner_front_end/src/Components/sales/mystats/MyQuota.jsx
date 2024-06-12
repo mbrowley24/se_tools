@@ -1,13 +1,13 @@
-import React, {useContext} from "react";
-import DataContext from "../../../context/dataContext";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 
 function MyQuota(){
-    const {userdata} = useContext(DataContext);
-    console.log('MyQuota', userdata.quota)
+    const dispatch = useDispatch();
+    const quota = useSelector(state => state.salesRepData.quota);
     return(
         <div>
-            <h4>${userdata.quota}</h4>
+            <h4>${quota}</h4>
         </div>
     )
 }

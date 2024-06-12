@@ -14,7 +14,6 @@ function TableHead({}){
                 <th>Rep Email</th>
                 <th>Rep Phone</th>
                 <th>Rep Role</th>
-                <th>Sales Engineer</th>
                 <th>Actions</th>
             </tr>
         </thead>

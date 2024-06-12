@@ -1,9 +1,7 @@
-import React, {useReducer, useState} from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useMemo, useState} from "react";
 import NameCell from "./NameCell";
-import useHttp from "../../../../hooks/useHttp";
 import useSalesRep from "../../../../hooks/useSalesRep";
-import "../../../../css/salesrep/newsalesrep.css"
+// import "../../../../css/salesrep/newsalesrep.css"
 import QuotaCell from "./QuotaCell";
 import EmailCell from "./EmailCell";
 import PhoneCell from "./PhoneCell";
@@ -12,56 +10,60 @@ import NewRepsCell from "./NewRepsCell";
 
 
 
-function NewSalesRepTableRow({setReset}){
-    const {assmblySalesRepReducer, salesRepInitialState, FIELDS, formatForBackend} = useSalesRep();
-    const [salesRep, dispatchRep]  = useReducer(assmblySalesRepReducer, salesRepInitialState)
-    const {httpRequest} = useHttp();
-    
-    const reset = () => dispatchRep({type: FIELDS.RESET, payload:{}})
+function NewSalesRepTableRow({}){
+    const {updateDateSalesRep, validateSalesRep} = useSalesRep();
+    const [salesRep, setSalesRep] = useState({
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        role: "",
+        quota: 0
+    })
+    const errors = useMemo(() => (validateSalesRep(salesRep)), [salesRep])
+    const reset = () => setSalesRep({
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        role: "",
+        quota: 0
+    })
+
 
     function inputChange(e){
-        //break down the event object
-        const {name, value} = e.target;
         
-        dispatchRep({type: name, payload: value})
+        const salesRepObj = updateDateSalesRep(salesRep,e);
 
-        console.log(salesRep)
+        setSalesRep(salesRepObj)
         
     }
 
-    async function submit(e){
-        e.preventDefault();
-
-        const paraseSalesRep = JSON.parse(JSON.stringify(salesRep))
-
-        const saleRepObj = formatForBackend(paraseSalesRep)
-
-        const configRequest={
-            url: "api/v1/sales/reps",
-            method: "POST",
-            data: saleRepObj
-        }
-
-        function applyData(res){
-            
-            if(res.status === 200){
-                dispatchRep({type: FIELDS.RESET, Payload:{}})
-                setReset()
-            }
-        }
-
-        await httpRequest(configRequest, applyData)
-
-    }
+    
     return(
         <tr id={"new_rep"} >
-            <NameCell value={salesRep.first_name} name={'first_name'} inputChange={inputChange}/>
-            <NameCell value={salesRep.last_name} name={"last_name"} inputChange={inputChange}/>
-            <QuotaCell value={salesRep.quota} name={"quota"} inputChange={inputChange}/>
-            <EmailCell value={salesRep.email} name={"email"} inputChange={inputChange}/>
+            <NameCell value={salesRep.first_name}
+                    name={'first_name'} 
+                    inputChange={inputChange}
+                    errors={errors['first_name']}/>
+            <NameCell value={salesRep.last_name} 
+                        name={"last_name"}
+                        inputChange={inputChange}
+                        errors={errors['last_name']}
+                        />
+            <QuotaCell value={salesRep.quota}
+                        name={"quota"} 
+                        inputChange={inputChange}
+                        errors={errors['quota']}
+                        />
+            <EmailCell value={salesRep.email} 
+                        name={"email"}
+                        inputChange={inputChange}
+                        errors={errors['email']}
+                        />
             <PhoneCell value={salesRep.phone} name={"phone"} inputChange={inputChange}/>
             <RoleCell value={salesRep.role} inputChange={inputChange} />
-            <NewRepsCell submit={submit} reset={reset}/>
+            <NewRepsCell reset={reset} errors={errors} data={salesRep}/>
         </tr>
     )
 }

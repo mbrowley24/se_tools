@@ -22,6 +22,7 @@
     white-space: nowrap;
     opacity: 0;
     transition: opacity 0.3s;
+    font-size: smaller;
 }
 
 .tooltip-container .tooltip {

@@ -3,37 +3,33 @@ import Header from "../../../header/Header";
 import Table from "./Table";
 import Modal from "../../../form/Modal";
 import DeleteSalesRep from "./DeleteSalesRep";
-import useSalesRep from "../../../../hooks/useSalesRep";
+import { useSelector } from "react-redux";
+import { salesRepActions } from "../../../../store/salesRep";
 import MyQuota from "../../mystats/MyQuota";
-import "../../../../css/salesrep/salesreptable.css";
+import "../../../../css/table/table_form.css";
 
 
 function RepTableView() {
-    const {deleteInitialState, deleteSalesRepReducer, FIELDS} = useSalesRep();
-    const [deleteRep, dispatchDeleteRep] = useReducer(deleteSalesRepReducer, deleteInitialState);
     
+    const deleteRep = useSelector(state => state.salesRepData.deleteRep);
+    const [openModal, setOpenModel] = useState(false);
+    
+    function toggleModal(){
+        setOpenModel(!openModal)
+    };
 
-    const closeModal = () => {
-        dispatchDeleteRep({type: FIELDS.CLOSE});
-    }
-
-    const openModal = (rep) => {
-        dispatchDeleteRep({type: FIELDS.UPDATE, payload: rep });
-    }
-
-    const reset = () => dispatchDeleteRep({type: FIELDS.RESET});
 
     return (
         <div>
             <Header/>
-            <div className="sales_rep_container">
+            <div className="container">
                 <h1>Sales Reps</h1>
                 <MyQuota/>
-                <Modal onClose={closeModal}
-                        isOpen={deleteRep.isOpen}
-                        children={<DeleteSalesRep reset={reset} onClose={closeModal} rep={deleteRep}/>}
+                <Modal onClose={toggleModal}
+                        isOpen={openModal}
+                        children={<DeleteSalesRep onClose={toggleModal} rep={deleteRep}/>}
                         />
-                <Table deleteRep={openModal} setReset={reset} reset={deleteRep.updated}/>
+                <Table deleteRep={openModal}/>
             </div>
         </div>
     );

@@ -1,14 +1,19 @@
 import React from 'react';
 import useHttp from '../../../../hooks/useHttp';
+import useTextTransform from '../../../../hooks/useTextTransform';
+import { useDispatch } from 'react-redux';
+import { salesRepActions } from '../../../../store/salesRep';
 import "../../../../css/salesrep/deleteSalesRep.css"
 
-function DeleteSalesRep({ rep, onClose, reset }) {
+function DeleteSalesRep({data, onClose}) {
+    const {capitialize} = useTextTransform();
     const { httpRequest } = useHttp();
+    const dispatch = useDispatch();
 
     function deleteRep(e){
         e.preventDefault();
         const configRequest = {
-            url: `api/v1/sales/reps/${rep.id}`,
+            url: `api/v1/sales-reps/${data.id}`,
             method: 'DELETE',
             responseType: 'json'
         }
@@ -16,8 +21,7 @@ function DeleteSalesRep({ rep, onClose, reset }) {
         function applyData(res){
             
             if(res.status === 200){
-                console.log('Sales Rep Deleted')
-                reset();
+                dispatch(salesRepActions.deleteRep(res.data))
             }
         }
 
@@ -26,14 +30,20 @@ function DeleteSalesRep({ rep, onClose, reset }) {
         })()
     }
 
-
     return (
-        <div className='delete_panel'>
-            <h3>Delete Sales Rep</h3>
-            <p>Are you sure you want to delete <strong>{rep.first_name} {rep.last_name}</strong> ({rep.email})?</p>
-            <div className='delete_sales_buttons'>
-                <button onClick={onClose}>Cancel</button> 
-                <button className='delete_btn' onClick={deleteRep}>Delete</button>
+
+        <div className="message">
+            <h1>Delete</h1>
+            <div>
+                <p className="message-text">
+                    Are you sure you want to delete <strong>{capitialize(data.first_name)} {capitialize(data.last_name)} ({data.email})</strong>?
+                </p>
+            </div>
+            <div>
+                <button className="delete" 
+                    onClick={(e)=>deleteRep(e)}
+                >Delete</button>
+                <button className="actions" onClick={()=>onClose()}>Cancel</button>
             </div>
         </div>
     )

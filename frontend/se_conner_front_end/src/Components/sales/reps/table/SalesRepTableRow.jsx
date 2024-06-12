@@ -1,27 +1,28 @@
-import React, {useMemo, useState} from "react";
-import {Link} from "react-router-dom";
+import React, {useEffect, useMemo, useState} from "react";
+
 import useSalesRep from "../../../../hooks/useSalesRep";
-import RoleSelection from "../new/RoleSelection";
-import TextField from "../../../form/TextField";
-import EmailField from "../new/EmailField";
-import Modal from "../../../form/Modal";
-import DeleteSalesRep from "./DeleteSalesRep";
+import EmailCell from "./EmailCell";
+import NameCell from "./NameCell";
+import PhoneCell from "./PhoneCell";
+import QuotaCell from "./QuotaCell";
+import RoleCell from "./RoleCell";
+import SalesRepActions from "./SalesRepActions";
+import SalesEngCell from "./SalesEngCell";
 
-function SalesRepTableRow({rep, deleteRep}){
-    
-    const {addCommas, assmblySalesRepObj, hasChanged, phoneNumberFormat, validSalesRep} = useSalesRep();
-
+function SalesRepTableRow({rep}){
+    const {hasChanged, updateDateSalesRep, validateSalesRep} = useSalesRep();
     const [salesRep, setSalesRep] = useState({
         id: rep.id,
-        first_name: rep.first_name,
-        last_name: rep.last_name,
-        email: rep.email,
-        phone: rep.phone,
-        role: rep.role,
-        quota: rep.quota,
-        sales_engineer: rep.sales_engineer
+        first_name: "",
+        last_name: "",
+        email: "",
+        phone: "",
+        role: "",
+        quota: 0,
+        sales_eng: null
     })
-
+    
+    const errors = useMemo(() => validateSalesRep(salesRep), [salesRep]);
     const resetRep = () => {
         setSalesRep({
             id: rep.id,
@@ -31,16 +32,31 @@ function SalesRepTableRow({rep, deleteRep}){
             phone: rep.phone,
             role: rep.role,
             quota: rep.quota,
-            sales_engineer: rep.sales_engineer
+            sales_engineer: {...rep.sales_eng}
         })
     }
 
-    const isValidSalesRep = useMemo(() => validSalesRep(salesRep), [salesRep]);
+    
+    useEffect(() => {
+        
+        
+        if(rep){
+            setSalesRep({
+                id: rep.id,
+                first_name: rep.first_name,
+                last_name: rep.last_name,
+                email: rep.email,
+                phone: rep.phone,
+                role: rep.role,
+                quota: rep.quota,
+                sales_engineer: {...rep.sales_eng},
+            })
+        }           
+        
+    }, [rep])
+
     const update = useMemo(() => hasChanged(salesRep, rep) , [salesRep, rep]);
-    const [valid, setValid] = useState({
-        email: false,
-        role: false
-    });
+    
 
 
     function inputChange(e){
@@ -48,44 +64,38 @@ function SalesRepTableRow({rep, deleteRep}){
         const {name, value} = e.target;
         console.log(name, value)
         //create a new object with the new value
-        const saleRepObj = assmblySalesRepObj(salesRep, value, name);
+        const saleRepObj = updateDateSalesRep(salesRep,e);
         //set state
-        console.log(saleRepObj)
+        
         setSalesRep(saleRepObj)
     }
-
+    
     return(
-        <>
-            
-            <tr key={rep.id}>
-                <td><TextField name={"first_name"} value={salesRep.first_name} onChange={inputChange}/></td>
-                <td><TextField name={"last_name"} value={salesRep.last_name} onChange={inputChange}/></td>
-                <td><TextField value={`$${addCommas(salesRep.quota)}`} onChange={inputChange}/></td>
-                <td><EmailField inputChange={inputChange} 
-                                email={salesRep.email}
-                                valid={valid}
-                                setValid={setValid}
-                                />
-                </td>
-                <td>{<TextField name={'phone'} value={phoneNumberFormat(salesRep.phone)} onChange={inputChange}/>}</td>
-                <td><RoleSelection data={salesRep.role} 
-                                    validIsRole={setValid}
-                                    inputChange={inputChange}/></td>
-                <td>{salesRep.sales_engineer}</td>
-                <td>
-                    {
-                        update && <>
-                        <button>Update</button>
-                        <button onClick={resetRep}>Reset</button>
-                        </> 
-                    }
-                    {
-                        !update && <button onClick={()=>deleteRep(salesRep)}>Delete</button>
-                    }
-                </td>
-            </tr>
-            
-        </>
+        
+        <tr>
+            <NameCell value={salesRep.first_name}
+                name={'first_name'} 
+                inputChange={inputChange}
+                errors={errors['first_name']}/>
+            <NameCell value={salesRep.last_name} 
+                        name={"last_name"}
+                        inputChange={inputChange}
+                        errors={errors['last_name']}
+                        />
+            <QuotaCell value={salesRep.quota}
+                        name={"quota"} 
+                        inputChange={inputChange}
+                        errors={errors['quota']}
+                        />
+            <EmailCell value={salesRep.email}   
+                        name={"email"}
+                        inputChange={inputChange}
+                        errors={errors['email']}
+                        />
+            <PhoneCell value={salesRep.phone} name={"phone"} inputChange={inputChange}/>
+            <RoleCell value={salesRep.role} inputChange={inputChange} />
+            <SalesRepActions data={salesRep} errors={errors} update={update} resetRep={resetRep}/>
+        </tr>
         
     )
 }

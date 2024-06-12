@@ -1,26 +1,28 @@
 import React, {useEffect, useState} from "react";
 import useHttp from "../../../../hooks/useHttp";
-
-
+import { useDispatch, useSelector } from "react-redux";
+import { salesRepActions } from "../../../../store/salesRep";
 
 function RoleSelection({inputChange, data, validIsRole, label}){
     const {httpRequest} = useHttp();
-    const [roles, setRoles] = useState([]);
+    const salesRoleData = useSelector(state => state.salesRepData);
+    const dispatch = useDispatch();
     
     useEffect(() => {
 
+        if(salesRoleData.roles.length > 0) return;
+
         const config = {
-            url: "api/v1/sales/roles",
+            url: "api/v1/salesRepRoles",
             method: "GET",
         }
 
         function applyData(res){
 
-
             if(res.status === 200){
                 
-                if(res.data.data){
-                    setRoles(res.data.data)
+                if(res.data){
+                    dispatch(salesRepActions.setRoles(res.data));
                 }
             }
         }
@@ -33,10 +35,10 @@ function RoleSelection({inputChange, data, validIsRole, label}){
     },[])
 
     useEffect(() => {
-        console.log(data)
+        
         if(data !== ""){
             if(validIsRole){
-                const valid = roles.filter(role => role.value === data);
+                const valid = salesRoleData.roles.filter(role => role.value === data);
                 validIsRole((prev) =>{
                     return {...prev, role: valid.length > 0}
                 })
@@ -54,7 +56,7 @@ function RoleSelection({inputChange, data, validIsRole, label}){
             >
                 <option value="">Select Role</option>
                 {
-                    roles.map((role, index) => {
+                    salesRoleData.roles.map((role, index) => {
                         return <option key={index} value={role.value}>{role.name}</option>
                     })
                 }

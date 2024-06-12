@@ -3,13 +3,14 @@ import useSalesRep from "../../../../hooks/useSalesRep";
 import TextField from "../../../form/TextField";
 import TooltipError from "../../../form/ToolTipError";
 
-function NameCell({value, inputChange, name}){
+function NameCell({value, inputChange, name, errors}){
     const {nameValidation} = useSalesRep();
-    const validName = useMemo(() => nameValidation(value) || value === "", [value])
+    const validName = useMemo(() => errors? true : false, [errors]);
     return(
         <td>
-            <TooltipError text="Must be between 2 and 75 Charters" show={!validName}>
+            <TooltipError text={errors} show={validName}>
                 <TextField name={name} value={value} onChange={inputChange}/>
+                <p className="errors">{value.length === 0? "required" : ""}</p>
             </TooltipError>
         </td>
     )

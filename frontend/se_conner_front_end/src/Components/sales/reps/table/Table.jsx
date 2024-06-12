@@ -1,36 +1,30 @@
 import React, {useContext, useEffect, useState} from "react";
 import TableHead from "./TableHead";
 import TableBody from "./TableBody";
-import DataContext from "../../../../context/dataContext";
+import { useDispatch, useSelector } from "react-redux";
+import { salesRepActions } from "../../../../store/salesRep";
 import useHttp from "../../../../hooks/useHttp";
 
 
 
-function Table({deleteRep, reset, setReset}){
-    const {userdata, dispatchUser, FIELDS} = useContext(DataContext);
-    const [reps, setReps] = useState([]);
+function Table({}){
+    const dispatch = useDispatch();
     const {httpRequest} = useHttp();
-
+    const reps = useSelector(state => state.salesRepData.reps);
+    
     useEffect(() => {
-        console.log('Table useEffect')
+        
         const configRequest={
-            url: 'api/v1/sales/reps',
+            url: 'api/v1/sales-reps',
             method: 'GET',
             responseType: 'json'
         }
 
         function applyData(res){
-            
             if(res.status === 200){
                 
-                if(res.data && res.data.data && res.data.data.length > 0){
-                    
-                    setReps(res.data.data)
+                dispatch(salesRepActions.addReps(res.data));
                 
-                }else{
-                    console.log('No Sales Reps')
-                    setReps([])
-                }
             }
         }
 
@@ -38,31 +32,13 @@ function Table({deleteRep, reset, setReset}){
             await httpRequest(configRequest, applyData)
         })()
 
-    },[reset])
+    },[])
 
-    useEffect(() => {
-
-        if (!reps || reps.length === 0){
-            dispatchUser({type: FIELDS.QUOTA, payload: 0})
-            return;
-        }
-
-        let quota = 0;
-
-        for(let i = 0; i < reps.length; i++){
-            
-            console.log('quota', reps[i].quota)
-
-            quota += reps[i].quota
-        }
-        
-        dispatchUser({type: FIELDS.QUOTA, payload: quota})
-    },[reps])
     
     return(
         <table>
             <TableHead/>
-            <TableBody reps={reps} setReset={setReset} deleteRep={deleteRep}/>
+            <TableBody reps={reps}/>
         </table>
     )
 }

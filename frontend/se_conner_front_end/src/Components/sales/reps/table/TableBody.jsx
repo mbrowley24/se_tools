@@ -1,23 +1,19 @@
-import React, {useState} from "react";
+import React from "react";
 import SalesRepTableRow from "./SalesRepTableRow";
 import NewSalesRepTableRow from "./NewSalesRepTableRow";
 
 
 
 
-function TableBody({reps, deleteRep, setReset}){
+function TableBody({reps}){
     
-    
-
-    
-
     return(
         <tbody>
-            {reps && reps.length > 0 && reps.map(rep => (
-                <SalesRepTableRow rep={rep} key={rep.id} deleteRep={deleteRep}/>
+            {reps.length > 0 && reps.map(rep => (
+                <SalesRepTableRow rep={rep} key={rep.id}/>
             ))}
             {reps && reps.length === 0 && <tr><td colSpan="8">No Reps Found</td></tr>}
-            <NewSalesRepTableRow setReset={setReset}/>
+            <NewSalesRepTableRow/>
         </tbody>
     )
 };

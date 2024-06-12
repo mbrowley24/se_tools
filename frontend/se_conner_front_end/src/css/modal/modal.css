@@ -13,6 +13,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 
 .modal-content {
@@ -32,4 +33,46 @@
     border: none;
     cursor: pointer;
     font-size: 20px;
+}
+
+.message {
+    border-radius: .25rem;
+    background-color: rgba(64, 64, 64, 0.1);
+    height: 30vh;;
+}
+
+.message-text {
+    margin-bottom: 1%;
+}
+
+.message div .delete{
+    margin-top: 1rem;
+    padding: .15rem;
+    width: 25%;
+    font-size: 100%;
+    color: white;
+    background-color: red;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    border-radius: .25rem;
+    text-align: center;
+    margin-left: .5rem;
+    margin-right: .5rem;
+    margin-bottom: 1rem;
+}
+
+.message div .actions{
+    margin-top: 1rem;
+    padding: .15rem;
+    width: 25%;
+    font-size: 100%;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    border-radius: .25rem;
+    text-align: center;
+    margin-left: .5rem;
+    margin-right: .5rem;
+    margin-bottom: 1rem;
 }
