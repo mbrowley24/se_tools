@@ -1,46 +1,7 @@
-import React,{useEffect} from "react";
-import useHttp from "../../../hooks/useHttp";
-import { useDispatch } from "react-redux";
-import { companyActions } from "../../../store/company";
+import React from "react";
 
 
 function CompanyNameCell({errors, inputChange, name, value}){
-    const {httpRequest} = useHttp();
-    const dispatch = useDispatch();
-    useEffect(()=>{
-
-        if(value.length === 0) return
-
-        const checkName = setTimeout(()=>{
-            const configRequest = {
-                url: 'api/v1/companies/check/name',
-                method: 'POST',
-                data: {name: value},
-            };
-
-            function applyData(res){
-
-                if(res.status === 200){
-                    const  payload = {
-                        update: res.data.payload,
-                        errors: res.data.errors                    
-                    }
-
-                    dispatch(companyActions.setNameExistsError(payload));
-                }
-            }
-
-            (async () => {
-                await httpRequest(configRequest, applyData)
-            })();
-
-        }, 100);
-
-
-        return ()=>{
-            clearTimeout(checkName);
-        }
-    }, [value]);
 
 
     return(

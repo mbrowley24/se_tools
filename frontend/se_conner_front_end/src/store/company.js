@@ -164,7 +164,7 @@ const ispSlice = createSlice({
         setCompanies(state, action){
 
             const data = JSON.parse(JSON.stringify(action.payload));
-
+            console.log(data);
             state.page.empty = data.empty;
             state.page.first = data.first;
             state.page.last = data.last;

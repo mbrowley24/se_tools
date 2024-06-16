@@ -8,6 +8,7 @@ function CompanyTableBody({data}){
         <tbody>
             {
                 data && data.companies.map((company, index) => {
+                    console.log(company);
                     return(
                         <CompanyTableRow key={index} data={company}/>
                     )

@@ -1,7 +1,7 @@
 import React from "react";
 import Header from "../../header/Header";
 import CompanyTable from "./CompanyTable";
-import "../../../css/table/table.css";
+import "../../../css/table/table_form.css";
 
 function CompanyTableView(){
     

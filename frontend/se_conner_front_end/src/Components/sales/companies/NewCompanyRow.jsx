@@ -1,6 +1,4 @@
-import React, {useMemo, useState} from "react";
-import useCompany from "../../../hooks/useCompany";
-import TextField from "../../form/TextField";
+import React, {useEffect} from "react";
 import useHttp from "../../../hooks/useHttp";
 import { useDispatch } from "react-redux";
 import { companyActions } from "../../../store/company";
@@ -48,6 +46,41 @@ function NewCompanyRow({data, errors}){
         })();
 
     }
+
+    useEffect(()=>{
+
+        if(data.name.length === 0) return
+
+        const checkName = setTimeout(()=>{
+            const configRequest = {
+                url: 'api/v1/companies/check/name',
+                method: 'POST',
+                data: {name: data.name},
+            };
+
+            function applyData(res){
+
+                if(res.status === 200){
+                    const  payload = {
+                        update: res.data.payload,
+                        errors: res.data.errors                    
+                    }
+
+                    dispatch(companyActions.setNameExistsError(payload));
+                }
+            }
+
+            (async () => {
+                await httpRequest(configRequest, applyData)
+            })();
+
+        }, 100);
+
+
+        return ()=>{
+            clearTimeout(checkName);
+        }
+    }, [data.name]);
     
     function inputChange(e){
         

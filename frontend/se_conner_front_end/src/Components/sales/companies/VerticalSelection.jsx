@@ -53,7 +53,7 @@ function VerticalSelection({label, name, value, onChange, errors}){
                     })
                 }
             </select>
-            {errors.vertical && <p className="errors">{errors.vertical}</p>}
+            {errors && errors.vertical && <p className="errors">{errors.vertical}</p>}
         </>
     )
 };
