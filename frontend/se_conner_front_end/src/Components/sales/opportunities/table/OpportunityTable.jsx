@@ -18,7 +18,7 @@ function OpportunityTable({}){
         function applyData(res){
             console.log(res);
             if(res.data.data.items){
-                setOpportunities(res.data.data.items);
+                setOpportunities(res.data);
             }
         }
 

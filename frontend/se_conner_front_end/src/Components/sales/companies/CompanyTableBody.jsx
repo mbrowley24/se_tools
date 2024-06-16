@@ -7,16 +7,16 @@ function CompanyTableBody({data}){
     return(
         <tbody>
             {
-                data.map((company, index) => {
+                data && data.companies.map((company, index) => {
                     return(
                         <CompanyTableRow key={index} data={company}/>
                     )
                 })
             }
             {
-                data.length === 0 && <tr><td colSpan="8">No companies found</td></tr>
+                data && data.companies.length === 0 && <tr><td colSpan="8">No companies found</td></tr>
             }
-            <NewCompanyRow/>
+            <NewCompanyRow data={data.newCompany} errors={data.errors}/>
         </tbody>
     )
 }

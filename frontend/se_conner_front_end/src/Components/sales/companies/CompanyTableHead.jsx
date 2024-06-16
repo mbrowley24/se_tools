@@ -7,10 +7,10 @@ function CompanyTableHead(){
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Vertical</th>
                 <th>Opportunities</th>
                 <th>Contacts</th>
-                <th>Value Won</th>
-                <th>Value Lost</th>
+                <th>Close %</th>
                 <th>Value Potential</th>
                 <th>Updated</th>
                 <th>Actions</th>

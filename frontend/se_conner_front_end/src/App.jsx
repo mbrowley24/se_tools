@@ -16,6 +16,7 @@ import CompanyTableView from './Components/sales/companies/CompanyTableView'
 import ISPEdit from './Components/dashboard/edit/ISPEdit';
 import EditISPCategoryView from './Components/dashboard/editCategory/EditISPCategoryView';
 import EditISPServicesView from './Components/dashboard/editServices/EditISPServicesView';
+import CompanyView from './Components/sales/companies/companyForm/CompanyView';
 
 function App() {
 
@@ -49,10 +50,11 @@ function App() {
               </Route>
               <Route path={"companies"}>
                 <Route path={''} element={<CompanyTableView/>}/>
+                <Route path={':id'} element={<CompanyTableView/>}/>
               </Route>
               <Route path={"isp"}>
                 <Route path={''} element={<ISPEdit/>}/>
-                <Route path={':id'} element={<EditISPCategoryView/>}/>
+                <Route path={':id'} element={<CompanyView/>}/>
                 <Route path={'categories/:id'} element={<EditISPServicesView/>}/>
               </Route>
             </Route>
