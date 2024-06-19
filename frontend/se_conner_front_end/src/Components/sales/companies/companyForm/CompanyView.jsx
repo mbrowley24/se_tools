@@ -4,6 +4,7 @@ import {useParams} from "react-router-dom";
 import Header from "../../../header/Header";
 import CompanyDetails from "./CompanyDetails";
 import useHttp from "../../../../hooks/useHttp";
+import "../../../../css/table/table_form.css";
 import {companyActions} from "../../../../store/company";
 
 
@@ -12,8 +13,11 @@ function CompanyView(){
     const dispatch = useDispatch();
     const company = useSelector(state => state.companyData.company);
     const {httpRequest} = useHttp();
+    
 
     useEffect(()=>{
+
+        if(!id) return;
 
         const configRequest = {
             url: `api/v1/companies/${id}`,
@@ -21,7 +25,6 @@ function CompanyView(){
         };
         
         function applyData(res){
-            console.log(res);
             if(res.status === 200){
                 dispatch(companyActions.setCompany(res.data));
             }

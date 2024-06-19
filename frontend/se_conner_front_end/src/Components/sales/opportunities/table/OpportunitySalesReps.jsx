@@ -1,18 +1,20 @@
 import React, {useEffect, useState} from "react";
 import useHttp from "../../../../hooks/useHttp";
-function OpportunitySalesReps({value}){
+function OpportunitySalesReps({inputChange, value}){
     const [salesReps, setSalesReps] = useState([]);
     const {httpRequest} = useHttp();
 
     useEffect(()=>{
 
         const configRequest={
-            url: "api/v1/sales/reps/options",
+            url: "api/v1/sales-reps/options",
             method: "GET",
         }
 
+        
         function applyData(res){
-            setSalesReps(res.data.data);
+            console.log(res)
+            setSalesReps(res.data);
         }
 
 
@@ -27,6 +29,7 @@ function OpportunitySalesReps({value}){
         <td>
             <select name="sales_rep"
                 value={value}
+                onChange={(e)=>inputChange(e)}   
             >
                 <option value="">Choose Sales Rep</option>
                 {

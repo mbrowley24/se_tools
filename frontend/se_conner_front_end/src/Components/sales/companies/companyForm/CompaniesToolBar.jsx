@@ -2,12 +2,18 @@ import React from "react";
 
 
 
-function CompaniesToolBar(){
+function CompaniesToolBar({toogle, value}){
     
     return(
-        <div className="">
-            <button>Save</button>
-            <button>Cancel</button>
+        <div className="tool_bar">
+            <button
+            disabled={value}
+                onClick={toogle}
+            >Opportunities</button>
+            <button
+                disabled={!value}
+                onClick={toogle}
+            >Contacts</button>
         </div>
     )
 }

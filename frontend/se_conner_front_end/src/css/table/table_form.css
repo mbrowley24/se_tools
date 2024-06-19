@@ -254,7 +254,62 @@
     background-color: rgb(211, 211, 211, 1);
 }
 
+.new_links{
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 20%;
+    border-radius: .25rem;
+    background-color: rgb(211, 211, 211, 1);
+}
+
+.new_links a{
+    color: black;
+    font-size: 1.5vh;
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+
+.new_links a:hover{
+    color: black;
+    font-weight: bold;
+}
+
 .errors{
     color: darkred;
     font-size: 1.25vh;
+}
+
+
+.tool_bar{
+    margin-top: 1rem;
+    padding: .15rem;
+    width: 20%;
+    font-size: 75%;
+    text-wrap: nowrap;
+    overflow: hidden;
+    border-radius: .25rem;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1rem;
+    background-color: rgb(64, 64, 64, 1);
+    color: white;
+}
+
+.tool_bar button{
+    border-radius: .25rem;
+    padding: .25rem;
+    margin-left: .25rem;
+    margin-right: .25rem;
+}
+
+.tool_bar button:disabled{
+    border-radius: .25rem;
+    padding: .25rem;
+    background-color: rgb(211, 211, 211, 1);
+    /* color: rgb(311, 311, 311, 1); */
+    font-weight: bold;
+    margin-left: .25rem;
+    margin-right: .25rem;
 }

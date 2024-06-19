@@ -23,6 +23,7 @@ function OpportunityTableRow({opportunity}){
         
     }
 
+    console.log(opportunityData);
     
 
     return(
@@ -38,12 +39,16 @@ function OpportunityTableRow({opportunity}){
             <OpportunityStatus
                 status={opportunityData.status}
                 update={update}
+                inputChange={inputChange}
             />
             <OpportunityClose
                 close={opportunityData.close_date}
                 update={update}
             />
-            <OpportunitySalesReps value={opportunityData.sales_rep}/>
+            <OpportunitySalesReps 
+                value={opportunityData.sales_rep}
+                inputChange={inputChange}
+                />
             <td>{opportunityData.updated}</td>
             <OpportunityActions/>
         </tr>

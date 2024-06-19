@@ -1,4 +1,5 @@
 import React, {useEffect} from "react";
+import { useNavigate } from "react-router-dom";
 import useHttp from "../../../hooks/useHttp";
 import { useDispatch } from "react-redux";
 import { companyActions } from "../../../store/company";
@@ -8,7 +9,7 @@ import CompanyNameCell from "./CompanyNameCell";
 function NewCompanyRow({data, errors}){
     const dispatch = useDispatch();
     const {httpRequest} = useHttp();
-    
+    const navigate = useNavigate();
     const reset = () => dispatch(companyActions.reset());
 
     function save(e){
@@ -22,12 +23,16 @@ function NewCompanyRow({data, errors}){
         };
         
         function applyData(res){
-            
+
             if(res.status === 200){
 
                 if(res.data.payload){
                     
-                    dispatch(companyActions.addCompany(res.data.payload));
+                    
+
+                    navigate(`/sales/companies/${payload.id}`);
+
+                    console.log("Company added");
                     
                 }
             }
@@ -36,6 +41,7 @@ function NewCompanyRow({data, errors}){
                 
                 if(res.response.data.errors){
                     dispatch(companyActions.setErrors(res.response.data.errors));
+                    
                 }
             }
             
@@ -102,7 +108,7 @@ function NewCompanyRow({data, errors}){
             </td>
             <td>
                 <button disabled={Object.keys(errors).length > 0}
-                    className="update"
+                    className="save"
                     onClick={(e) => save(e)}
                 >
                     <span className="material-symbols-outlined">

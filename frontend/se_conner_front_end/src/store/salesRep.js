@@ -109,6 +109,10 @@ const salesRepSlice = createSlice({
         setQuota(state, action) {
             state.quota = action.payload;
         },
+        setReps(state, action) {
+            console.log(action.payload)
+            state.reps = [...action.payload];
+        },
         setRoles(state, action) {
             state.roles = action.payload;
         }

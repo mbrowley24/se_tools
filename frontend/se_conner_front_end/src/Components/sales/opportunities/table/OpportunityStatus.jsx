@@ -2,7 +2,7 @@ import React, {useContext ,useMemo} from "react";
 import DataContext from "../../../../context/dataContext";
 
 
-function OpportunityStatus({status, update}){
+function OpportunityStatus({inputChange, status, update}){
     const {oppstatus} = useContext(DataContext);
 
 
@@ -10,6 +10,7 @@ function OpportunityStatus({status, update}){
         <td>
             <select 
                 value={status}
+                onChange={(e)=>inputChange(e)}
             >
                 {oppstatus && oppstatus.length > 0 && oppstatus.map((stat, index)=>{
                     return(

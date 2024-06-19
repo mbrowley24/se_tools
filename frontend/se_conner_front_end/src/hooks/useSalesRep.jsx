@@ -192,7 +192,7 @@ function useSalesRep() {
 
     function dateFormat(date){
 
-        return date.split("T")[0];
+        return date;
     }
 
     function dateValidation(date){

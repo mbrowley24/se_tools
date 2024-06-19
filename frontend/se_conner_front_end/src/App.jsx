@@ -50,11 +50,12 @@ function App() {
               </Route>
               <Route path={"companies"}>
                 <Route path={''} element={<CompanyTableView/>}/>
-                <Route path={':id'} element={<CompanyTableView/>}/>
+                <Route path={':id'} element={<CompanyView/>}/>
+                <Route path={":id/opportunities/new"} element={<NewOpportunityView/>}/>
               </Route>
               <Route path={"isp"}>
                 <Route path={''} element={<ISPEdit/>}/>
-                <Route path={':id'} element={<CompanyView/>}/>
+                {/* <Route path={':id'} element={<CompanyView/>}/> */}
                 <Route path={'categories/:id'} element={<EditISPServicesView/>}/>
               </Route>
             </Route>

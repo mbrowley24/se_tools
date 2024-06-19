@@ -32,10 +32,6 @@ const companyData = {
         potential_value: 0.00,
         close_percentage: 0,
         
-        views:{
-            contacts: false,
-            opportunities: false
-        }
     },
     newCompany:{
         name: "",
@@ -51,6 +47,7 @@ const companyData = {
         totalElements: 0,
         totalPages: 0,
     },
+    opportunityStatus:[],
     categoryData: [],
     companies: [],
     serviceData: [],
@@ -81,8 +78,20 @@ const ispSlice = createSlice({
     name: "company",
     initialState: companyData,
     reducers: {
-        addCategory(state, action){
+        addCompany(state, action){
 
+            console.log(JSON.parse(JSON.stringify(action.payload)))
+
+            const companydata = JSON.parse(JSON.stringify(action.payload));
+            state.company = JSON.parse(JSON.stringify(companydata));
+            
+            console.log(JSON.parse(JSON.stringify(state)));
+        },
+        deleteCompany(state, action){
+
+            const companies = [...state.companies];
+            const filtered = companies.filter((company) => company.id !== action.payload);
+            state.companies = [...filtered];
         },
         loadVerticals(state, action){
 
@@ -164,7 +173,7 @@ const ispSlice = createSlice({
         setCompanies(state, action){
 
             const data = JSON.parse(JSON.stringify(action.payload));
-            console.log(data);
+            
             state.page.empty = data.empty;
             state.page.first = data.first;
             state.page.last = data.last;
@@ -180,16 +189,14 @@ const ispSlice = createSlice({
                 
                 const data = JSON.parse(JSON.stringify(action.payload));
 
-                console.log(data);
-
                 state.company = {...data};
-                console.log(JSON.parse(JSON.stringify(state)));
+                //console.log(JSON.parse(JSON.stringify(state)));
         },
         setErrors(state, action){
 
             state.errors = {...action.payload};
 
-            console.log(JSON.parse(JSON.stringify(state)));
+            //console.log(JSON.parse(JSON.stringify(state)));
         },setNameExistsError(state, action){
 
             const errors = {...state.errors};
@@ -208,7 +215,14 @@ const ispSlice = createSlice({
             
             state.errors = {...errors};
             //console.log(JSON.parse(JSON.stringify(state)));
-        }
+        },setOpporunitiesStatus(state, action){
+
+            state.opportunityStatus = [...action.payload];
+        },
+        setStatuses(state, action){
+
+            state.opportunityStatus = [...action.payload];
+        },
     }
 });
 

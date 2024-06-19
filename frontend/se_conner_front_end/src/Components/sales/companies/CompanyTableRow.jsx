@@ -1,68 +1,105 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useReducer} from "react";
+import { Link } from "react-router-dom";
+import useHttp from "../../../hooks/useHttp";
 import CompanyNameCell from "./CompanyNameCell";
 import VerticalSelection from "./VerticalSelection";
 import useCompany from "../../../hooks/useCompany";
 import CompanyTableAction from "./CompanyTableAction";
-import { companyActions } from "../../../store/company";
+
 
 
 
 function CompanyTableRow({data}){
-    const {changeCompany, detectChange} = useCompany();
-    const [company, setCompany] = useState({
-        name: '',
-        vertical: '',
-        opportunities: 0,
-        contacts: 0,
-        percentage: 0,
-        open: 0,
-        updated: 0,
-        errors:{}
-    });
+
+    const {httpRequest} = useHttp();
+    const {initalCompnayState, companyReducer, detectChange} = useCompany();
+    
+    const [company, dispatchCompany] = useReducer(companyReducer, initalCompnayState);
+    
     const change = useMemo(()=>detectChange(data, company), [data, company]);
+    
     const valid = useMemo(()=>company.errors && Object.keys(company.errors).length === 0, [company]);
 
     function inputChange(e){
         const {value, name} = e.target;
-        console.log(value, name);
-        const editedCompany = {...company};
-        editedCompany[name] = value;
-        console.log(editedCompany);
-        
-        setCompany(changeCompany(editedCompany));
+
+        dispatchCompany({type: name, payload: value});
 
     }
 
-    
+    const reset = () => dispatchCompany({type:'setup', payload: data});
+
+    useEffect(()=>{
+
+        if(!data) return
+        if(!company) return
+        if(data.name.length === 0) return
+
+        const checkName = setTimeout(()=>{
+            const configRequest = {
+                url: 'api/v1/companies/check/name',
+                method: 'POST',
+                data: {name: company.name},
+            };
+
+            function applyData(res){
+
+                if(res.status === 200){
+                    const  payload = {
+                        update: res.data.payload,
+                        errors: res.data.errors,
+                        og_name: data.name,                    
+                    }
+
+                    dispatchCompany({type: 'duplicate', payload: payload});
+                    
+                }
+            }
+
+            (async () => {
+                await httpRequest(configRequest, applyData)
+            })();
+
+        }, 100);
+
+
+        return ()=>{
+            clearTimeout(checkName);
+        }
+    }, [data.name, company.name]);
 
     useEffect(()=>{
 
         if(!data) return 
 
-        const companyData = {...data, errors: {}};
+        dispatchCompany({type: 'setup', payload: data});
 
-        setCompany(companyData);
-
-
-        return ()=>{
-        }
+        return ()=>{}
 
     },[data]);
 
+    
     return(
         <tr>
-            <CompanyNameCell name={"name"} value={company?.name} inputChange={inputChange}/>
+            <CompanyNameCell name={"name"} 
+                            value={company.name}
+                            inputChange={inputChange} 
+                            errors={company.errors}/>
             <td>
-                <VerticalSelection name={'vertical'} value={company?.vertical} onChange={inputChange}/>
+                <VerticalSelection name={'vertical'}
+                                    value={company.vertical}
+                                    onChange={inputChange}
+                                    errors={company?.errors}
+                                    />
             </td>
             <td>
-                {company?.opportunities}
+                <Link to={`/sales/companies/${company?.id}`}>{company?.opportunities}</Link>
             </td>
-            <td>{company?.contacts}</td>
+            <td><Link to={`/sales/companies/${company?.id}`}>{company?.contacts}</Link></td>
             <td>{company?.percentage}</td>
-            <td>{data.open}</td>
-            <td>{data.updated}</td>
-            <CompanyTableAction edit={change} valid={valid}/>
+            <td>{company?.open}</td>
+            <td>{company?.updated}</td>
+            <CompanyTableAction edit={change} valid={valid} reset={reset} data={company}/>
         </tr>
     )
 }

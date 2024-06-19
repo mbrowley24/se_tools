@@ -13,8 +13,20 @@ function useTextTransform(){
         return text.charAt(0).toUpperCase() + text.slice(1);
     }
 
+    function capitalizeName(name){
+        if(!name || name.length === 0) return name;
+
+        const nameArray = name.split(", ");
+        const capitializedArray = nameArray.map((word)=>{
+            return capitialize(word);
+        });
+
+        return capitializedArray.join(", ");
+    }
+
     return({
-        capitialize
+        capitialize,
+        capitalizeName
     });
 }
 
