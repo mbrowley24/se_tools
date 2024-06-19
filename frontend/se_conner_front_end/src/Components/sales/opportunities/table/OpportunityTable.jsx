@@ -21,7 +21,7 @@ function OpportunityTable({data}){
 
         function applyData(res){
             
-            console.log(res)
+            //console.log(res)
             if(res.status === 200){
                 
                 dispatch(companyActions.setOpporunitiesStatus(res.data));

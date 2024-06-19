@@ -10,7 +10,7 @@ import useOpportunity from "../../../../hooks/useOpportunity";
 import useHttp from "../../../../hooks/useHttp";
 
 
-function OpportunityForm({opportunity, inputChange}){
+function OpportunityForm({id, inputChange, opportunity}){
     const navigate = useNavigate();
     const {oppValidState, validateOpp, validOpportunityReducer} = useOpportunity();
     const [validOpp, dispatchValidOpp] = useReducer(validOpportunityReducer, oppValidState);
@@ -78,6 +78,7 @@ function OpportunityForm({opportunity, inputChange}){
                 />
                 <div className="">
                     <button disabled={!canSave}>Create Opportunity</button>
+                    <button onClick={()=>navigate(`/sales/companies/${id}`)}>Cancel</button>
                 </div>
             </form>
         )

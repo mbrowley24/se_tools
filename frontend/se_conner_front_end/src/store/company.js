@@ -31,7 +31,10 @@ const companyData = {
         },
         potential_value: 0.00,
         close_percentage: 0,
-        
+    },
+    views:{
+        opportunities: true,
+        contacts: false,
     },
     newCompany:{
         name: "",
@@ -222,7 +225,16 @@ const ispSlice = createSlice({
         setStatuses(state, action){
 
             state.opportunityStatus = [...action.payload];
+        },viewOpportunities(state){
+                
+                state.views.opportunities = true;
+                state.views.contacts = false;
         },
+        viewContacts(state){
+                
+                state.views.opportunities = false;
+                state.views.contacts = true;
+        }
     }
 });
 

@@ -27,7 +27,7 @@ function OpportunityStatus({value, inputChange}){
         }
 
         function applyData(res){
-            console.log(res)
+            
             if(res.status === 200){
                 dispatch(companyActions.setStatuses(res.data));
             }

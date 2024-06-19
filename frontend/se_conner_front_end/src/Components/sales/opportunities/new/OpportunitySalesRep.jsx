@@ -30,7 +30,7 @@ function OpportunitySalesRep({value, inputChange, isValid}){
         }
 
         function applyData(res){
-            console.log(res)
+            
             if(res.data){
                 dispatch(salesRepActions.setReps(res.data))              
             }

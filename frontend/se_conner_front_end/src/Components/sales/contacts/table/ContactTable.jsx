@@ -5,7 +5,7 @@ import ContactTableBody from "./ContactTableBody";
 
 
 function ContactTable({data}){
-    console.log(data);
+    
     return(
         <table>
             <ContactTableHead/>

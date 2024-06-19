@@ -110,7 +110,7 @@ const salesRepSlice = createSlice({
             state.quota = action.payload;
         },
         setReps(state, action) {
-            console.log(action.payload)
+            
             state.reps = [...action.payload];
         },
         setRoles(state, action) {

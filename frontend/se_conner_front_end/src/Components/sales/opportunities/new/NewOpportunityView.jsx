@@ -1,4 +1,5 @@
 import React, {useReducer} from "react";
+import { useParams } from "react-router-dom";
 import OpportunityForm from "./OpportunityForm";
 import Header from "../../../header/Header";
 import useSalesRep from "../../../../hooks/useSalesRep";
@@ -8,6 +9,7 @@ import "../../../../css/opportunity/new_opportunity.css";
 
 
 function NewOpportunityView({}){
+    const {id} = useParams();
     const {initialState, opportunityReducer} = useSalesRep();
     const [opportunity, dispatchOpp] = useReducer(opportunityReducer, initialState)
 
@@ -24,6 +26,7 @@ function NewOpportunityView({}){
             <OpportunityForm
                 opportunity={opportunity}
                 inputChange={inputChange}
+                id={id}
             />
         </div>
     )

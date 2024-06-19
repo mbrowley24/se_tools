@@ -24,6 +24,9 @@ function useTextTransform(){
         return capitializedArray.join(", ");
     }
 
+
+    
+
     return({
         capitialize,
         capitalizeName
