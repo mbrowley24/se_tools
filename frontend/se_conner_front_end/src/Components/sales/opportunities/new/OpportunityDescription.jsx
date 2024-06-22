@@ -2,12 +2,8 @@ import React, {useEffect, useMemo} from "react";
 import useSalesRep from "../../../../hooks/useSalesRep";
 
 
-function OpportunityDescription({value, inputChange, isValid}){
-    const {FIELDS, descriptionValidation} = useSalesRep();
-    const valid = useMemo(()=>descriptionValidation(value), [value])
-    useEffect(()=>{
-        isValid(FIELDS.DESCRIPTION, valid)
-    }, [valid])
+function OpportunityDescription({value, inputChange, FIELDS}){
+    
 
     return(
         <div>

@@ -3,13 +3,14 @@ import React, {useState} from "react";
 
 
 
-function OpportunityName({name, update, inputChange}){
+function OpportunityName({name, inputChange, value}){
 
 
     return(
         <td>
-            <input type="text" 
-                value={name}
+            <input type="text"
+                name={name} 
+                value={value}
                 onChange={(e)=>inputChange(e)}
             />
         </td>

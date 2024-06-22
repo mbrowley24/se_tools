@@ -75,6 +75,7 @@ function checkForErrors(data){
     return errors;
 }
 
+const sortByName = (a, b) => a.name.localeCompare(b.name);
 
 
 const ispSlice = createSlice({
@@ -225,7 +226,20 @@ const ispSlice = createSlice({
         setStatuses(state, action){
 
             state.opportunityStatus = [...action.payload];
-        },viewOpportunities(state){
+        
+        },updateOpportunities(state, action){
+            
+            const opportunities = [...state.company.opportunities.content];
+            const filteredOpportunities = opportunities.filter((opportunity) => opportunity.id !== action.payload.id);
+            
+            filteredOpportunities.push(action.payload);
+            
+            filteredOpportunities.sort(sortByName);
+
+            state.company.opportunities.content = [...filteredOpportunities];
+        
+        },
+        viewOpportunities(state){
                 
                 state.views.opportunities = true;
                 state.views.contacts = false;

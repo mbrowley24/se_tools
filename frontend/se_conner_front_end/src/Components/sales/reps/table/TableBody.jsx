@@ -9,7 +9,7 @@ function TableBody({reps}){
     
     return(
         <tbody>
-            {reps.length > 0 && reps.map(rep => (
+            {reps.map(rep => (
                 <SalesRepTableRow rep={rep} key={rep.id}/>
             ))}
             {reps && reps.length === 0 && <tr><td colSpan="8">No Reps Found</td></tr>}

@@ -6,42 +6,16 @@ import OpportunityClose from "./OpportunityClose";
 import OpportunityStatus from "./OpportunityStatus";
 import OpportunitySalesRep from "./OpportunitySalesRep";
 import OpportunityDescription from "./OpportunityDescription";
-import useOpportunity from "../../../../hooks/useOpportunity";
 import useHttp from "../../../../hooks/useHttp";
 
 
-function OpportunityForm({id, inputChange, opportunity}){
+function OpportunityForm({id, inputChange, FIELDS, opportunity, errors, submit, submit_errors}){
+    
     const navigate = useNavigate();
-    const {oppValidState, validateOpp, validOpportunityReducer} = useOpportunity();
-    const [validOpp, dispatchValidOpp] = useReducer(validOpportunityReducer, oppValidState);
-    const canSave = useMemo(()=>validateOpp(validOpp), [validOpp])
     const {httpRequest} = useHttp();
-        
+    
 
-        function isValid(name, value){
-            dispatchValidOpp({type: name, payload: value})
-        }
-
-        function submit(e){
-            e.preventDefault();
-            
-            const configRequest = {
-                method: "POST",
-                url: "api/v1/opportunity",
-                data: opportunity
-            }
-
-            function applyData(res){
-                
-                if(res.status === 200){
-                    navigate("/sales/opportunities")
-                }
-            }
-
-            (async()=>{
-                await httpRequest(configRequest, applyData)
-            })()
-        }
+    
 
 
         return(
@@ -49,35 +23,47 @@ function OpportunityForm({id, inputChange, opportunity}){
                 <OpportunityName 
                     value={opportunity.name} 
                     inputChange={inputChange}
-                    isValid={isValid}
+                    FIELDS={FIELDS}
+                    errors={errors}
+                    submit_errors={submit_errors}
                     />
                 <OpportunityAmount 
-                    value={opportunity.amount} 
+                    value={opportunity.value} 
                     inputChange={inputChange}
-                    isValid={isValid}
+                    FIELDS={FIELDS}
+                    errors={errors}
+                    submit_errors={submit_errors}
                     />
                 <OpportunityClose
                     value={opportunity.close_date}
                     inputChange={inputChange}
-                    isValid={isValid}
+                    FIELDS={FIELDS}
+                    errors={errors}
+                    submit_errors={submit_errors}
                 />
                 <OpportunityStatus
                     value={opportunity.status}
                     inputChange={inputChange}
-                    isValid={isValid}
+                    FIELDS={FIELDS}
+                    errors={errors}
+                    submit_errors={submit_errors}
                 />
                 <OpportunitySalesRep
                     value={opportunity.sales_rep}
                     inputChange={inputChange}
-                    isValid={isValid}
+                    FIELDS={FIELDS}
+                    errors={errors}
+                    submit_errors={submit_errors}
                 />
                 <OpportunityDescription
                     value={opportunity.description}
                     inputChange={inputChange}
-                    isValid={isValid}
+                    FIELDS={FIELDS}
+                    errors={errors}
+                    submit_errors={submit_errors}
                 />
                 <div className="">
-                    <button disabled={!canSave}>Create Opportunity</button>
+                    <button disabled={Object.keys(errors).length > 0}>Create Opportunity</button>
                     <button onClick={()=>navigate(`/sales/companies/${id}`)}>Cancel</button>
                 </div>
             </form>

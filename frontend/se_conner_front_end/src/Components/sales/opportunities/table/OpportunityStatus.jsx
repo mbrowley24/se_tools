@@ -1,15 +1,15 @@
-import React, {useContext ,useMemo} from "react";
-import DataContext from "../../../../context/dataContext";
+import React from "react";
+import {useSelector} from "react-redux";
 
 
-function OpportunityStatus({inputChange, status, update}){
-    const {oppstatus} = useContext(DataContext);
-
+function OpportunityStatus({inputChange, name, update, value}){
+    const oppstatus = useSelector(state => state.companyData.opportunityStatus);
 
     return(
         <td>
             <select 
-                value={status}
+                value={value}
+                name={name}
                 onChange={(e)=>inputChange(e)}
             >
                 {oppstatus && oppstatus.length > 0 && oppstatus.map((stat, index)=>{

@@ -10,6 +10,7 @@ function ContactsTableBody({data}){
                     <ContactTableRow key={item.id} data={item}/>
                 )
             })}
+            {data && data.length === 0 ? <tr><td colSpan="5">No Contacts Found</td></tr> : null}
         </tbody>
     )
 }

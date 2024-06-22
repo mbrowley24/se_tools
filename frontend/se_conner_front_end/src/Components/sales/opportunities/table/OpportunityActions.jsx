@@ -1,18 +1,25 @@
 import React from "react";
+import ResetButton from "../../../form/ResetButton";
+import OpportunitySave from "./OpportunitySave";
 
 
+function OpportunityActions({opportunity, update, reset}){
 
 
-function OpportunityActions({opportunity, update}){
     return(
         <td>
             {
                 update?
-                        <button>Save</button>
+                        <>
+                            <OpportunitySave opportunity={opportunity} update={update}/>
+                            <button className="reset"
+                                onClick={()=>reset()}
+                            >Reset</button>
+                        </>
+                        
                     :
                     <>
-                        <button>Edit</button>
-                        <button>Delete</button>
+                        <button className="delete">Delete</button>
                     </>
             }
         </td>

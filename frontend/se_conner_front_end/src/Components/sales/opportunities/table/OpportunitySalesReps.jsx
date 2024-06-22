@@ -1,10 +1,18 @@
 import React, {useEffect, useState} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { salesRepActions } from "../../../../store/salesRep";
+import useTextTransform from "../../../../hooks/useTextTransform";
 import useHttp from "../../../../hooks/useHttp";
-function OpportunitySalesReps({inputChange, value}){
-    const [salesReps, setSalesReps] = useState([]);
+
+function OpportunitySalesReps({inputChange, name, value}){
+    const salesReps = useSelector(state => state.salesRepData.reps);
+    const {capitalizeName} = useTextTransform();
+    const dispatch = useDispatch();
     const {httpRequest} = useHttp();
 
     useEffect(()=>{
+
+        if(salesReps.length > 0) return;
 
         const configRequest={
             url: "api/v1/sales-reps/options",
@@ -13,8 +21,7 @@ function OpportunitySalesReps({inputChange, value}){
 
         
         function applyData(res){
-            console.log(res)
-            setSalesReps(res.data);
+            dispatch(salesRepActions.setReps(res.data));
         }
 
 
@@ -27,7 +34,7 @@ function OpportunitySalesReps({inputChange, value}){
     return(
         
         <td>
-            <select name="sales_rep"
+            <select name={name}
                 value={value}
                 onChange={(e)=>inputChange(e)}   
             >
@@ -35,7 +42,7 @@ function OpportunitySalesReps({inputChange, value}){
                 {
                     salesReps.map((rep)=>{
                         return(
-                            <option key={rep.value} value={rep.value}>{rep.name}</option>
+                            <option key={rep.value} value={rep.value}>{capitalizeName(rep.name)}</option>
                         )
                     })
                 }

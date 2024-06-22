@@ -25,6 +25,7 @@ function CompanyView(){
         };
         
         function applyData(res){
+            
             if(res.status === 200){
                 dispatch(companyActions.setCompany(res.data));
             }

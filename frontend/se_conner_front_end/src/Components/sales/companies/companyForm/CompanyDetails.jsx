@@ -6,12 +6,12 @@ import CompaniesToolBar from "./CompaniesToolBar";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { companyActions } from "../../../../store/company";
+import Pagination from "./Pagination";
 
 
 
 function CompanyDetails({data}){
     const view = useSelector(state => state.companyData.views);
-    
     
     return(
         <div className="container">
@@ -23,9 +23,10 @@ function CompanyDetails({data}){
                 </div>
                 <CompaniesToolBar action={companyActions} value={view}/>
             </div>
-            {view.opportunities &&  <OpportunityTable data={data.opportunities}/>}
+            {view.opportunities &&  <OpportunityTable data={data.opportunities.content}/>}
                 
             { view.contacts && <ContactTable data={data.contacts.content}/>}
+            <Pagination data={data.opportunities}/>
         </div>
     )
 }

@@ -2,7 +2,7 @@
 
 
 
-export const name_regex = /^[a-zA-Z]{2,75}$/;
+const name_regex = /^[a-zA-Z]{2,75}$/;
 const name_regex_input = /^[a-zA-Z]{0,75}$/;
 const description_regex = /^[a-zA-Z0-9."?()*&%$#@;'"!\/<>,:{}[\]+=_\- :&]{0,255}$/;
 const phone_regex = /^[0-9]{10}$/;
@@ -12,6 +12,17 @@ const quota_regex_input = /^[0-9]{0,15}$/;
 const quota_regex = /^[0-9]{0,15}$/;
 const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; 
 
+export const regex_map={
+    name_regex : name_regex,
+    name_regex_input : name_regex_input,
+    description_regex : description_regex,
+    phone_regex : phone_regex,
+    date_regex : date_regex,
+    phone_regex_input : phone_regex_input,
+    quota_regex_input : quota_regex_input,
+    quota_regex : quota_regex,
+    email_regex : email_regex
+}
 
 
 export function addCommas(amount){
@@ -166,6 +177,27 @@ export function quotaValidation(quota){
     }
 
     return false
+}
+
+export function checkDate(dateString){
+
+    const date = new Date(dateString);
+    const today = new Date();
+
+    if(date < today){
+        return false;
+    }
+
+    return true 
+};
+
+
+
+
+
+
+function removeLeadingZeros(quota){
+    return quota.replace(/^0+/, "");
 }
 
 export  function removePhoneFormat(phone){

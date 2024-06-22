@@ -4,10 +4,9 @@ import useSalesRep from "../../../../hooks/useSalesRep";
 import {useDispatch,  useSelector } from "react-redux";
 import { companyActions } from "../../../../store/company";
 
-function OpportunityStatus({value, inputChange}){
+function OpportunityStatus({value, inputChange, FIELDS, submit_errors}){
     const statuses = useSelector(state => state.companyData.opportunityStatus);
     const {httpRequest} = useHttp();
-    const {FIELDS} = useSalesRep();
     const dispatch = useDispatch();
 
     const valid = useMemo(()=>{
@@ -63,6 +62,7 @@ function OpportunityStatus({value, inputChange}){
                 }
             </select>
             <p className="error">{valid? "" : "Required"}</p>
+            <p className="error">{submit_errors && submit_errors.status? submit_errors.status : ""}</p>
         </div>
     )
 }

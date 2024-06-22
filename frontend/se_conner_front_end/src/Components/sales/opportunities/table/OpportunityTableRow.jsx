@@ -1,56 +1,69 @@
-import React, {useEffect, useState, useReducer} from "react";
+import React, {useEffect, useMemo, useReducer} from "react";
 import OpportunityName from "./OpportunityName";
 import OpportunityAmount from "./OpportunityAmount";
 import OpportunityStatus from "./OpportunityStatus";
 import OpportunityClose from "./OpportunityClose";
 import OpportunityActions from "./OpportunityActions";
-import useSalesRep from "../../../../hooks/useSalesRep";
+import useOpportunity from "../../../../hooks/useOpportunity";
 import OpportunitySalesReps from "./OpportunitySalesReps";
 
 function OpportunityTableRow({opportunity}){
-    const [update, setUpdate] = useState(false);
-    const {opportunityReducer, initialState, FIELDS} = useSalesRep();
+
+    const {checkForUpdate, opportunityReducer, initialState, FIELDS} = useOpportunity();
     const [opportunityData, dispatchOpp] = useReducer(opportunityReducer, initialState);
-    
+    const update = useMemo(()=>checkForUpdate(opportunity, opportunityData), [opportunity, opportunityData]);
+
+    function reset(){
+        dispatchOpp({type: FIELDS.UPDATE, payload: opportunity});
+    }
 
     useEffect(()=>{
         
-        dispatchOpp({type: FIELDS.UPDATE, payload: opportunity});
+        reset();
 
     },[opportunity])
 
     function inputChange(e){
-        
+        const {name, value} = e.target;
+        dispatchOpp({type: name, payload: value});
     }
 
-    console.log(opportunityData);
+    
     
 
     return(
         <tr>
             <OpportunityName
-                name={opportunityData.name}
+                name={FIELDS.NAME}
+                value={opportunityData.name}
                 update={update}
+                inputChange={inputChange}
             />
             <OpportunityAmount
-                amount={opportunityData.amount}
+                name={FIELDS.VALUE}
+                value={opportunityData.value}
                 update={update}
+                inputChange={inputChange}
             />
             <OpportunityStatus
-                status={opportunityData.status}
+                name={FIELDS.STATUS}
+                value={opportunityData.status}
                 update={update}
                 inputChange={inputChange}
             />
             <OpportunityClose
-                close={opportunityData.close_date}
+                name={FIELDS.CLOSE}
+                value={opportunityData.close_date}
                 update={update}
+                inputChange={inputChange}
             />
-            <OpportunitySalesReps 
+            <OpportunitySalesReps
+                name={FIELDS.SALESREP} 
                 value={opportunityData.sales_rep}
                 inputChange={inputChange}
                 />
             <td>{opportunityData.updated}</td>
-            <OpportunityActions/>
+            <OpportunityActions update={update} opportunity={opportunityData} reset={reset}/>
         </tr>
     )
 }

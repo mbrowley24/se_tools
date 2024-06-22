@@ -4,13 +4,7 @@ import useSalesRep from "../../../../hooks/useSalesRep";
 
 
 
-function OpportunityName({value, inputChange, isValid}){
-    const {FIELDS, nameValidation} = useSalesRep();
-    const valid = useMemo(()=>nameValidation(value), [value])
-    
-    useEffect(()=>{
-        isValid(FIELDS.NAME, valid)
-    }, [valid])
+function OpportunityName({value, inputChange, isValid, errors,  FIELDS, submit_errors}){
 
     return(
         <div>
@@ -20,7 +14,8 @@ function OpportunityName({value, inputChange, isValid}){
                     value={value}
                     onChange={(e)=>inputChange(e)}
                     />
-            <p className="error">{valid? "" : "Required"}</p>
+            <p className="error">{errors && errors.name? errors.name : ""}</p>
+            <p className="error">{submit_errors && submit_errors.name? submit_errors.name : ""}</p>
         </div>
     )
 }

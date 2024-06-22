@@ -1,43 +1,44 @@
-import React, {useContext, useEffect} from "react";
-import DataContext from "../../../../context/dataContext";
+import React, {useEffect, useState} from "react";
 import Header from "../../../header/Header";
 import useHttp from "../../../../hooks/useHttp";
 import OpportunityTable from "./OpportunityTable";
 import "../../../../css/opportunity/opportunity_table.css";
-import { Link } from "react-router-dom";
+
 
 
 function OpportunityTableView(){
     const {httpRequest} = useHttp();
-    const {setOppStatus} = useContext(DataContext);
+    const [opportunities, setOpportunities] = useState([]);
 
     useEffect(()=>{
-        const config ={
-            url: "api/v1/opportunity/status",
-            method: "GET",
+
+        const configRequest={
+            url:"api/v1/opportunities",
+            method:"GET"
         }
 
+
         function applyData(res){
-            setOppStatus(res.data.data);
+
+            if(res.status === 200){
+                setOpportunities(res.data);
+            }
         }
 
         (async()=>{
-            
-            await httpRequest(config, applyData);
-            
+        
+            await httpRequest(configRequest, applyData);
+        
         })()
 
-    },[])
+    }, [])
 
     return(
         <div>
             <Header/>
             <div className="opportunity_table">
                 <h1 className="">Sales Opportunities</h1>
-                <div className="new_opp">
-                    <Link to="/sales/opportunities/create" className="btn btn-primary">Create Opportunity</Link>
-                </div>
-                <OpportunityTable/>
+                <OpportunityTable data={opportunities}/>
             </div>
         </div>
     )

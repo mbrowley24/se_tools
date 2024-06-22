@@ -5,7 +5,7 @@ function useSalesRep() {
     
 
     const FIELDS ={
-        AMOUNT: "amount",
+        value: "value",
         CLOSE : "close",
         DESCRIPTION: "description",
         EMAIL: "email",
@@ -101,94 +101,6 @@ function useSalesRep() {
     
 
 
-    const initialState = {
-        name: "",
-        amount: "",
-        description: "",
-        close_date: "",
-        status: "",
-        sales_rep: "",
-        updated: ""
-    }
-    
-    function opportunityReducer(state, action){
-
-        const data = JSON.parse(JSON.stringify(state));
-
-        switch(action.type){
-
-            case FIELDS.NAME:
-
-                const name = action.payload; 
-                if(name_regex_input.test(name)){
-                    data.name = name;
-                }
-
-                return data;
-
-            case FIELDS.AMOUNT:
-        
-                const quota = removeQuotaFormat(action.payload);
-                
-                
-                if(quotaInputValidation(quota)){
-
-                    const formatted_quota = quotaInput(quota);
-                    
-
-                    data.amount = addCommas(formatted_quota);
-                }
-
-
-                return data;    
-
-            case FIELDS.DESCRIPTION:
-                    
-                const description = action.payload;
-
-                if(description_regex.test(description)){
-                    data.description = description;
-                }
-
-                return data;
-            
-            case FIELDS.CLOSE:
-
-                if(date_regex.test(action.payload)){
-                    data.close_date = action.payload; 
-                }
-
-                return data;
-
-            case FIELDS.STATUS:
-                
-                data.status = action.payload;
-
-                return data;
-            
-            case FIELDS.SALESREP:
-
-                data.sales_rep = action.payload;
-
-                return data;
-
-            case FIELDS.UPDATE:
-                
-                data.name = action.payload.name;
-                data.amount = action.payload.amount;
-                data.status = action.payload.status;
-                data.close_date = dateFormat(action.payload.close_date);
-                data.sales_rep = action.payload.sales_rep;
-                data.updated = dateFormat(action.payload.updated_at);
-                return data;
-            default:
-                return data;
-        }
-    }
-
-
-    
-    
 
     function dateFormat(date){
 
@@ -520,12 +432,10 @@ function useSalesRep() {
         formatSalesRep,
         FIELDS,
         hasChanged,
-        initialState,
         nameInput,
         nameValidation,
         phoneInput,
         phoneNumberFormat,
-        opportunityReducer,
         phoneNumberValidation,
         quotaValidation,
         salesRepInitialState,

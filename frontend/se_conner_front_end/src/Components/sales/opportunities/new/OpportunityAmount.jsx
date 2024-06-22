@@ -1,25 +1,19 @@
 import React, {useEffect, useMemo} from "react";
-import useSalesRep from "../../../../hooks/useSalesRep";
+import useOpportunity from "../../../../hooks/useOpportunity";
 
-
-
-function OpportunityAmount({value, inputChange, isValid}){
-    const {FIELDS, quotaValidation} = useSalesRep();
-    const valid = useMemo(()=>quotaValidation(value), [value])
+function OpportunityAmount({value, inputChange, errors, FIELDS, submit_errors}){
     
-    useEffect(()=>{
-        isValid(FIELDS.AMOUNT, valid)
-    }, [valid])
 
     return(
         <div>
-            <label>Amount</label>
+            <label>Value</label>
             <input type="text"
-                    name={FIELDS.AMOUNT}
+                    name={FIELDS.VALUE}
                     value={value}
                     onChange={(e)=>inputChange(e)}
                     />
-        <p className="error">{valid? "" : "Required"}</p>
+        <p className="error">{errors && errors.value? errors.value : ""}</p>
+        <p className="error">{submit_errors && submit_errors.value? submit_errors.value : ""}</p>
         </div>
     )
 }

@@ -1,14 +1,9 @@
 import React, {useEffect, useMemo} from "react";
 import useSalesRep from "../../../../hooks/useSalesRep";
 
-function OpportunityClose({value, inputChange, isValid}){
-    const {FIELDS, dateValidation} = useSalesRep();
-    const valid = useMemo(()=>dateValidation(value), [value])
+function OpportunityClose({value, inputChange, FIELDS, errors, submit_errors}){
     
-    useEffect(()=>{
-        isValid(FIELDS.CLOSE, valid)
-    }, [valid])
-
+    
     return(
         <div>
             <label>Close Date</label>
@@ -17,7 +12,8 @@ function OpportunityClose({value, inputChange, isValid}){
                 value={value}
                 onChange={(e)=>inputChange(e)}
             />
-            <p className="error">{valid? "" : "Required"}</p>
+            <p className="error">{errors && errors.close? errors.close : ""}</p>
+            <p className="error">{submit_errors && submit_errors.close? submit_errors.close : ""}</p>
         </div>
     )
 }

@@ -5,10 +5,9 @@ import useSalesRep from "../../../../hooks/useSalesRep";
 import useTextTransform from "../../../../hooks/useTextTransform";
 import {salesRepActions} from "../../../../store/salesRep";
 
-function OpportunitySalesRep({value, inputChange, isValid}){
+function OpportunitySalesRep({value, inputChange, FIELDS, errors, submit_errors}){
     const {httpRequest} = useHttp();
     const {capitalizeName} = useTextTransform();
-    const {FIELDS} = useSalesRep();
     const dispatch = useDispatch();
     const salesReps = useSelector(state=>state.salesRepData.reps);
     
@@ -16,10 +15,6 @@ function OpportunitySalesRep({value, inputChange, isValid}){
         const salesRepList = [...salesReps] 
         return salesRepList.filter(rep=>rep.value === value).length > 0
     }, [value])
-
-    useEffect(()=>{    
-        isValid(FIELDS.SALESREP, valid)
-    }, [valid])
 
 
     useEffect(()=>{
@@ -63,7 +58,8 @@ function OpportunitySalesRep({value, inputChange, isValid}){
                 }
 
             </select>
-            <p className="error">{valid? "" : "Required"}</p>
+            <p className="error">{errors && errors.sales_rep? errors.sales_rep : ""}</p>
+            <p className="error">{submit_errors && submit_errors.sales_rep? submit_errors.sales_rep : ""}</p>
         </div>
     )
 }

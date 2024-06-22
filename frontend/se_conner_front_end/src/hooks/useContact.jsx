@@ -1,4 +1,4 @@
-import { name_regex, emailValidation, phoneInput, phoneNumberValidation} from '../helper/general';
+import {emailValidation, phoneInput, phoneNumberValidation, regex_map} from '../helper/general';
 
 
 function useContact(){
@@ -6,13 +6,13 @@ function useContact(){
     function checkForErrors(data){
         let errors = {};
 
-        if(!name_regex.test(data.first_name)){
+        if(!regex_map.name_regex.test(data.first_name)){
 
             errors['first_name'] = 'Required: min of two alphanumeric characters';
         }
 
 
-        if(!name_regex.test(data.last_name)){
+        if(!regex_map.name_regex.test(data.last_name)){
             
             errors['last_name'] = 'Required: min of two alphanumeric characters';
         }

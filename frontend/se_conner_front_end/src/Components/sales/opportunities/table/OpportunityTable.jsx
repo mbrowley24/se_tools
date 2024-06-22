@@ -10,6 +10,7 @@ function OpportunityTable({data}){
     const dispatch = useDispatch();
     const statuses = useSelector(state => state.companyData.opportunityStatus);
 
+
     useEffect(()=>{
 
         if(statuses.length > 0) return;
