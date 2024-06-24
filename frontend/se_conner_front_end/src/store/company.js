@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { json } from "d3";
+
 
 
 const companyData = {
@@ -76,7 +76,7 @@ function checkForErrors(data){
 }
 
 const sortByName = (a, b) => a.name.localeCompare(b.name);
-
+const sortByLastName = (a, b) => a.last_name.localeCompare(b.last_name);
 
 const ispSlice = createSlice({
     name: "company",
@@ -227,6 +227,17 @@ const ispSlice = createSlice({
 
             state.opportunityStatus = [...action.payload];
         
+        },updateContacts(state, action){
+
+            const contacts = [...state.company.contacts.content];
+            const filtered_contacts = contacts.filter((contact) => contact.id !== action.payload.id);
+
+            filtered_contacts.push(action.payload);
+
+            filtered_contacts.sort(sortByLastName);
+
+            state.company.contacts.content = [...filtered_contacts];
+
         },updateOpportunities(state, action){
             
             const opportunities = [...state.company.opportunities.content];

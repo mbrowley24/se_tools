@@ -3,15 +3,14 @@ import useSalesRep from "../../../../hooks/useSalesRep";
 import TextField from "../../../form/TextField";
 import TooltipError from "../../../form/ToolTipError";
 
-function PhoneCell({value, inputChange, name}){
-    const {phoneNumberValidation} = useSalesRep();
-    const validEmail = useMemo(() => phoneNumberValidation(value) || value === "", [value])
+function PhoneCell({value, inputChange, name, errors}){
+    const {phoneNumberFormat} = useSalesRep();
     
     return(
         <td>
-            <TooltipError text="Enter valid Phone" show={!validEmail}>
-                <TextField name={name} value={value} onChange={inputChange}/>
-            </TooltipError>
+            
+            <TextField name={name} value={phoneNumberFormat(value)} onChange={inputChange}/>
+            <p className="errors">{errors?  errors : ""}</p>
         </td>
     )
 }

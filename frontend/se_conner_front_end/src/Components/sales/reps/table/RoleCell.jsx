@@ -4,18 +4,19 @@ import RoleSelection from "../new/RoleSelection";
 import TooltipError from "../../../form/ToolTipError";
 
 
-function NameCell({value, inputChange }){
+function RoleCell({value, inputChange,  errors}){
     const [roleValid, setRoleValid] = useState(true)
     const validRole = useMemo(() => roleValid || value === "", [value])
 
 
+
     return(
         <td>
-            <TooltipError text="select a valid role" show={!validRole}>
-                <RoleSelection data={value} inputChange={inputChange} validIsRole={setRoleValid}/>
-            </TooltipError>
+            
+            <RoleSelection data={value} inputChange={inputChange} validIsRole={setRoleValid}/>
+            <p className="errors">{errors?  errors : ""}</p>
         </td>
     )
 }
 
-export default NameCell;
+export default RoleCell;

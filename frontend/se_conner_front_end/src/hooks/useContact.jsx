@@ -1,4 +1,4 @@
-import {emailValidation, phoneInput, phoneNumberValidation, regex_map} from '../helper/general';
+import {emailValidation, phoneInput, phoneNumberValidation, regex_map, removePhoneFormat} from '../helper/general';
 
 
 function useContact(){
@@ -26,15 +26,40 @@ function useContact(){
             errors['phone'] = 'Required: valid phone number';
         }
 
-        console.log(data);
-        console.log(checkTitle(data.title));
 
         if(!checkTitle(data.title)){
-            console.log('title error');
+            
             errors['title'] = 'Required: min of two alphanumeric characters';
         }
 
         return errors
+    }
+
+
+    function change(original, updated){
+
+        if(original.first_name !== updated.first_name){
+
+            return true;
+
+        }else if(original.last_name !== updated.last_name){
+
+            return true;
+
+        }else if(original.email !== updated.email){
+            
+            return true;
+        
+        }else if(original.phone !== updated.phone){
+
+            return true;
+
+        }else if(original.title !== updated.title){
+
+            return true;
+        }
+
+        return false;
     }
 
     function checkName(name){
@@ -86,11 +111,13 @@ function useContact(){
 
 
     const contactState ={
+        id: "",
         first_name:'',
         last_name:'',
         email:'',
         phone:'',
         title:''
+
     }
 
     function contactReducer(state, action) {
@@ -108,11 +135,10 @@ function useContact(){
                     data.first_name = first_name;
                 }
 
-                console.log(data);
                 return data;
 
             case 'last_name':
-                console.log(action.payload);
+                
                 const last_name = action.payload;
 
                 if(checkName(last_name)){
@@ -139,13 +165,25 @@ function useContact(){
                 return data;
 
             case 'title':
-                console.log(action.payload);
+                
 
                 if(checkTitleInput(action.payload)){
                     data.title = action.payload;
                 }
-                console.log(data)
 
+                return data;
+            
+            case 'reset':
+                return contactState;
+
+            case "update":
+                data.title = action.payload.title;
+                data.first_name = action.payload.first_name;
+                data.last_name = action.payload.last_name;
+                data.email = action.payload.email;
+                data.phone = action.payload.phone;
+                data.id = action.payload.id;
+                
                 return data;
 
 
@@ -156,6 +194,7 @@ function useContact(){
 
 
     return({
+        change,
         checkName,
         checkForErrors,
         checkEmail,

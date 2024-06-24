@@ -3,11 +3,11 @@ import TextField from "../../../form/TextField"
 
 
 
-function ContactPhone({data, name, inputChange, value}){
+function ContactPhone({data, name, inputChange}){
 
     return(
         <td>
-            <TextField name={name} value={value} onChange={inputChange}/>
+            <TextField name={name} value={data} onChange={inputChange}/>
         </td>
     )
 }

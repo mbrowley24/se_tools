@@ -41,7 +41,7 @@ function NewRepsCell({data, reset, errors}){
 
     return(
         <td colSpan={'2'} className="">
-            <button className="update"
+            <button className="save"
             disabled={valid}
                 onClick={(e)=> submit(e)}
             >

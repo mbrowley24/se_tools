@@ -2,11 +2,11 @@ import React from "react";
 import TextField from "../../../form/TextField";
 
 
-function  ContactNameCell({name, inputChange, value}){
+function  ContactNameCell({name, inputChange, data}){
 
     return(
         <td>
-            <TextField name={name} value={value} onChange={inputChange}/>
+            <TextField name={name} value={data} onChange={inputChange}/>
         </td>
     )
 }

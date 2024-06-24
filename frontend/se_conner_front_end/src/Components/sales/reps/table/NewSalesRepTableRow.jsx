@@ -61,8 +61,12 @@ function NewSalesRepTableRow({}){
                         inputChange={inputChange}
                         errors={errors['email']}
                         />
-            <PhoneCell value={salesRep.phone} name={"phone"} inputChange={inputChange}/>
-            <RoleCell value={salesRep.role} inputChange={inputChange} />
+            <PhoneCell value={salesRep.phone} 
+                        name={"phone"}
+                        inputChange={inputChange}
+                        errors={errors['phone']}
+                        />
+            <RoleCell value={salesRep.role} inputChange={inputChange} errors={errors['role']} />
             <NewRepsCell reset={reset} errors={errors} data={salesRep}/>
         </tr>
     )

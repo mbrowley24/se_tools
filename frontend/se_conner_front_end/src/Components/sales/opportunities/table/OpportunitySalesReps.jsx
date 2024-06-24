@@ -12,21 +12,26 @@ function OpportunitySalesReps({inputChange, name, value}){
 
     useEffect(()=>{
 
+        
         if(salesReps.length > 0) return;
 
         const configRequest={
-            url: "api/v1/sales-reps/options",
-            method: "GET",
+            url: 'api/v1/sales-reps',
+            method: 'GET',
+            responseType: 'json'
         }
 
-        
         function applyData(res){
-            dispatch(salesRepActions.setReps(res.data));
+            
+            if(res.status === 200){
+                
+                dispatch(salesRepActions.addReps(res.data));
+                
+            }
         }
-
 
         (async()=>{
-            await httpRequest(configRequest, applyData);
+            await httpRequest(configRequest, applyData)
         })()
 
     },[])
@@ -41,8 +46,9 @@ function OpportunitySalesReps({inputChange, name, value}){
                 <option value="">Choose Sales Rep</option>
                 {
                     salesReps.map((rep)=>{
+                        
                         return(
-                            <option key={rep.value} value={rep.value}>{capitalizeName(rep.name)}</option>
+                            <option key={rep.id} value={rep.id}>{capitalizeName(`${rep.last_name}, ${rep.first_name}`)}</option>
                         )
                     })
                 }

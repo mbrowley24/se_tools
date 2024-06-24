@@ -6,6 +6,7 @@ function ContactsTableBody({data}){
     return(
         <tbody>
             {data.map((item) => {
+                console.log(item);
                 return(
                     <ContactTableRow key={item.id} data={item}/>
                 )

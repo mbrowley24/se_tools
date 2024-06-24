@@ -29,7 +29,7 @@ function UpdateRep({data, valid}){
 
     return(
         <button 
-            className="update"
+            className="save"
             onClick={(e)=>submit}
             disabled={!valid}
         >

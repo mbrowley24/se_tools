@@ -26,7 +26,8 @@ function CompanyDetails({data}){
             {view.opportunities &&  <OpportunityTable data={data.opportunities.content}/>}
                 
             { view.contacts && <ContactTable data={data.contacts.content}/>}
-            <Pagination data={data.opportunities}/>
+            { view.opportunities && <Pagination data={data.opportunities}/>}
+            { view.contacts && <Pagination data={data.contacts}/>}
         </div>
     )
 }

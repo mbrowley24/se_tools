@@ -1,9 +1,23 @@
-import React from "react";
+import React, {useLayoutEffect, useState} from "react";
 
 
 
 
 function Pagination({data}){
+    const [pageData, setPageData] = useState({
+        page: 0,
+        size: 0,
+        totalPages: 0,
+    });
+
+    useLayoutEffect(() => {
+ 
+        setPageData({
+            page: data.number + 1,
+            size: data.size,
+            totalPages: data.totalPages === 0 ? 1 : data.totalPages,
+        })
+    }, [data])
     
     
     return(
@@ -16,7 +30,7 @@ function Pagination({data}){
                         chevron_left
                     </span>
                 </button>
-                <p className="">{`${data.number + 1} of ${data.totalPages}`}</p>
+                <p className="">{`${pageData.page} of ${pageData.totalPages}`}</p>
                 <button
                     disabled={data.last}
                 >

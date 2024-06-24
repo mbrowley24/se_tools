@@ -97,11 +97,6 @@ function useSalesRep() {
         return salesRepObj;
     }
 
-
-    
-
-
-
     function dateFormat(date){
 
         return date;
@@ -205,11 +200,14 @@ function useSalesRep() {
 
     function phoneNumberValidation(phone){
             
+        if(!phone) return false;
+
             const phone_number = removePhoneFormat(phone);
     
             if(phone_regex.test(phone_number)){
                 return true;
             }
+
             return false;
     }
 
@@ -380,33 +378,34 @@ function useSalesRep() {
         
         if(!nameValidation(first_name)){
 
-            if(first_name.length > 0){
-                errors["first_name"] = "must be between 2 and 75 characters";
+            if(!first_name){
+                errors["first_name"] = "Required";
+            }else{
+                errors["first_name"] = "allowed characters are a-z, A-Z";
             }
         }
 
-        if(first_name.length > 0 && first_name.length < 2 || first_name.length > 75){
-            errors["first_name"] = "must be between 2 and 75 characters";
-        }
 
 
         if(!nameValidation(last_name)){
 
-            if(last_name.length > 0){
+            if(!last_name){
+
+                errors["last_name"] = "Required";
+            
+            }else{
+
                 errors["last_name"] = "allowed characters are a-z, A-Z";
             }
         }
 
-        if(last_name.length > 0 && last_name.length < 2 || last_name.length > 75){
-            errors["last_name"] = "must be between 2 and 75 characters";
-        }
-        
-        if(!emailValidation(email) && email.length > 0){
+        if(!emailValidation(email)){
             errors["email"] = "invalid email format";
         }
 
+        
         if(!phoneNumberValidation(phone)){
-            errors["phone"] = "phone number must be 10 digits";
+            errors["phone"] = "must be xxx-xxx-xxxx";
         }
 
         if(!role){
@@ -416,7 +415,7 @@ function useSalesRep() {
         if(!quotaValidation(quota)){
             errors["quota"] = "required";
         }
-                            
+        
             
         return errors;
     }

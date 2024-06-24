@@ -2,12 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../../css/header/header.css";
 import "../../css/header/drop_down.css";
+import ISPLink from "./ISPLink";
 
 
 
 function Header() {
-  return (
-    <header>
+    return (
+        <header>
             <div className="">
                 <nav>
                     <ul>
@@ -16,7 +17,7 @@ function Header() {
                             <a>Sales</a>
                             <div className="dropdown-content">
                                 <Link to={"/sales/companies"}>Companies</Link>
-                                <Link to={"/sales/isp"}>ISPs</Link>
+                                <ISPLink/>
                                 <Link to={"/sales/opportunities"}>Opportunities</Link>
                                 <Link to={"/sales/reps"}>Sales Reps</Link>
                             </div>
