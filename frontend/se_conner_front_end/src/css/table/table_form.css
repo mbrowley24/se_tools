@@ -35,6 +35,16 @@
 }
 
 
+.not_items{
+    text-align: center;
+    color: black;
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: 2.5vh;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .container{
     width: 100%;
     height: 91vh;
@@ -94,11 +104,9 @@
     background-color: rgb(64, 64, 64, 1);
     color: white;
     overflow: hidden;
+    font-weight: bold;
     text-overflow: ellipsis;
 }
-
-
-
 
 
 .container table tbody tr:nth-child(odd) td{

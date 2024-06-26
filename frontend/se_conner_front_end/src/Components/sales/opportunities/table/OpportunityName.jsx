@@ -3,7 +3,7 @@ import React, {useState} from "react";
 
 
 
-function OpportunityName({name, inputChange, value}){
+function OpportunityName({name, inputChange, value, error}){
 
 
     return(
@@ -13,6 +13,7 @@ function OpportunityName({name, inputChange, value}){
                 value={value}
                 onChange={(e)=>inputChange(e)}
             />
+            <p className="errors">{error? error : ""}</p>
         </td>
         
     )

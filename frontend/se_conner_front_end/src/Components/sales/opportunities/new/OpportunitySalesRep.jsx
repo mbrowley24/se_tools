@@ -1,20 +1,16 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, {useEffect} from "react";
 import useHttp from "../../../../hooks/useHttp";
 import { useDispatch, useSelector } from "react-redux";
-import useSalesRep from "../../../../hooks/useSalesRep";
 import useTextTransform from "../../../../hooks/useTextTransform";
 import {salesRepActions} from "../../../../store/salesRep";
 
-function OpportunitySalesRep({value, inputChange, FIELDS, errors, submit_errors}){
+function OpportunitySalesRep({value, inputChange, FIELDS, errors, submit_errors, label}){
+
     const {httpRequest} = useHttp();
     const {capitalizeName} = useTextTransform();
     const dispatch = useDispatch();
     const salesReps = useSelector(state=>state.salesRepData.reps);
     
-    const valid = useMemo(()=>{
-        const salesRepList = [...salesReps] 
-        return salesRepList.filter(rep=>rep.value === value).length > 0
-    }, [value])
 
 
     useEffect(()=>{
@@ -41,7 +37,7 @@ function OpportunitySalesRep({value, inputChange, FIELDS, errors, submit_errors}
 
     return(
         <div>
-            <label>Sales Rep</label>
+            {label && <label>{label}</label>}
             <select name={FIELDS.SALESREP}
                 value={value}
                 onChange={(e)=>inputChange(e)}

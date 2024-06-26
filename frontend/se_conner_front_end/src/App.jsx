@@ -14,10 +14,11 @@ import OpportunityTableView from './Components/sales/opportunities/table/Opportu
 import NewOpportunityView from './Components/sales/opportunities/new/NewOpportunityView';
 import CompanyTableView from './Components/sales/companies/CompanyTableView'
 import ISPEdit from './Components/dashboard/edit/ISPEdit';
-import EditISPCategoryView from './Components/dashboard/editCategory/EditISPCategoryView';
 import EditISPServicesView from './Components/dashboard/editServices/EditISPServicesView';
 import CompanyView from './Components/sales/companies/companyForm/CompanyView';
 import ContactFormView from './Components/sales/contacts/new/contactFormView';
+import ForecastTableView from './Components/sales/forecast/table/ForecastTableView';
+
 
 function App() {
 
@@ -59,6 +60,9 @@ function App() {
                 <Route path={''} element={<ISPEdit/>}/>
                 {/* <Route path={':id'} element={<CompanyView/>}/> */}
                 <Route path={'categories/:id'} element={<EditISPServicesView/>}/>
+              </Route>
+              <Route path={"forecast"}>
+                <Route path={''} element={<ForecastTableView/>}/>
               </Route>
             </Route>
           </Routes>

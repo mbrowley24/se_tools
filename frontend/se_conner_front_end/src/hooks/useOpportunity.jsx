@@ -7,45 +7,45 @@ function useOpportunity(){
 
         if(data.name.length === 0){
             
-            errors.name = "Required";
+            errors['name'] = "Required";
 
         }else if(!regex_map.name_regex.test(data.name)){
             
-            errors.name = "Invalid name";
+            errors['name'] = "Invalid name";
         }
 
         const quota = removeQuotaFormat(data.value);
         
         if(!regex_map.quota_regex.test(quota)){
             
-            errors.value = "Invalid quota";
+            errors['value'] = "Invalid quota";
         }
 
         if(!regex_map.description_regex.test(data.description)){
             
-            errors.description = "Invalid description";
+            errors['description'] = "Invalid description";
         }
 
         if(data.close_date.length === 0){
 
-            errors.close = "Required";
+            errors['close'] = "Required";
 
         }else if(!regex_map.date_regex.test(data.close_date)){
             
-            errors.close = "Invalid date";
+            errors['close'] = "Invalid date";
         }else if(!checkDate(data.close_date)){
                 
-                errors.close = "must close in the future";
+                errors['close'] = "must close in the future";
         }
 
 
         if(data.sales_rep.length === 0){
             
-            errors.sales_rep = "Required";
+            errors["sales_rep"] = "Required";
         }
 
         if(data.status.length === 0){
-            errors.status = "Required";
+            errors['status'] = "Required";
         }
 
 
@@ -121,7 +121,9 @@ function useOpportunity(){
             
             case FIELDS.CLOSE:
 
+                
                 if(regex_map.date_regex.test(action.payload)){
+                    
                     data.close_date = action.payload; 
                 }
 
@@ -161,6 +163,7 @@ function useOpportunity(){
 
     function checkForUpdate(original, edited){
 
+
         if(original.name !== edited.name){
             return true;
         }
@@ -169,7 +172,7 @@ function useOpportunity(){
             return true;
         }
 
-        if(original.close !== edited.close){
+        if(original.close_date !== edited.close_date){
             return true;
         }
 

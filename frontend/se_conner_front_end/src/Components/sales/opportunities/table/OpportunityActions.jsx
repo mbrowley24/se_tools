@@ -3,7 +3,7 @@ import ResetButton from "../../../form/ResetButton";
 import OpportunitySave from "./OpportunitySave";
 
 
-function OpportunityActions({opportunity, update, reset}){
+function OpportunityActions({opportunity, update, reset, errors}){
 
 
     return(
@@ -11,7 +11,7 @@ function OpportunityActions({opportunity, update, reset}){
             {
                 update?
                         <>
-                            <OpportunitySave opportunity={opportunity} update={update}/>
+                            <OpportunitySave opportunity={opportunity} errors={errors}/>
                             <button className="reset"
                                 onClick={()=>reset()}
                             >Reset</button>
