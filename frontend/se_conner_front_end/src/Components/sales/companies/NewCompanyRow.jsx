@@ -1,12 +1,13 @@
 import React, {useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import useHttp from "../../../hooks/useHttp";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { companyActions } from "../../../store/company";
 import VerticalSelection from "./VerticalSelection";
 import CompanyNameCell from "./CompanyNameCell";
 
 function NewCompanyRow({data, errors}){
+    const pageInfo = useSelector(state => state.companyData.page);
     const dispatch = useDispatch();
     const {httpRequest} = useHttp();
     const navigate = useNavigate();
@@ -14,10 +15,9 @@ function NewCompanyRow({data, errors}){
 
     function save(e){
         
-        console.log("save");
 
         const configRequest = {
-            url: 'api/v1/companies',
+            url: `api/v1/companies?page=${pageInfo.number}&limit=${pageInfo.size}`,
             method: 'POST',
             data: JSON.parse(JSON.stringify(data)),
         };
@@ -26,11 +26,11 @@ function NewCompanyRow({data, errors}){
 
             if(res.status === 200){
 
-                if(res.data.payload){
+                if(res.data){
                     
-                    
+                    dispatch(companyActions.reset());
 
-                    navigate(`/sales/companies/${payload.id}`);
+                    navigate(`/sales/companies/${res.data}`);
 
                     console.log("Company added");
                     

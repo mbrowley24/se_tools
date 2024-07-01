@@ -54,6 +54,50 @@
     overflow: auto;
 }
 
+.container .submit_container{
+    background-color: rgb(211, 211, 211, .80);
+    width: 25%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: .25rem;
+    margin-bottom: .5%;
+    text-align: center;
+}
+
+.container .submit_container button{
+    margin-top: 1rem;
+    padding: .15rem;
+    width: 20%;
+    font-size: 75%;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    border-radius: .25rem;
+    text-align: center;
+    margin-left: .5rem;
+    margin-right: .5rem;
+    margin-bottom: 1rem;
+    background-color: green;
+    color: white;
+}
+
+.container .submit_container button:disabled{
+    margin-top: 1rem;
+    padding: .15rem;
+    width: 20%;
+    font-size: 75%;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    border-radius: .25rem;
+    text-align: center;
+    margin-left: .5rem;
+    margin-right: .5rem;
+    margin-bottom: 1rem;
+    background-color: rgb(64, 64, 64, 1);
+    color: rgb(100, 100, 100, 1);
+}
+
 .container h1{
     text-align: center;
     color: black;
@@ -248,7 +292,7 @@
 .delete{
     margin-top: 1rem;
     padding: .15rem;
-    width: 45%;
+    width: 35%;
     font-size: 50%;
     color: white;
     background-color: red;
@@ -263,6 +307,30 @@
 }
 
 .delete span{
+    font-size: 1.75vh;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.edit{
+    margin-top: 1rem;
+    padding: .15rem;
+    width: 30%;
+    font-size: 50%;
+    color: white;
+    background-color: green;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    border-radius: .25rem;
+    text-align: center;
+    margin-left: .5rem;
+    margin-right: .5rem;
+    margin-bottom: 1rem;
+}
+
+.edit span{
     font-size: 1.5vh;
     margin-left: auto;
     margin-right: auto;
@@ -404,6 +472,15 @@
     padding: .25rem;
     background-color: rgb(211, 211, 211, 1);
     /* color: rgb(311, 311, 311, 1); */
+    font-weight: bold;
+    margin-left: .25rem;
+    margin-right: .25rem;
+}
+
+.tool_bar button .back{
+    border-radius: .25rem;
+    padding: .25rem;
+    background-color: rgb(80, 80, 80, 1);
     font-weight: bold;
     margin-left: .25rem;
     margin-right: .25rem;

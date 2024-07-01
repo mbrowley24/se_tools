@@ -7,7 +7,7 @@ import ContactActions from "./ContactActions";
 
 
 
-function ContactTableRow({data}){
+function ContactTableRow({data, id}){
     const [emailUnique, setEmailUnique] = useState(true);
     const {change, checkForErrors,contactReducer, contactState, phoneNumberFormat} = useContact();
     const [contact, dispatchContact] = useReducer(contactReducer, contactState);
@@ -56,6 +56,7 @@ function ContactTableRow({data}){
                             email_unique={emailUnique} 
                             errors={errors} 
                             reset={reset}
+                            id={id}
                             update={update}
                             />
         </tr>

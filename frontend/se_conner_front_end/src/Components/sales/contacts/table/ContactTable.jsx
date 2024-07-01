@@ -4,12 +4,12 @@ import ContactTableBody from "./ContactTableBody";
 
 
 
-function ContactTable({data}){
+function ContactTable({data, id}){
     console.log(data);
     return(
         <table>
             <ContactTableHead/>
-            <ContactTableBody data={data}/>
+            <ContactTableBody data={data} id={id}/>
         </table>
     )
 }

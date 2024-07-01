@@ -1,17 +1,16 @@
 import React from "react";
 import ContactTableRow from "./ContactTableRow";
 
-function ContactsTableBody({data}){
+function ContactsTableBody({data, id}){
     
     return(
         <tbody>
             {data.map((item) => {
-                console.log(item);
                 return(
-                    <ContactTableRow key={item.id} data={item}/>
+                    <ContactTableRow key={item.id} data={item} id={id}/>
                 )
             })}
-            {data && data.length === 0 ? <tr><td colSpan="5">No Contacts Found</td></tr> : null}
+            {data && data.length === 0 ? <tr><td colSpan="6">No Contacts Found</td></tr> : null}
         </tbody>
     )
 }

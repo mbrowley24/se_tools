@@ -1,37 +1,20 @@
-import React from "react";
+import React, {useState} from "react";
 import SaveButton from "../../form/SaveButton";
 import ResetButton from "../../form/ResetButton";
 import DeleteButton from "../../form/DeleteButton";
 import useHttp from "../../../hooks/useHttp";
 import {useDispatch} from "react-redux";
 import { companyActions } from "../../../store/company";
+import CompanyDelete from "./CompanyDelete";
+import Modal from "../../form/Modal";
 
 function CompanyTableAction({data, edit, reset, valid}){
+    const [showModal, setShowModal] = useState(false);
     const {httpRequest} = useHttp();
     const dispatch = useDispatch();
 
-    function deleteCompany(e){
-        e.preventDefault();
-        
-        const configRequest = {
-            url: `api/v1/companies/${data.id}`,
-            method: 'DELETE',
-            data: null,
-        }
-
-
-        function applyData(res){
-        
-            if(res.status === 200){
-                dispatch(companyActions.deleteCompany(res.data));
-            }
-        }
-
-        (async () => {
-            await httpRequest(configRequest, applyData);
-        })();
-
-    }
+    const toogleModal = () => setShowModal((prev) => !prev);
+    
 
 
 
@@ -66,7 +49,13 @@ function CompanyTableAction({data, edit, reset, valid}){
                     </>
 
                 :
-                    <DeleteButton deleteAction={deleteCompany}/>
+                <>
+                    <Modal isOpen={showModal} 
+                            onClose={toogleModal} 
+                            children={<CompanyDelete data={data} onClose={toogleModal}/>}/>
+                    <DeleteButton deleteAction={toogleModal}/>
+                </>
+                    
             }
             
         </td>

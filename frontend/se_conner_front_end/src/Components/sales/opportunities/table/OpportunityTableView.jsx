@@ -9,9 +9,7 @@ import "../../../../css/opportunity/opportunity_table.css";
 
 function OpportunityTableView(){
     const {httpRequest} = useHttp();
-    const [opportunities, setOpportunities] = useState([]);
-
-
+    
     useLayoutEffect(()=>{
 
         const configRequest={
@@ -23,7 +21,7 @@ function OpportunityTableView(){
         function applyData(res){
             
             if(res.status === 200){
-                setOpportunities(res.data);
+                
             }
         }
 

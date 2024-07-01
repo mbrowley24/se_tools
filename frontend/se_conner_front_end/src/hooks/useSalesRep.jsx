@@ -173,6 +173,7 @@ function useSalesRep() {
 
     function phoneNumberFormat(phone){
 
+        if(!phone) return "";
         let phone_number = removePhoneFormat(phone);
 
         if(phone_number.length >= 7 && phone_number.length < 10){
@@ -311,6 +312,9 @@ function useSalesRep() {
     }
 
     function removePhoneFormat(phone){
+
+        if(!phone) return;
+
         return phone.replace(/-/g, "");
     }
 

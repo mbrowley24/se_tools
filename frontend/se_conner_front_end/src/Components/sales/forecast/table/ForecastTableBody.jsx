@@ -17,7 +17,7 @@ function ForecastTableBody({addForecast, data}){
             {
                 data.length === 0 && 
                 <tr>
-                    <td colSpan={'5'} className="not_items">Forecast Not Found</td>
+                    <td colSpan={'6'} className="not_items">Forecast Not Found</td>
                 </tr>
             }
             <ForecastFormRow addForecast={addForecast}/>

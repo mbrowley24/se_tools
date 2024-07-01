@@ -12,12 +12,7 @@ import useHttp from "../../../../hooks/useHttp";
 function OpportunityForm({id, inputChange, FIELDS, opportunity, errors, submit, submit_errors}){
     
     const navigate = useNavigate();
-    const {httpRequest} = useHttp();
     
-
-    
-
-
         return(
             <form onSubmit={submit}>
                 <OpportunityName 

@@ -12,8 +12,12 @@ function OpportunitySalesReps({inputChange, name, value}){
 
     useEffect(()=>{
 
-        
-        if(salesReps.length > 0) return;
+        if(salesReps){
+
+            if(salesReps.length > 0){
+                return;
+            }
+        }
 
         const configRequest={
             url: 'api/v1/sales-reps',
@@ -45,10 +49,10 @@ function OpportunitySalesReps({inputChange, name, value}){
             >
                 <option value="">Choose Sales Rep</option>
                 {
-                    salesReps.map((rep)=>{
+                    salesReps.map((rep, index)=>{
                         
                         return(
-                            <option key={rep.id} value={rep.id}>{capitalizeName(`${rep.last_name}, ${rep.first_name}`)}</option>
+                            <option key={index} value={rep.id}>{capitalizeName(`${rep.last_name}, ${rep.first_name}`)}</option>
                         )
                     })
                 }

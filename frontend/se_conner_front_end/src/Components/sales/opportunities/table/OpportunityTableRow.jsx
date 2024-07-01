@@ -1,4 +1,5 @@
 import React, {useEffect, useMemo, useReducer} from "react";
+import { Link } from "react-router-dom";
 import OpportunityName from "./OpportunityName";
 import OpportunityAmount from "./OpportunityAmount";
 import OpportunityStatus from "./OpportunityStatus";
@@ -18,6 +19,7 @@ function OpportunityTableRow({opportunity}){
         dispatchOpp({type: FIELDS.UPDATE, payload: opportunity});
     }
 
+
     useEffect(()=>{
         
         reset();
@@ -30,7 +32,7 @@ function OpportunityTableRow({opportunity}){
     }
 
     
-    
+
 
     return(
         <tr>
@@ -68,8 +70,11 @@ function OpportunityTableRow({opportunity}){
                 inputChange={inputChange}
                 error={errors['sales_rep']}
                 />
-            <td>{opportunityData.updated}</td>
-            <OpportunityActions update={update} opportunity={opportunityData} reset={reset}/>
+            <td><Link to={`/sales/products/${opportunity.id}`}>{opportunityData.products}</Link></td>
+            <OpportunityActions update={update} 
+                                opportunity={opportunityData}
+                                reset={reset}
+                                errors={errors}/>
         </tr>
     )
 }

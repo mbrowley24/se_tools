@@ -3,20 +3,20 @@ import OpportunityTableRow from "./OpportunityTableRow";
 
 
 
-function OpportunityTableBody({opportunities}){
+function OpportunityTableBody({data}){
     
     return(
         <tbody>
             { 
-            opportunities && opportunities.length > 0?
-                opportunities.map((opportunity, index)=>{
+            data && data.length > 0?
+                data.map((opportunity, index)=>{
                     return(
                         <OpportunityTableRow key={index} opportunity={opportunity}/>
                     )
             })
             :
-                opportunities && opportunities.length === 0 &&
-                        <tr><td colSpan="7">No opportunities found</td></tr>
+                data && data.length === 0 &&
+                        <tr><td colSpan="7">No data found</td></tr>
             }
         </tbody>
     )

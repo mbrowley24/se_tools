@@ -34,7 +34,7 @@ function NewForecastActions({addForecast, data, errors, reset}){
     }
 
     return(
-        <td>
+        <td colSpan={'2'}>
             <SaveButton save={submit} disable={disable}/>
             <ResetButton reset={reset}/>
         </td>

@@ -11,7 +11,7 @@ import {companyActions} from "../../../../store/company";
 function CompanyView(){
     const {id} = useParams();
     const dispatch = useDispatch();
-    const company = useSelector(state => state.companyData.company);
+    const companyData = useSelector(state => state.companyData);
     const {httpRequest} = useHttp();
     
 
@@ -40,7 +40,7 @@ function CompanyView(){
     return(
         <div>
             <Header/>
-            <CompanyDetails data={company}/>
+            <CompanyDetails data={companyData} id={id}/>
         </div>
     )
 };

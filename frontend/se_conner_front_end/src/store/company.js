@@ -30,7 +30,7 @@ const companyData = {
             content: []
         },
         potential_value: 0.00,
-        close_percentage: 0,
+        update: false,
     },
     views:{
         opportunities: true,
@@ -227,27 +227,17 @@ const ispSlice = createSlice({
 
             state.opportunityStatus = [...action.payload];
         
+        },updateCompany(state){
+                
+            state.company.update = !state.company.update;
+            
         },updateContacts(state, action){
 
-            const contacts = [...state.company.contacts.content];
-            const filtered_contacts = contacts.filter((contact) => contact.id !== action.payload.id);
-
-            filtered_contacts.push(action.payload);
-
-            filtered_contacts.sort(sortByLastName);
-
-            state.company.contacts.content = [...filtered_contacts];
+            state.company.contacts = {...action.payload};
 
         },updateOpportunities(state, action){
             
-            const opportunities = [...state.company.opportunities.content];
-            const filteredOpportunities = opportunities.filter((opportunity) => opportunity.id !== action.payload.id);
-            
-            filteredOpportunities.push(action.payload);
-            
-            filteredOpportunities.sort(sortByName);
-
-            state.company.opportunities.content = [...filteredOpportunities];
+            state.company.opportunities = {...action.payload};
         
         },
         viewOpportunities(state){

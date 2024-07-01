@@ -5,15 +5,14 @@ import OpportunityTableBody from "./OpportunityTableBody";
 import { companyActions } from "../../../../store/company";
 import {useDispatch, useSelector} from "react-redux";
 
-function OpportunityTable({data}){
+function OpportunityTable({}){
     const {httpRequest} = useHttp();    
     const dispatch = useDispatch();
-    const statuses = useSelector(state => state.companyData.opportunityStatus);
-
+    const companyData = useSelector(state => state.companyData);
 
     useEffect(()=>{
 
-        if(statuses.length > 0) return;
+        if(companyData.opportunityStatus.length > 0) return;
 
         const config ={
             url: "api/v1/opportunities/status",
@@ -40,7 +39,7 @@ function OpportunityTable({data}){
     return(
         <table>
             <OpportunityTableHead/>
-            <OpportunityTableBody opportunities={data}/>
+            <OpportunityTableBody data={companyData.company.opportunities.content}/>
         </table>
     )
 }

@@ -1,5 +1,5 @@
 import React, {useReducer} from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams } from "react-router-dom";
 import Header from "../../../header/Header";
 import { companyActions } from "../../../../store/company";
 import { useDispatch } from "react-redux";
@@ -12,10 +12,12 @@ import ContactForm from "./ContactForm";
 function ContactFormView({}){
     const {id} = useParams();
     const {contactReducer, contactState} = useContact();
+    const navigate = useNavigate();
     const {httpRequest} = useHttp();
     const dispatch = useDispatch();
     const [contactData, dispatchContact] = useReducer(contactReducer, contactState);
 
+    const back = () => navigate(-1);
 
     function inputChange(e){
         const {name, value} = e.target;
@@ -33,10 +35,10 @@ function ContactFormView({}){
         }
 
         function applyData(res){
-            console.log(res);
+            
             if(res.status === 200){
                 dispatchContact({type: 'reset', payload: ''});
-                dispatch(companyActions.updateContacts(res.data))
+                back();
             }
             
         }

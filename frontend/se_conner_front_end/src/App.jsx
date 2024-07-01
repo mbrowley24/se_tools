@@ -18,6 +18,7 @@ import EditISPServicesView from './Components/dashboard/editServices/EditISPServ
 import CompanyView from './Components/sales/companies/companyForm/CompanyView';
 import ContactFormView from './Components/sales/contacts/new/contactFormView';
 import ForecastTableView from './Components/sales/forecast/table/ForecastTableView';
+import ProductsView from './Components/sales/products/ProductsView';
 
 
 function App() {
@@ -47,7 +48,6 @@ function App() {
                 <Route path='' element={<RepTableView/>}/>
               </Route>
               <Route path={"opportunities"}>
-                <Route path={''} element={<OpportunityTableView/>}/>
                 <Route path={"create"} element={<NewOpportunityView/>}/>
               </Route>
               <Route path={"companies"}>
@@ -63,6 +63,9 @@ function App() {
               </Route>
               <Route path={"forecast"}>
                 <Route path={''} element={<ForecastTableView/>}/>
+              </Route>
+              <Route path={"products"}>
+                <Route path={':id'} element={<ProductsView/>}/>
               </Route>
             </Route>
           </Routes>

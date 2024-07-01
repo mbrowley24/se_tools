@@ -10,7 +10,7 @@ import Pagination from "./Pagination";
 
 
 
-function CompanyDetails({data}){
+function CompanyDetails({data, id}){
     const view = useSelector(state => state.companyData.views);
     
     return(
@@ -18,16 +18,16 @@ function CompanyDetails({data}){
             <div>
                 <CompanyTitle data={data}/>
                 <div className="new_links">
-                    { view.opportunities && <Link to={`/sales/companies/${data.id}/opportunities/new`}>New Opportunity</Link> }
-                    { view.contacts && <Link to={`/sales/companies/${data.id}/contacts/new`}>New Contacts</Link> }
+                    { data.views.opportunities && <Link to={`/sales/companies/${data.company.id}/opportunities/new`}>New Opportunity</Link> }
+                    { data.views.contacts && <Link to={`/sales/companies/${data.company.id}/contacts/new`}>New Contacts</Link> }
                 </div>
                 <CompaniesToolBar action={companyActions} value={view}/>
             </div>
-            {view.opportunities &&  <OpportunityTable data={data.opportunities.content}/>}
+            {data.views.opportunities &&  <OpportunityTable data={data.company.opportunities.content}/>}
                 
-            { view.contacts && <ContactTable data={data.contacts.content}/>}
-            { view.opportunities && <Pagination data={data.opportunities}/>}
-            { view.contacts && <Pagination data={data.contacts}/>}
+            { data.views.contacts && <ContactTable data={data.company.contacts.content} id={id}/>}
+            { data.views.opportunities && <Pagination data={data.company.opportunities}/>}
+            { data.views.contacts && <Pagination data={data.company.contacts}/>}
         </div>
     )
 }

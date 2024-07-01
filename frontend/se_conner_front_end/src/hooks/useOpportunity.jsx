@@ -76,6 +76,7 @@ function useOpportunity(){
         close_date: "",
         status: "",
         sales_rep: "",
+        products: 0,
         updated: ""
     }
     
@@ -150,7 +151,8 @@ function useOpportunity(){
                 data.close_date = action.payload.close_date;
                 data.sales_rep = action.payload.sales_rep;
                 data.updated = action.payload?.updated_at;
-
+                data.products = action.payload.products? action.payload.products : 0;
+                
                 return data;
 
             case FIELDS.RESET:

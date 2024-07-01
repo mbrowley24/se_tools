@@ -1,10 +1,12 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import useTextTransform from "../../../../hooks/useTextTransform";
 
 
 
 function ForecastTableRow({data}){
     const {capitalizeName} = useTextTransform();
+    
     return(
         <tr>
             <td>
@@ -22,6 +24,7 @@ function ForecastTableRow({data}){
             <td>
                 {data.opportunities}
             </td>
+            <td><Link to={""}>Add Opportunity</Link></td>
         </tr>
     )
 }
