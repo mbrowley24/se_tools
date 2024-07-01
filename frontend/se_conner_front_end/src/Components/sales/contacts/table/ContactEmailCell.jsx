@@ -18,7 +18,7 @@ function ContactEmailCell({data, name, inputChange, isUnique}){
             };
 
             function applyData(res){
-                console.log(res);
+                
                 if(res.status === 200){
                     isUnique(!res.data);
                 }

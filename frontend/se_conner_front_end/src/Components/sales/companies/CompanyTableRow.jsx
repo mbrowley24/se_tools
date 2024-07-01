@@ -1,24 +1,42 @@
 import React, {useEffect, useMemo, useReducer} from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useHttp from "../../../hooks/useHttp";
 import CompanyNameCell from "./CompanyNameCell";
 import VerticalSelection from "./VerticalSelection";
 import useCompany from "../../../hooks/useCompany";
 import CompanyTableAction from "./CompanyTableAction";
+import { useDispatch } from "react-redux";
+import { companyActions } from "../../../store/company";
+
 
 
 
 
 function CompanyTableRow({data}){
-
+    const navigate = useNavigate();
     const {httpRequest} = useHttp();
     const {initalCompnayState, companyReducer, detectChange} = useCompany();
-    
+    const dispatch = useDispatch();    
     const [company, dispatchCompany] = useReducer(companyReducer, initalCompnayState);
     
     const change = useMemo(()=>detectChange(data, company), [data, company]);
     
     const valid = useMemo(()=>company.errors && Object.keys(company.errors).length === 0, [company]);
+    
+    const gotoCompany = (id) => navigate(`/sales/companies/${id}`);
+    
+    function toContacts(id){
+        if(!id) return
+        dispatch(companyActions.viewContacts());
+        gotoCompany(id);
+
+    }
+
+    function toOpportunities(id){
+        if(!id) return
+        dispatch(companyActions.viewOpportunities());
+        gotoCompany(id);
+    }
 
     function inputChange(e){
         const {value, name} = e.target;
@@ -93,9 +111,9 @@ function CompanyTableRow({data}){
                                     />
             </td>
             <td>
-                <Link to={`/sales/companies/${company?.id}`}>{company?.opportunities}</Link>
+                <button className="btn_link" onClick={()=>toOpportunities(company.id)}>{company?.opportunities}</button>
             </td>
-            <td><Link to={`/sales/companies/${company?.id}`}>{company?.contacts}</Link></td>
+            <td><button className="btn_link" onClick={()=>toContacts(company.id)}>{company?.contacts}</button></td>
             <td>{company?.percentage}</td>
             <td>{company?.open}</td>
             <td>{company?.updated}</td>

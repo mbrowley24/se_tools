@@ -16,7 +16,6 @@ function ForecastTable(){
     useLayoutEffect(() => {
         
         const today = new Date();
-        console.log(today.getMonth() + 1);
         setTimeFrame({
             month: today.getMonth() + 1,
             year: today.getFullYear()
@@ -24,7 +23,7 @@ function ForecastTable(){
 
     }, [])
 
-    const value = useMemo(()=>forecastValue(forecast), [forecast]);
+    
     const { httpRequest } = useHttp();
 
     function addForecast(value){
@@ -44,7 +43,7 @@ function ForecastTable(){
 
 
         function applyDate(res){
-            console.log(res);
+
             if(res.status === 200){
                 
                 setForecast(res.data);
