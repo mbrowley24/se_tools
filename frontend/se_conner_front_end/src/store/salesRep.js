@@ -21,7 +21,8 @@ const sales_rep_data = {
         phone: "",
         id: "",
         role: "",
-    }
+    },
+    options:[],
 
 }
 
@@ -65,6 +66,9 @@ const salesRepSlice = createSlice({
 
             state.quota = quota;
             
+        },
+        addOptions(state, action) {
+            state.options = action.payload;
         },
         deleteRep(state, action) {
             

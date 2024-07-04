@@ -36,7 +36,7 @@ function OpportunitySalesRep({value, inputChange, FIELDS, errors, submit_errors,
     },[])
 
     return(
-        <div>
+        <>
             {label && <label>{label}</label>}
             <select name={FIELDS.SALESREP}
                 value={value}
@@ -56,7 +56,7 @@ function OpportunitySalesRep({value, inputChange, FIELDS, errors, submit_errors,
             </select>
             <p className="error">{errors && errors.sales_rep? errors.sales_rep : ""}</p>
             <p className="error">{submit_errors && submit_errors.sales_rep? submit_errors.sales_rep : ""}</p>
-        </div>
+        </>
     )
 }
 

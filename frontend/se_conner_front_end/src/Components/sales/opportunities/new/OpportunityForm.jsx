@@ -1,4 +1,4 @@
-import React, {useMemo, useReducer} from "react";
+import React from "react";
 import {useNavigate} from "react-router-dom";
 import OpportunityName from "./OpportunityName";
 import OpportunityAmount from "./OpportunityAmount";
@@ -10,7 +10,6 @@ import useHttp from "../../../../hooks/useHttp";
 
 
 function OpportunityForm({id, inputChange, FIELDS, opportunity, errors, submit, submit_errors}){
-    
     const navigate = useNavigate();
     
         return(
@@ -43,13 +42,15 @@ function OpportunityForm({id, inputChange, FIELDS, opportunity, errors, submit, 
                     errors={errors}
                     submit_errors={submit_errors}
                 />
-                <OpportunitySalesRep
-                    value={opportunity.sales_rep}
-                    inputChange={inputChange}
-                    FIELDS={FIELDS}
-                    errors={errors}
-                    submit_errors={submit_errors}
-                />
+                <div>
+                    <OpportunitySalesRep
+                        value={opportunity.sales_rep}
+                        inputChange={inputChange}
+                        FIELDS={FIELDS}
+                        errors={errors}
+                        submit_errors={submit_errors}
+                    />
+                </div>
                 <OpportunityDescription
                     value={opportunity.description}
                     inputChange={inputChange}

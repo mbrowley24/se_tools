@@ -2,8 +2,17 @@ import {addCommas, checkDate ,quotaInput, regex_map, removeQuotaFormat} from '..
 
 function useOpportunity(){
 
-    function checkForErrors(data){
+    function checkForErrors(data, oppLimit){
         const errors = {};
+
+        if(oppLimit){
+            
+            errors['opp_limit'] = "Opportunities limit reached"
+
+        }else{
+
+            delete errors["opp_limit"]
+        }
 
         if(data.name.length === 0){
             

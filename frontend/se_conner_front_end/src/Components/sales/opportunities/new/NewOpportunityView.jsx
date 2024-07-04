@@ -1,4 +1,4 @@
-import React, {useMemo, useReducer, useState} from "react";
+import React, {useEffect, useMemo, useReducer, useState} from "react";
 import {useNavigate, useParams } from "react-router-dom";
 import OpportunityForm from "./OpportunityForm";
 import Header from "../../../header/Header";
@@ -11,12 +11,14 @@ import useHttp from "../../../../hooks/useHttp";
 function NewOpportunityView({}){
     const {id} = useParams();
     const navigate = useNavigate();
+    const [oppLimit, setOppLimit] = useState(false);
     const {FIELDS, initialState, opportunityReducer, checkForErrors} = useOpportunity();
     const [opportunity, dispatchOpp] = useReducer(opportunityReducer, initialState);
     const {httpRequest} = useHttp();
-    const errors = useMemo(()=> checkForErrors(opportunity), [opportunity]);
+    const errors = useMemo(()=> checkForErrors(opportunity, oppLimit), [opportunity, oppLimit]);
     const [submit_errors, setSubmitErrors] = useState({});
 
+    const setOppLimitError = (data) => setOppLimit(data);
 
     function inputChange(e){
         const {name, value} = e.target;
@@ -24,19 +26,48 @@ function NewOpportunityView({}){
         dispatchOpp({type: name, payload: value})
     }
 
+    useEffect(()=>{
+
+        const configRequest = {
+            url: `api/v1/companies/${id}/contacts/limit`,
+            method: "GET"
+        }
+
+        function applyData(res){
+            console.log(res)
+            if(res.status === 200){
+
+                setOppLimitError(res.data)
+            }
+        }
+
+        const checkOppLimit = setTimeout(() => {
+                (async () => {
+                    await httpRequest(configRequest, applyData);
+                })();   
+
+        }, 250);
+
+        
+
+        return () => {
+            clearTimeout(checkOppLimit);
+        }
+
+    },[opportunity.sales_rep])
 
 
     function submit(e){
         e.preventDefault();
 
         const configRequest = {
-            url: `api/v1/companies/${id}`,
+            url: `api/v1/companies/${id}/new/opportunity`,
             method: "POST",
             data: opportunity
         }
 
         function applyData(res){
-            console.log(res)
+            
             if(res.status === 200){
                 
                 dispatchOpp({type: FIELDS.RESET, payload: null})

@@ -10,7 +10,6 @@ import NewTemplateView from './Components/discoveryQuestionTemplate/NewTemplateV
 import TemplateFormView from './Components/discoveryQuestionTemplate/TemplateFormView'
 import ComcastView from './Components/education/comcast/ComcastView'
 import RepTableView from './Components/sales/reps/table/RepTableView'
-import OpportunityTableView from './Components/sales/opportunities/table/OpportunityTableView'
 import NewOpportunityView from './Components/sales/opportunities/new/NewOpportunityView';
 import CompanyTableView from './Components/sales/companies/CompanyTableView'
 import ISPEdit from './Components/dashboard/edit/ISPEdit';
@@ -19,7 +18,7 @@ import CompanyView from './Components/sales/companies/companyForm/CompanyView';
 import ContactFormView from './Components/sales/contacts/new/contactFormView';
 import ForecastTableView from './Components/sales/forecast/table/ForecastTableView';
 import ProductsView from './Components/sales/products/ProductsView';
-
+import AddOpportunityView from './Components/sales/forecast/addOpportunity/AddOpportunityView';
 
 function App() {
 
@@ -63,6 +62,7 @@ function App() {
               </Route>
               <Route path={"forecast"}>
                 <Route path={''} element={<ForecastTableView/>}/>
+                <Route path={':id/:rep_id'} element={<AddOpportunityView/>} />
               </Route>
               <Route path={"products"}>
                 <Route path={':id'} element={<ProductsView/>}/>

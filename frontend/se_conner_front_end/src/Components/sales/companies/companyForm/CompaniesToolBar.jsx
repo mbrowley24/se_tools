@@ -10,7 +10,7 @@ function CompaniesToolBar({action, value}){
     return(
         <div className="tool_bar">
             <button className="back"
-                    onClick={()=>navigate(-1)}
+                    onClick={()=>navigate("/sales/companies")}
             >
                 Back
             </button>

@@ -5,7 +5,7 @@ import useTextTransform from "../../../../hooks/useTextTransform";
 import useHttp from "../../../../hooks/useHttp";
 
 function OpportunitySalesReps({inputChange, name, value}){
-    const salesReps = useSelector(state => state.salesRepData.reps);
+    const salesReps = useSelector(state => state.salesRepData.options);
     const {capitalizeName} = useTextTransform();
     const dispatch = useDispatch();
     const {httpRequest} = useHttp();
@@ -20,7 +20,7 @@ function OpportunitySalesReps({inputChange, name, value}){
         }
 
         const configRequest={
-            url: 'api/v1/sales-reps',
+            url: 'api/v1/sales-reps/options',
             method: 'GET',
             responseType: 'json'
         }
@@ -29,7 +29,7 @@ function OpportunitySalesReps({inputChange, name, value}){
             
             if(res.status === 200){
                 
-                dispatch(salesRepActions.addReps(res.data));
+                dispatch(salesRepActions.addOptions(res.data));
                 
             }
         }
@@ -50,9 +50,9 @@ function OpportunitySalesReps({inputChange, name, value}){
                 <option value="">Choose Sales Rep</option>
                 {
                     salesReps.map((rep, index)=>{
-                        
-                        return(
-                            <option key={index} value={rep.id}>{capitalizeName(`${rep.last_name}, ${rep.first_name}`)}</option>
+                        console.log(rep)
+                        return( 
+                            <option key={index} value={rep.value}>{capitalizeName(rep.name)}</option>
                         )
                     })
                 }

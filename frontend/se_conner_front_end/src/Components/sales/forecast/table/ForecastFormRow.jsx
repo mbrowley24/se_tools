@@ -5,7 +5,7 @@ import NewForecastActions from "./NewForecastActions";
 import useForecast from "../../../../hooks/useForecast";
 import ForecastDateField from "./ForecastDateField";
 
-function ForecastFormRow({addForecast}){
+function ForecastFormRow({dispatch}){
     const {checkForErrors} = useForecast();
     const [forecast, setForecast] = useState({
         start: "",
@@ -40,14 +40,13 @@ function ForecastFormRow({addForecast}){
                                 />
             <td>
                 <OpportunitySalesRep value={forecast.sales_rep}
-
                                     FIELDS={{SALESREP: "sales_rep"}} 
                                     inputChange={inputChange} />
                 <p className="errors">{errors['sales_rep']}</p>
             </td>
             <NewForecastActions reset={reset} 
                                 data={forecast}
-                                addForecast={addForecast}
+                                dispatch={dispatch}
                                 errors={errors}
                                 />
         </tr>

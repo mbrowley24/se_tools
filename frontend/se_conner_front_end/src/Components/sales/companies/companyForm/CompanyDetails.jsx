@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { companyActions } from "../../../../store/company";
 import Pagination from "./Pagination";
+import NewOpportunityLink from "../../opportunities/new/NewOpportunityLink";
+import NewContactLink from "../../contacts/new/NewContactLink";
 
 
 
@@ -18,8 +20,8 @@ function CompanyDetails({data, id}){
             <div>
                 <CompanyTitle data={data}/>
                 <div className="new_links">
-                    { data.views.opportunities && <Link to={`/sales/companies/${data.company.id}/opportunities/new`}>New Opportunity</Link> }
-                    { data.views.contacts && <Link to={`/sales/companies/${data.company.id}/contacts/new`}>New Contacts</Link> }
+                    { data.views.opportunities && <NewOpportunityLink data={data}/>}
+                    { data.views.contacts && <NewContactLink data={data}/> }
                 </div>
                 <CompaniesToolBar action={companyActions} value={view}/>
             </div>

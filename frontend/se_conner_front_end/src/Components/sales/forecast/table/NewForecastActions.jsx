@@ -3,7 +3,7 @@ import SaveButton from "../../../form/SaveButton";
 import ResetButton from "../../../form/ResetButton";
 import useHttp from "../../../../hooks/useHttp";
 
-function NewForecastActions({addForecast, data, errors, reset}){
+function NewForecastActions({data, dispatch ,errors, reset}){
     const {httpRequest} = useHttp();
     const disable = useMemo(()=> Object.keys(errors).length > 0, [errors])
 
@@ -23,7 +23,7 @@ function NewForecastActions({addForecast, data, errors, reset}){
         function applyDate(res){
             console.log(res);
             if(res.status === 200){
-                addForecast(res.data);
+                dispatch({type: "add_forecast", payload: res.data});
             }
         }
         

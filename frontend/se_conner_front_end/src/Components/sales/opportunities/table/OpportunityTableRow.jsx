@@ -9,7 +9,7 @@ import useOpportunity from "../../../../hooks/useOpportunity";
 import OpportunitySalesReps from "./OpportunitySalesReps";
 
 function OpportunityTableRow({opportunity}){
-
+    console.log(opportunity);
     const {checkForErrors, checkForUpdate, opportunityReducer, initialState, FIELDS} = useOpportunity();
     const [opportunityData, dispatchOpp] = useReducer(opportunityReducer, initialState);
     const update = useMemo(()=>checkForUpdate(opportunity, opportunityData), [opportunity, opportunityData]);

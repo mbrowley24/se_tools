@@ -1,8 +1,6 @@
 import React, {useReducer} from "react";
 import {useNavigate, useParams } from "react-router-dom";
 import Header from "../../../header/Header";
-import { companyActions } from "../../../../store/company";
-import { useDispatch } from "react-redux";
 import useContact from "../../../../hooks/useContact";
 import useHttp from "../../../../hooks/useHttp";
 import "../../../../css/form/form.css";
@@ -14,7 +12,6 @@ function ContactFormView({}){
     const {contactReducer, contactState} = useContact();
     const navigate = useNavigate();
     const {httpRequest} = useHttp();
-    const dispatch = useDispatch();
     const [contactData, dispatchContact] = useReducer(contactReducer, contactState);
 
     const back = () => navigate(-1);
@@ -30,7 +27,7 @@ function ContactFormView({}){
         
         const configRequest = {
             method: 'POST',
-            url: `api/v1/contacts/${id}`,
+            url: `api/v1/companies/${id}/new/contact`,
             data: contactData
         }
 
