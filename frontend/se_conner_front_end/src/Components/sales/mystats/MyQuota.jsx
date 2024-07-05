@@ -1,13 +1,13 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-
+import { useSelector } from "react-redux";
+import useTextTransform from "../../../hooks/useTextTransform";
 
 function MyQuota(){
-    const dispatch = useDispatch();
+    const {valueCommas} = useTextTransform();
     const quota = useSelector(state => state.salesRepData.quota);
     return(
         <div>
-            <h4>${quota}</h4>
+            <h4>${valueCommas(quota)}</h4>
         </div>
     )
 }

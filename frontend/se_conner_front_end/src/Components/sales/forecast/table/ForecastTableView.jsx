@@ -13,7 +13,6 @@ function ForecastTableView(){
             <Header/>
             <div className="container">
                 <h1>Forecast Table</h1>
-                
                 <ForecastTable/>
             </div>
         </div>

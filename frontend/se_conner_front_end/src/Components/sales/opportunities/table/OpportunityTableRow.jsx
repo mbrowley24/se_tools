@@ -7,9 +7,10 @@ import OpportunityClose from "./OpportunityClose";
 import OpportunityActions from "./OpportunityActions";
 import useOpportunity from "../../../../hooks/useOpportunity";
 import OpportunitySalesReps from "./OpportunitySalesReps";
+import useTextTransform from "../../../../hooks/useTextTransform";
 
 function OpportunityTableRow({opportunity}){
-    console.log(opportunity);
+    const {capitialize} = useTextTransform();
     const {checkForErrors, checkForUpdate, opportunityReducer, initialState, FIELDS} = useOpportunity();
     const [opportunityData, dispatchOpp] = useReducer(opportunityReducer, initialState);
     const update = useMemo(()=>checkForUpdate(opportunity, opportunityData), [opportunity, opportunityData]);
@@ -38,7 +39,7 @@ function OpportunityTableRow({opportunity}){
         <tr>
             <OpportunityName
                 name={FIELDS.NAME}
-                value={opportunityData.name}
+                value={capitialize(opportunityData.name)}
                 update={update}
                 inputChange={inputChange}
                 error={errors['name']}

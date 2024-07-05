@@ -4,10 +4,11 @@ import ContactEmailCell from "./ContactEmailCell";
 import ContactPhone from "./ContactPhone";
 import useContact from "../../../../hooks/useContact";
 import ContactActions from "./ContactActions";
-
+import useTextTransform from "../../../../hooks/useTextTransform";
 
 
 function ContactTableRow({data, id}){
+    const {capitialize} = useTextTransform();
     const [emailUnique, setEmailUnique] = useState(true);
     const {change, checkForErrors,contactReducer, contactState, phoneNumberFormat} = useContact();
     const [contact, dispatchContact] = useReducer(contactReducer, contactState);
@@ -43,9 +44,9 @@ function ContactTableRow({data, id}){
     
     return(
         <tr>
-            <ContactNameCell name={'title'} data={contact.title} inputChange={inputChange}/>
-            <ContactNameCell name={'first_name'} data={contact.first_name} inputChange={inputChange}/>
-            <ContactNameCell name={'last_name'} data={contact.last_name} inputChange={inputChange}/>
+            <ContactNameCell name={'title'} data={capitialize(contact.title)} inputChange={inputChange}/>
+            <ContactNameCell name={'first_name'} data={capitialize(contact.first_name)} inputChange={inputChange}/>
+            <ContactNameCell name={'last_name'} data={capitialize(contact.last_name)} inputChange={inputChange}/>
             <ContactEmailCell name={'email'} 
                                 data={contact.email} 
                                 inputChange={inputChange}

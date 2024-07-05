@@ -3,6 +3,8 @@ import ForecastTableHead from "./ForecastTableHead";
 import ForecastTableBody from "./ForecastTableBody";
 import useForecast from "../../../../hooks/useForecast";
 import useHttp from "../../../../hooks/useHttp";
+import ForecastTimeframe from "./ForecastTimeframe";
+import ForecastValueData from "./ForecastValueData";
 
 
 function ForecastTable(){
@@ -51,24 +53,12 @@ function ForecastTable(){
 
     return(
         <>
-            <div className="time_frame">
-                <div>
-                    <label>Months</label>
-                    <select onChange={(e)=>dispatchForecastData({type: "set_month", payload: e.target.value})}
-                            value={forecastData.forecast.time_frame.month}
-                        >
-                        <option value={0}>Choose Month</option>
-                        {months.map((month, index)=><option key={index} value={month.value}>{month.name}</option>)}
-                    </select>
-                </div>
-                <div>
-                    <label htmlFor="">Year</label>
-                    <select onChange={(e)=>dispatchForecastData({type: "set_year", payload: e.target.value})}
-                        value={forecastData.forecast.time_frame.year}>
-                        {years().map((year, index)=><option key={index} value={year.value}>{year.name}</option>)}
-                    </select>
-                </div>
-            </div>
+            <ForecastValueData data={forecastData}/>
+            <ForecastTimeframe data={forecastData} 
+                            dispatch={dispatchForecastData}
+                            months={months} 
+                            years={years}
+                            />
             <table>
                 <ForecastTableHead/>
                 <ForecastTableBody data={forecastData.forecast.data} dispatch={dispatchForecastData}/>

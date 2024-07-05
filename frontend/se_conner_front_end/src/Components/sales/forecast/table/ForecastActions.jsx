@@ -6,7 +6,7 @@ import useHttp from "../../../../hooks/useHttp";
 
 
 
-function ForecastActions({change, data, dispatch, edit, toogle, errors}){
+function ForecastActions({change, data, deleteAction, dispatch, edit, toogle, errors}){
     const navigate = useNavigate();
     const {httpRequest} = useHttp();
     const invalid = useMemo(()=>{
@@ -16,10 +16,6 @@ function ForecastActions({change, data, dispatch, edit, toogle, errors}){
 
     }, [errors]);
         
-    const add_opportunities = () => {
-        navigate(`/sales/forecast/${data.id}/${data.sales_rep.value}`)
-    };
-
 
     function save(e){
         e.preventDefault();
@@ -55,9 +51,8 @@ function ForecastActions({change, data, dispatch, edit, toogle, errors}){
                                     edit
                                 </span>
                             </button>
-                            <DeleteButton/>
+                            <DeleteButton deleteAction={deleteAction}/>
                         </>
-                        
                         :
                         <>
                             <button className="edit" onClick={()=>toogle()}>

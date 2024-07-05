@@ -7,7 +7,7 @@ import useCompany from "../../../hooks/useCompany";
 import CompanyTableAction from "./CompanyTableAction";
 import { useDispatch } from "react-redux";
 import { companyActions } from "../../../store/company";
-
+import useTextTransform from "../../../hooks/useTextTransform";
 
 
 
@@ -15,6 +15,7 @@ import { companyActions } from "../../../store/company";
 function CompanyTableRow({data}){
     const navigate = useNavigate();
     const {httpRequest} = useHttp();
+    const {capitialize, valueCommas} = useTextTransform();
     const {initalCompnayState, companyReducer, detectChange} = useCompany();
     const dispatch = useDispatch();    
     const [company, dispatchCompany] = useReducer(companyReducer, initalCompnayState);
@@ -100,7 +101,7 @@ function CompanyTableRow({data}){
     return(
         <tr>
             <CompanyNameCell name={"name"} 
-                            value={company.name}
+                            value={capitialize(company.name)}
                             inputChange={inputChange} 
                             errors={company.errors}/>
             <td>
@@ -115,7 +116,7 @@ function CompanyTableRow({data}){
             </td>
             <td><button className="btn_link" onClick={()=>toContacts(company.id)}>{company?.contacts}</button></td>
             <td>{company?.percentage}</td>
-            <td>{company?.open}</td>
+            <td>{`$${valueCommas(company?.open)}`}</td>
             <td>{company?.updated}</td>
             <CompanyTableAction edit={change} valid={valid} reset={reset} data={company}/>
         </tr>

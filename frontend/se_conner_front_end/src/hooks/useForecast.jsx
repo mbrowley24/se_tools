@@ -228,6 +228,7 @@ function useForecast(){
                     data.original_opps = [...action.payload.current_opportunities];
                     data.value = action.payload.value;
                     
+                    
                     return data;
                     
                 case "add_opportunity":
@@ -270,6 +271,14 @@ function useForecast(){
                 
                 case "set_forecast_data":
                         data.forecast.data = [...action.payload];
+
+                        let value = 0.00;
+                        for(let i = 0; i < data.forecast.data.length; i++){
+                            value += action.payload[i].value;
+                        }
+
+                        data.value = value;
+
                         return data;
                 
                 case "add_forecast":
@@ -289,13 +298,38 @@ function useForecast(){
                     data.forecast.data = [...forecast];
                     
                     return data;
+                
+                case "delete_forecast":
 
+                    const forecast_list = data.forecast.data.filter((item)=> item.id !== action.payload);
+
+                    data.forecast.data = [...forecast_list];
+                    
+                    data.value = 0.00;
+
+                    for(let i = 0;i < data.forecast.data.length; i++){
+                        data.value += data.forecast.data[i].value;
+                    }
+                    
+                    return data;
 
                 default:
                     return state;
             }
     }
 
+
+    function percentage(value, total){
+
+        const check = isNaN(value) || isNaN(total);
+
+        if(check){
+            return 0;
+        }
+
+        return Math.round(value / total) * 100;
+
+    };
 
 
     return({
@@ -307,6 +341,7 @@ function useForecast(){
         forecastReducer,
         forecastValue,
         months,
+        percentage,
         years
     })
 }

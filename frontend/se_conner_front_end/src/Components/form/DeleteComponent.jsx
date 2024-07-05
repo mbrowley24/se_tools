@@ -3,7 +3,7 @@ import "../../css/modal/modal.css"
 
 function DeleteComponent({data, onClose, deleteAction}) {
     
-    console.log(data)
+    
 
     return (
 

@@ -1,4 +1,4 @@
-
+import {addCommas} from "../helper/general"
 
 
 
@@ -24,12 +24,17 @@ function useTextTransform(){
         return capitializedArray.join(", ");
     }
 
+    function valueCommas(value){
+
+        return addCommas(value);
+    }
 
     
 
     return({
         capitialize,
-        capitalizeName
+        capitalizeName,
+        valueCommas
     });
 }
 

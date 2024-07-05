@@ -1,5 +1,4 @@
 import React, {useEffect, useMemo, useState} from "react";
-
 import useSalesRep from "../../../../hooks/useSalesRep";
 import EmailCell from "./EmailCell";
 import NameCell from "./NameCell";
@@ -7,9 +6,10 @@ import PhoneCell from "./PhoneCell";
 import QuotaCell from "./QuotaCell";
 import RoleCell from "./RoleCell";
 import SalesRepActions from "./SalesRepActions";
-import SalesEngCell from "./SalesEngCell";
+import useTextTransform from "../../../../hooks/useTextTransform";
 
 function SalesRepTableRow({rep}){
+    const {capitialize} = useTextTransform();
     const {hasChanged, updateDateSalesRep, validateSalesRep} = useSalesRep();
     const [salesRep, setSalesRep] = useState({
         id: rep.id,
@@ -72,11 +72,11 @@ function SalesRepTableRow({rep}){
     return(
         
         <tr>
-            <NameCell value={salesRep.first_name}
+            <NameCell value={capitialize(salesRep.first_name)}
                 name={'first_name'} 
                 inputChange={inputChange}
                 errors={errors['first_name']}/>
-            <NameCell value={salesRep.last_name} 
+            <NameCell value={capitialize(salesRep.last_name)} 
                         name={"last_name"}
                         inputChange={inputChange}
                         errors={errors['last_name']}
