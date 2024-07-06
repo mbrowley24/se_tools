@@ -51,7 +51,7 @@ function OpportunitySalesReps({inputChange, name, value, edit}){
                 <option value="">Choose Sales Rep</option>
                 {
                     salesReps.map((rep, index)=>{
-                        console.log(rep)
+                        
                         return( 
                             <option key={index} value={rep.value}>{capitalizeName(rep.name)}</option>
                         )

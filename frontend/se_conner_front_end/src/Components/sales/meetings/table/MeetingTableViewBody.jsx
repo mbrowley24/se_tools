@@ -12,8 +12,9 @@ function MeetingTableViewBody({data, dispatch, id}){
         <tbody>
             {
                 data.meetings.map((meeting, index) => {
+
                     return(
-                        <MeetingTableViewRow key={index} data={meeting}/>
+                        <MeetingTableViewRow key={index} data={meeting} dispatch={dispatch}/>
                     )
                 })
             }

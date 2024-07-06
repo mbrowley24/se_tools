@@ -2,7 +2,7 @@ import React from "react";
 
 
 
-function MeetingIsVirtual({data, edit, error, inputChange, name}){
+function MeetingIsVirtual({data, edit, inputChange, name}){
 
     return(
         <>
@@ -16,7 +16,7 @@ function MeetingIsVirtual({data, edit, error, inputChange, name}){
                 />
             </>
             :
-            data
+            data? "Yes" : "No"
             
         }
         

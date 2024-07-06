@@ -14,7 +14,7 @@ function NewMeetingRow({data, dispatch, id}){
         const {name, value, checked} = e.target;
 
         if(name === 'isVirtual'){
-
+        
             dispatch({type: name, payload: checked})
         
         }else{

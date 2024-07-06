@@ -5,7 +5,7 @@ import useHttp from "../../../../hooks/useHttp";
 
 
 
-function MeetingAction({data, dispatch, error, id, edit, canEdit}){
+function MeetingAction({data, dispatch, error, edit, canEdit}){
 
     const errorCheck = useMemo(()=>Object.keys(error).length > 0, [error]);
     const reset = () => { 
@@ -17,8 +17,9 @@ function MeetingAction({data, dispatch, error, id, edit, canEdit}){
     function save(e){
         e.preventDefault();
         
+        console.log(data.id);
         const configRequest = {
-            url: `api/v1/opportunities/${id}/meetings`,
+            url: `api/v1/meetings/${data.id}`,
             method: "POST",
             data: data
         }
@@ -26,7 +27,10 @@ function MeetingAction({data, dispatch, error, id, edit, canEdit}){
         function applyData(res){
             console.log(res);
             if(res.status === 200){
-                dispatch({type: "new_meeting", payload: res.data});
+
+                dispatch({type: "update", payload: res.data});
+                canEdit();
+            
             }
         }
 
@@ -43,7 +47,6 @@ function MeetingAction({data, dispatch, error, id, edit, canEdit}){
             edit?
             <>
                 <button className="reset" onClick={()=>canEdit()}>reset</button>
-                {/* <SaveButton save={save} disable={errorCheck}/> */}
                 <button className="save" onClick={(e)=>save(e)} >Save</button>
             </>
             :

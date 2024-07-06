@@ -3,7 +3,7 @@
 
 
 const name_regex = /^[a-zA-Z]{2,75}$/;
-const meeting_title_regex = /^[a-zA-Z0-9."?()*&%$#@;'"!\/<>,:{}[\]+=_\- :&]{5,100}$/;
+const meeting_title_regex = /^[a-zA-Z0-9.\\\s\-&]{5,100}$/;
 const name_regex_input = /^[a-zA-Z]{0,75}$/;
 const description_regex = /^[a-zA-Z0-9."?()*&%$#@;'"!\/<>,:{}[\]+=_\- :&]{0,255}$/;
 const phone_regex = /^[0-9]{10}$/;
@@ -14,7 +14,7 @@ const phone_regex_input = /^[0-9]{0,10}$/;
 const quota_regex_input = /^[0-9]{0,15}$/;
 const quota_regex = /^[0-9]{0,15}$/;
 const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; 
-
+///^[a-zA-Z0-9."?()*&%$#@;'"!\/<>,:{}[\]+=_\- :&]{5,100}$/;
 export const regex_map={
     meeting_title_regex : meeting_title_regex,
     name_regex : name_regex,

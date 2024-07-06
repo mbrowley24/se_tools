@@ -10,7 +10,7 @@ function useMeeting(){
 
         const error = {};
 
-        if(data.title === "" || data.title.trim().length === 0){
+        if(data.title === "" || data.title.trim().length < 5){
             
             error.title = "required";
 
@@ -113,6 +113,7 @@ function useMeeting(){
                     data.meetings.push(action.payload);
                     
                     data.newMeeting = {
+                        id: '',
                         meeting_date: '',
                         meeting_time: '',
                         is_virtual: false,
@@ -124,12 +125,29 @@ function useMeeting(){
             case "reset":
                     
                 data.newMeeting = {
+                    id: '',
                     meeting_date: '',
                     meeting_time: '',
                     is_virtual: false,
                     title: "",
                 }
     
+                return data;
+            
+            case "update":
+                
+                const updatedMeeting = {...action.payload};
+                
+                const filteredMeetings = data.meetings.filter(meeting => meeting.id !== updatedMeeting.id);
+                filteredMeetings.push(updatedMeeting);
+
+                filteredMeetings.sort((a, b) => {
+                    return new Date(a.meeting_date) - new Date(b.meeting_date) && a.meeting_time - b.meeting_time;
+                })
+
+                data.meetings = [...filteredMeetings];
+                
+                console.log(data);
                 return data;
 
             default:
