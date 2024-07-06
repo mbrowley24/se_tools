@@ -1,11 +1,12 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import OpportunitySave from "./OpportunitySave";
 import DeleteButton from "../../../form/DeleteButton";
 import useHttp from "../../../../hooks/useHttp";
 import Modal from "../../../form/Modal";
 import OpportunityDelete from "./OpportunityDelete";
+import SaveButton from "../../../form/SaveButton";
 
-function OpportunityActions({opportunity, update, reset, errors}){
+function OpportunityActions({opportunity, update, reset, errors, edit, toogleEdit}){
     const [showModal, setShowModal] = useState(false);
 
     const toogleModal = () => setShowModal((prev)=>!prev);
@@ -13,12 +14,12 @@ function OpportunityActions({opportunity, update, reset, errors}){
     return(
         <td>
             {
-                update?
+                edit?
                         <>
-                            <OpportunitySave opportunity={opportunity} errors={errors}/>
                             <button className="reset"
                                 onClick={()=>reset()}
                             >Reset</button>
+                            <OpportunitySave opportunity={opportunity} errors={errors}/>
                         </>
                         
                     :
@@ -27,7 +28,14 @@ function OpportunityActions({opportunity, update, reset, errors}){
                             onClose={toogleModal}
                             children={<OpportunityDelete data={opportunity} onClose={toogleModal} />} 
                             />
-                        <DeleteButton deleteAction={toogleModal}/>
+                        <button className="edit"
+                            onClick={()=>toogleEdit()}
+                        >Edit</button>
+                        <button className="delete" 
+                            onChange={()=>toogleModal()}
+                        >
+                            Delete
+                        </button>
                     </>
             }
         </td>

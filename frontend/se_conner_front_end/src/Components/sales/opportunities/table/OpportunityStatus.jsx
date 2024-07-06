@@ -10,6 +10,7 @@ function OpportunityStatus({inputChange, name, update, value}){
             <select 
                 value={value}
                 name={name}
+                disabled={!update}
                 onChange={(e)=>inputChange(e)}
             >
                 {oppstatus && oppstatus.length > 0 && oppstatus.map((stat, index)=>{

@@ -19,6 +19,7 @@ import ContactFormView from './Components/sales/contacts/new/contactFormView';
 import ForecastTableView from './Components/sales/forecast/table/ForecastTableView';
 import ProductsView from './Components/sales/products/ProductsView';
 import AddOpportunityView from './Components/sales/forecast/addOpportunity/AddOpportunityView';
+import MeetingTableView from './Components/sales/meetings/table/MeetingTableView';
 
 function App() {
 
@@ -43,29 +44,32 @@ function App() {
               <Route path={"comcast"} element={<ComcastView/>}/>
             </Route>
             <Route path={"/sales"}>
-              <Route path={"reps"}>
-                <Route path='' element={<RepTableView/>}/>
-              </Route>
-              <Route path={"opportunities"}>
-                <Route path={"create"} element={<NewOpportunityView/>}/>
-              </Route>
               <Route path={"companies"}>
                 <Route path={''} element={<CompanyTableView/>}/>
                 <Route path={':id'} element={<CompanyView/>}/>
                 <Route path={":id/opportunities/new"} element={<NewOpportunityView/>}/>
                 <Route path={":id/contacts/new"} element={<ContactFormView/>}/>
               </Route>
+              <Route path={"forecast"}>
+                <Route path={''} element={<ForecastTableView/>}/>
+                <Route path={':id/:rep_id'} element={<AddOpportunityView/>} />
+              </Route>
               <Route path={"isp"}>
                 <Route path={''} element={<ISPEdit/>}/>
                 {/* <Route path={':id'} element={<CompanyView/>}/> */}
                 <Route path={'categories/:id'} element={<EditISPServicesView/>}/>
               </Route>
-              <Route path={"forecast"}>
-                <Route path={''} element={<ForecastTableView/>}/>
-                <Route path={':id/:rep_id'} element={<AddOpportunityView/>} />
+              <Route path={"meetings"}>
+                <Route path={":id"} element={<MeetingTableView/>}/>
+              </Route>
+              <Route path={"opportunities"}>
+                <Route path={"create"} element={<NewOpportunityView/>}/>
               </Route>
               <Route path={"products"}>
                 <Route path={':id'} element={<ProductsView/>}/>
+              </Route>
+              <Route path={"reps"}>
+                <Route path='' element={<RepTableView/>}/>
               </Route>
             </Route>
           </Routes>

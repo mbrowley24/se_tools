@@ -13,6 +13,7 @@ function OpportunityTableHead(){
                 <th>Close Date</th>
                 <th>Sales Rep</th>
                 <th>Products</th>
+                <th>Meetings</th>
                 <th>Actions</th>
             </tr>
         </thead>

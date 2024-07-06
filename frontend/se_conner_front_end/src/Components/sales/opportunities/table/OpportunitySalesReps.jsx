@@ -4,7 +4,7 @@ import { salesRepActions } from "../../../../store/salesRep";
 import useTextTransform from "../../../../hooks/useTextTransform";
 import useHttp from "../../../../hooks/useHttp";
 
-function OpportunitySalesReps({inputChange, name, value}){
+function OpportunitySalesReps({inputChange, name, value, edit}){
     const salesReps = useSelector(state => state.salesRepData.options);
     const {capitalizeName} = useTextTransform();
     const dispatch = useDispatch();
@@ -45,6 +45,7 @@ function OpportunitySalesReps({inputChange, name, value}){
         <td>
             <select name={name}
                 value={value}
+                disabled={!edit}
                 onChange={(e)=>inputChange(e)}   
             >
                 <option value="">Choose Sales Rep</option>

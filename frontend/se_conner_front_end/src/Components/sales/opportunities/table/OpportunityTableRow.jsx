@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useReducer} from "react";
+import React, {useEffect, useMemo, useReducer, useState} from "react";
 import { Link } from "react-router-dom";
 import OpportunityName from "./OpportunityName";
 import OpportunityAmount from "./OpportunityAmount";
@@ -10,6 +10,7 @@ import OpportunitySalesReps from "./OpportunitySalesReps";
 import useTextTransform from "../../../../hooks/useTextTransform";
 
 function OpportunityTableRow({opportunity}){
+    const [edit, setEdit] = useState(false);
     const {capitialize} = useTextTransform();
     const {checkForErrors, checkForUpdate, opportunityReducer, initialState, FIELDS} = useOpportunity();
     const [opportunityData, dispatchOpp] = useReducer(opportunityReducer, initialState);
@@ -18,8 +19,10 @@ function OpportunityTableRow({opportunity}){
 
     function reset(){
         dispatchOpp({type: FIELDS.UPDATE, payload: opportunity});
+        toogleEdit();
     }
 
+    const toogleEdit = () => setEdit((prev)=>!prev);
 
     useEffect(()=>{
         
@@ -39,8 +42,8 @@ function OpportunityTableRow({opportunity}){
         <tr>
             <OpportunityName
                 name={FIELDS.NAME}
+                edit={edit}
                 value={capitialize(opportunityData.name)}
-                update={update}
                 inputChange={inputChange}
                 error={errors['name']}
             />
@@ -52,12 +55,12 @@ function OpportunityTableRow({opportunity}){
                 error={errors['value']}
             />
             <OpportunityStatus
-                name={FIELDS.STATUS}
-                value={opportunityData.status}
-                update={update}
-                inputChange={inputChange}
-                error={errors['status']}
-            />
+                    name={FIELDS.STATUS}
+                    value={opportunityData.status}
+                    update={update}
+                    inputChange={inputChange}
+                    error={errors['status']}
+                />
             <OpportunityClose
                 name={FIELDS.CLOSE}
                 value={opportunityData.close_date}
@@ -72,9 +75,12 @@ function OpportunityTableRow({opportunity}){
                 error={errors['sales_rep']}
                 />
             <td><Link to={`/sales/products/${opportunity.id}`}>{opportunityData.products}</Link></td>
-            <OpportunityActions update={update} 
+            <td><Link to={`/sales/meetings/${opportunity.id}`}>{opportunityData.meetings}</Link></td>
+            <OpportunityActions update={update}
+                                toogleEdit={toogleEdit}
                                 opportunity={opportunityData}
                                 reset={reset}
+                                edit={edit}
                                 errors={errors}/>
         </tr>
     )

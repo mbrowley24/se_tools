@@ -153,7 +153,8 @@
 .container table thead tr th{
     text-wrap: nowrap;
     font-size: 75%;
-    padding: .5rem;
+    padding: .25rem;
+    width: 10%;
     background-color: rgb(64, 64, 64, 1);
     color: white;
     overflow: hidden;
@@ -183,7 +184,17 @@
 
 
 .container table tbody tr td select{
-    font-size: 1.5vh;
+    font-size: 1.25vh;
+    padding: .2rem;
+    border-radius: .25rem;
+    text-align: center;
+    background-color: rgb(211, 211, 211, 1);
+}
+
+.container table tbody tr td select:disabled{
+    font-size: 1.25vh;
+    color: black;
+    font-weight: bolder;
     padding: .2rem;
     border-radius: .25rem;
     text-align: center;
@@ -191,7 +202,7 @@
 }
 
 .container table tbody tr td input{
-    font-size: 1.5vh;
+    font-size: 1.25vh;
     padding: .2rem;
     border-top: none;
     border-left: none;
@@ -202,7 +213,7 @@
 }
 
 .container table tbody tr td input:focus{
-    font-size: 1.5vh;
+    font-size: 1.25vh;
     padding: .2rem;
     border-top: none;
     border-left: none;
@@ -281,7 +292,8 @@
 .delete{
     margin-top: 1rem;
     padding: .15rem;
-    width: 35%;
+    width: 25%;
+    min-width: 30%;
     font-size: 50%;
     color: white;
     background-color: red;
@@ -296,7 +308,9 @@
 }
 
 .delete span{
-    font-size: 1.75vh;
+    display: block;
+    width: 75%;
+    font-size: 150%;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
@@ -526,4 +540,11 @@
     font-weight: bold;
     margin-left: .25rem;
     margin-right: .25rem;
+}
+
+
+.scrollable-column {
+    overflow-x: auto;
+    white-space: nowrap;
+    max-width: 200px; /* Adjust the width as needed */
 }
