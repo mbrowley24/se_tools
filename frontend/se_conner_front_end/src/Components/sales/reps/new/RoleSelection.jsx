@@ -3,7 +3,7 @@ import useHttp from "../../../../hooks/useHttp";
 import { useDispatch, useSelector } from "react-redux";
 import { salesRepActions } from "../../../../store/salesRep";
 
-function RoleSelection({inputChange, data, validIsRole, label}){
+function RoleSelection({inputChange, data, validIsRole, label, edit}){
     const {httpRequest} = useHttp();
     const salesRoleData = useSelector(state => state.salesRepData);
     const dispatch = useDispatch();
@@ -52,6 +52,7 @@ function RoleSelection({inputChange, data, validIsRole, label}){
             {label && <label>Roles</label>}
             <select name="role"
                 value={data}
+                disabled={!edit}
                 onChange={(e) => inputChange(e)}
             >
                 <option value="">Select Role</option>

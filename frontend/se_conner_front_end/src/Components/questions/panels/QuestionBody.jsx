@@ -3,7 +3,7 @@ import React from "react";
 
 
 
-function QuestionBody({data}){
+function QuestionBody({data, edit}){
 
     return(
         <div className="question_body">

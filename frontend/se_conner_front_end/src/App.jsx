@@ -1,25 +1,27 @@
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import { AppDataContext } from './context/dataContext';
 import LoginView from './Components/login/LoginView'
-import Dashboard from './Components/dashboard/Dashboard'
 import About from './Components/about/about'
-import QuestionView from './Components/questions/QuestionView'
-import NewQuestion from './Components/questions/NewQuestion'
+import AddOpportunityView from './Components/sales/forecast/addOpportunity/AddOpportunityView';
+import ComcastView from './Components/education/comcast/ComcastView'
+import CompanyView from './Components/sales/companies/companyForm/CompanyView';
+import CompanyTableView from './Components/sales/companies/CompanyTableView'
+import ContactFormView from './Components/sales/contacts/new/contactFormView';
+import Dashboard from './Components/dashboard/Dashboard'
+import EditISPServicesView from './Components/dashboard/editServices/EditISPServicesView';
+import ForecastTableView from './Components/sales/forecast/table/ForecastTableView';
+import ISPEdit from './Components/dashboard/edit/ISPEdit';
+import MeetingTableView from './Components/sales/meetings/table/MeetingTableView';
+import NewOpportunityView from './Components/sales/opportunities/new/NewOpportunityView';
+import ProductsView from './Components/sales/products/ProductsView';
+import QuestionView from './Components/questions/panels/QuestionView'
+import RepTableView from './Components/sales/reps/table/RepTableView'
+import NewQuestion from './Components/questions/new/NewQuestion';
 import TemplateView from './Components/discoveryQuestionTemplate/TemplateView'
 import NewTemplateView from './Components/discoveryQuestionTemplate/NewTemplateView'
 import TemplateFormView from './Components/discoveryQuestionTemplate/TemplateFormView'
-import ComcastView from './Components/education/comcast/ComcastView'
-import RepTableView from './Components/sales/reps/table/RepTableView'
-import NewOpportunityView from './Components/sales/opportunities/new/NewOpportunityView';
-import CompanyTableView from './Components/sales/companies/CompanyTableView'
-import ISPEdit from './Components/dashboard/edit/ISPEdit';
-import EditISPServicesView from './Components/dashboard/editServices/EditISPServicesView';
-import CompanyView from './Components/sales/companies/companyForm/CompanyView';
-import ContactFormView from './Components/sales/contacts/new/contactFormView';
-import ForecastTableView from './Components/sales/forecast/table/ForecastTableView';
-import ProductsView from './Components/sales/products/ProductsView';
-import AddOpportunityView from './Components/sales/forecast/addOpportunity/AddOpportunityView';
-import MeetingTableView from './Components/sales/meetings/table/MeetingTableView';
+import EditQuestion from './Components/questions/edit/EditQuestion';
+
 
 function App() {
 
@@ -34,6 +36,7 @@ function App() {
             <Route path='/discoveryquestions'>
               <Route path="" element={<QuestionView/>}/>
               <Route path="new" element={<NewQuestion/>}/>
+              <Route path=":id" element={<EditQuestion/>}/>
               <Route path={"templates"}>
                 <Route path={''} element={<TemplateView/>}/>
                 <Route path={"new"} element={<NewTemplateView/>}/>

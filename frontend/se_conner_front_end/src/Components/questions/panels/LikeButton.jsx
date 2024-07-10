@@ -1,7 +1,7 @@
 import React from "react";
-import Button from "../form/Button";
-import useHttp from "../../hooks/useHttp";
-import "../../css/small_spinner.css";
+import Button from "../../form/Button";
+import useHttp from "../../../hooks/useHttp";
+import "../../../css/small_spinner.css";
 
 
 function LikeButton({url, label, question_id, like, setQuestion, disabled}){

@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useReducer} from "react";
+import React, {useEffect, useMemo, useReducer, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import useHttp from "../../../hooks/useHttp";
 import CompanyNameCell from "./CompanyNameCell";
@@ -13,6 +13,7 @@ import useTextTransform from "../../../hooks/useTextTransform";
 
 
 function CompanyTableRow({data}){
+    const [edit, setEdit] = useState(false);
     const navigate = useNavigate();
     const {httpRequest} = useHttp();
     const {capitialize, valueCommas} = useTextTransform();
@@ -26,6 +27,9 @@ function CompanyTableRow({data}){
     
     const gotoCompany = (id) => navigate(`/sales/companies/${id}`);
     
+    const canEdit = () => setEdit(!edit);
+    console.log(edit)
+
     function toContacts(id){
         if(!id) return
         dispatch(companyActions.viewContacts());
@@ -100,12 +104,14 @@ function CompanyTableRow({data}){
     
     return(
         <tr>
-            <CompanyNameCell name={"name"} 
+            <CompanyNameCell name={"name"}
+                            edit={edit}
                             value={capitialize(company.name)}
                             inputChange={inputChange} 
                             errors={company.errors}/>
             <td>
                 <VerticalSelection name={'vertical'}
+                                    edit={edit}
                                     value={company.vertical}
                                     onChange={inputChange}
                                     errors={company?.errors}
@@ -118,7 +124,7 @@ function CompanyTableRow({data}){
             <td>{company?.percentage}</td>
             <td>{`$${valueCommas(company?.open)}`}</td>
             <td>{company?.updated}</td>
-            <CompanyTableAction edit={change} valid={valid} reset={reset} data={company}/>
+            <CompanyTableAction edit={edit} valid={valid} reset={reset} data={company} canEdit={canEdit}/>
         </tr>
     )
 }

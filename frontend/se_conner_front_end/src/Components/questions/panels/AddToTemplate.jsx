@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../form/Button";
+import Button from "../../form/Button";
 
 
 

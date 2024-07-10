@@ -33,9 +33,7 @@ function UpdateRep({data, valid}){
             onClick={(e)=>submit}
             disabled={!valid}
         >
-            <span className="material-symbols-outlined">
-                save
-            </span>
+        Save
         </button>
     )
 }

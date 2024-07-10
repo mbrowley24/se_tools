@@ -2,7 +2,7 @@ import React from "react";
 import {useSelector} from "react-redux";
 
 
-function OpportunityStatus({inputChange, name, update, value}){
+function OpportunityStatus({edit, inputChange, name, value}){
     const oppstatus = useSelector(state => state.companyData.opportunityStatus);
 
     return(
@@ -10,7 +10,7 @@ function OpportunityStatus({inputChange, name, update, value}){
             <select 
                 value={value}
                 name={name}
-                disabled={!update}
+                disabled={!edit}
                 onChange={(e)=>inputChange(e)}
             >
                 {oppstatus && oppstatus.length > 0 && oppstatus.map((stat, index)=>{

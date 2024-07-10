@@ -1,6 +1,6 @@
 import React from "react";
-import Button from "../form/Button";
-import useHttp from "../../hooks/useHttp";
+import Button from "../../form/Button";
+import useHttp from "../../../hooks/useHttp";
 
 function CommentButton({url, data, label}){
     const {httpRequest} = useHttp();

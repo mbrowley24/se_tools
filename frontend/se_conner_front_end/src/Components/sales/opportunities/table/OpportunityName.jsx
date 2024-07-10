@@ -4,8 +4,8 @@ import React, {useState} from "react";
 
 
 function OpportunityName({name, inputChange, value, edit, error}){
-
-
+    console.log(edit)
+    console.log(value)
     return(
         <td>
             {edit?

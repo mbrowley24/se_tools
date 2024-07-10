@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from "react";
-import useHttp from "../../hooks/useHttp";
-import Select from "../form/Select";
+import useHttp from "../../../hooks/useHttp";
+import Select from "../../form/Select";
 
 
 
-function Industry({value, onChange, name}){
+function Industry({value, onChange, name, error}){
     const [industry, setIndustry] = useState([]);
     const {httpRequest} = useHttp();
 
@@ -14,14 +14,14 @@ function Industry({value, onChange, name}){
         const controller = new AbortController();
 
         const requestConfig = {
-            url: "/api/v1/industry",
+            url: "/api/v1/industries",
             method: "GET",
             signal: controller.signal
         }
 
         function applyData(res){
-            if(res.data.data){
-                setIndustry(res.data.data);
+            if(res.status === 200){
+                setIndustry(res.data);
             }
         }
 
@@ -37,6 +37,7 @@ function Industry({value, onChange, name}){
 
     return(
         <div>
+            <label htmlFor="">Industries</label>
             <Select
                 multiple={true}
                 value={value} 
@@ -44,6 +45,7 @@ function Industry({value, onChange, name}){
                 name={name}
                 onChange={onChange}
                 />
+            <p className="error">{error? error : ""}</p>
         </div>
     )
 }

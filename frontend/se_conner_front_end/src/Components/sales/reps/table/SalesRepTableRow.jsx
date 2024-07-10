@@ -9,6 +9,7 @@ import SalesRepActions from "./SalesRepActions";
 import useTextTransform from "../../../../hooks/useTextTransform";
 
 function SalesRepTableRow({rep}){
+    const [edit, setEdit] = useState(false);
     const {capitialize} = useTextTransform();
     const {hasChanged, updateDateSalesRep, validateSalesRep} = useSalesRep();
     const [salesRep, setSalesRep] = useState({
@@ -21,7 +22,7 @@ function SalesRepTableRow({rep}){
         quota: 0,
         sales_eng: null
     })
-    
+    const canEdit = () => setEdit(!edit);
     const errors = useMemo(() => validateSalesRep(salesRep), [salesRep]);
     const resetRep = () => {
         setSalesRep({
@@ -34,6 +35,8 @@ function SalesRepTableRow({rep}){
             quota: rep.quota,
             sales_engineer: {...rep.sales_eng}
         })
+
+        canEdit();
     }
     
     useEffect(() => {
@@ -73,27 +76,36 @@ function SalesRepTableRow({rep}){
         
         <tr>
             <NameCell value={capitialize(salesRep.first_name)}
-                name={'first_name'} 
+                name={'first_name'}
+                edit={edit} 
                 inputChange={inputChange}
                 errors={errors['first_name']}/>
             <NameCell value={capitialize(salesRep.last_name)} 
                         name={"last_name"}
+                        edit={edit}
                         inputChange={inputChange}
                         errors={errors['last_name']}
                         />
             <QuotaCell value={salesRep.quota}
-                        name={"quota"} 
+                        name={"quota"}
+                        edit={edit} 
                         inputChange={inputChange}
                         errors={errors['quota']}
                         />
             <EmailCell value={salesRep.email}   
                         name={"email"}
+                        edit={edit}
                         inputChange={inputChange}
                         errors={errors['email']}
                         />
-            <PhoneCell value={salesRep.phone} name={"phone"} inputChange={inputChange}/>
-            <RoleCell value={salesRep.role} inputChange={inputChange} />
-            <SalesRepActions data={salesRep} errors={errors} update={update} resetRep={resetRep}/>
+            <PhoneCell value={salesRep.phone} name={"phone"} inputChange={inputChange} edit={edit}/>
+            <RoleCell value={salesRep.role} inputChange={inputChange} edit={edit} />
+            <SalesRepActions data={salesRep} 
+                            errors={errors}
+                            edit={edit} 
+                            update={update} 
+                            resetRep={resetRep} 
+                            canEdit={canEdit}/>
         </tr>
         
     )

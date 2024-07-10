@@ -26,7 +26,7 @@ function OpportunityTableRow({opportunity}){
 
     useEffect(()=>{
         
-        reset();
+        dispatchOpp({type: FIELDS.UPDATE, payload: opportunity});
 
     },[opportunity])
 
@@ -50,12 +50,13 @@ function OpportunityTableRow({opportunity}){
             <OpportunityAmount
                 name={FIELDS.VALUE}
                 value={opportunityData.value}
-                update={update}
+                edit={edit}
                 inputChange={inputChange}
                 error={errors['value']}
             />
             <OpportunityStatus
                     name={FIELDS.STATUS}
+                    edit={edit}
                     value={opportunityData.status}
                     update={update}
                     inputChange={inputChange}
@@ -69,7 +70,8 @@ function OpportunityTableRow({opportunity}){
                 error={errors['close']}
             />
             <OpportunitySalesReps
-                name={FIELDS.SALESREP} 
+                name={FIELDS.SALESREP}
+                edit={edit} 
                 value={opportunityData.sales_rep}
                 inputChange={inputChange}
                 error={errors['sales_rep']}

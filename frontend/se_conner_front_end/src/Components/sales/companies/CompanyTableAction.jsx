@@ -8,7 +8,7 @@ import { companyActions } from "../../../store/company";
 import CompanyDelete from "./CompanyDelete";
 import Modal from "../../form/Modal";
 
-function CompanyTableAction({data, edit, reset, valid}){
+function CompanyTableAction({canEdit, data, edit, reset, valid}){
     const [showModal, setShowModal] = useState(false);
     const {httpRequest} = useHttp();
     const dispatch = useDispatch();
@@ -44,8 +44,10 @@ function CompanyTableAction({data, edit, reset, valid}){
             {
                 edit ? 
                     <>
-                        <SaveButton disable={!valid}/>
-                        <ResetButton reset={reset}/>
+                        <button className="reset" 
+                                onClick={()=>canEdit()}
+                                >Reset</button>
+                        <button className="save" onClick={(e)=>saveCompany()}>Save</button>
                     </>
 
                 :
@@ -53,7 +55,9 @@ function CompanyTableAction({data, edit, reset, valid}){
                     <Modal isOpen={showModal} 
                             onClose={toogleModal} 
                             children={<CompanyDelete data={data} onClose={toogleModal}/>}/>
-                    <DeleteButton deleteAction={toogleModal}/>
+                    <button className="edit" onClick={()=>canEdit()}>Edit</button>
+                    <button className="delete" onClick={toogleModal}>Delete</button>
+                    {/* <DeleteButton deleteAction={toogleModal}/> */}
                 </>
                     
             }

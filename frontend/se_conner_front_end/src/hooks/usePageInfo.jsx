@@ -92,19 +92,17 @@ function usePageInfo() {
             
             case PAGE_FIELDS.LOAD_PAGE:
                 
-                const page_info = action.payload.pageInfo;
-                const page_data = action.payload.data;
-                
-                
-                data.total_pages = page_info.totalPages;
-                data.total_items = page_info.totalItems
-                data.page = page_info.page;
-                data.limit = page_info.limit;
-                data.hasNext = page_info.hasNext;
-                data.hasPrev = page_info.hasPrev;
-                data.isFirst = page_info.isFirst;
-                data.isLast = page_info.isLast;
-                data.data = page_data? [...page_data] : [];
+                console.log(action.payload) 
+                // const page_info = action.payload.pageInfo;
+                const page_data = action.payload;
+                    
+                data.total_pages = page_data.totalPages === 0 ? 1 : page_data.totalPages;
+                data.total_items = page_data.totalElements;
+                data.page = page_data.number;
+                data.limit = page_data.size;
+                data.isFirst = page_data.first;
+                data.isLast = page_data.last;
+                data.data = page_data? [...page_data.content] : [];
                 
                 return data;
 
@@ -112,6 +110,15 @@ function usePageInfo() {
                 data.page = 0;
                 return data;
             
+            case "delete":
+                
+                const id = action.payload;
+                const newData = data.data.filter(item => item.id !== id);
+                
+                data.data = [...newData];
+                
+                return data;
+
             default:
                 return data;
         }

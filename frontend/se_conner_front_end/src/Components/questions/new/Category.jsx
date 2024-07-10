@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import useHttp from "../../hooks/useHttp";
-import Select from "../form/Select";
+import useHttp from "../../../hooks/useHttp";
+import Select from "../../form/Select";
 
-function Category({onChange, value, name}){
+function Category({onChange, value, name, error}){
     const {httpRequest} = useHttp();
     const [categories, setCategories] = useState([]);
 
@@ -11,15 +11,14 @@ function Category({onChange, value, name}){
         const controller = new AbortController();
 
         const requestConfig = {
-            url: "api/v1/category",
+            url: "api/v1/categories",
             method: "GET",
             signal: controller.signal
         }
 
         function applyData(res){
-            
-            if(res.data.data){
-                setCategories(res.data.data);
+            if(res.status === 200){
+                setCategories(res.data);
             }
         }
 
@@ -37,11 +36,13 @@ function Category({onChange, value, name}){
 
     return(
         <div>
+            <label>Categories</label>
             <Select options={categories}
                     multiple={true} 
                     value={value}
                     name={name}
                     onChange={onChange}/>
+            <p className="error">{error? error : ""}</p>
         </div>
     )
 }

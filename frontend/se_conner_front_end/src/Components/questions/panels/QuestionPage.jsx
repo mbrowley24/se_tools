@@ -1,5 +1,5 @@
 import React from 'react';
-import "../../css/pagination/pagination.css";
+import "../../../css/pagination/pagination.css";
 
 
 

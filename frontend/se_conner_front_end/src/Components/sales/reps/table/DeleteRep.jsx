@@ -14,9 +14,7 @@ function DeleteRep({data}){
     return(
         <>
             <button className="delete" onClick={()=>toogleModal()}>
-                <span className="material-symbols-outlined">
-                    delete
-                </span>
+                delete
             </button>
             <Modal isOpen={open} onClose={toogleModal} children={<DeleteSalesRep data={data} onClose={toogleModal}/>}/>
         </>

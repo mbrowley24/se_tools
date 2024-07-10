@@ -1,19 +1,17 @@
 import React, {useMemo, useState} from "react";
-import useSalesRep from "../../../../hooks/useSalesRep";
 import RoleSelection from "../new/RoleSelection";
-import TooltipError from "../../../form/ToolTipError";
 
 
-function RoleCell({value, inputChange,  errors}){
+
+function RoleCell({value, inputChange,  errors, edit}){
     const [roleValid, setRoleValid] = useState(true)
-    const validRole = useMemo(() => roleValid || value === "", [value])
+    
 
 
 
     return(
         <td>
-            
-            <RoleSelection data={value} inputChange={inputChange} validIsRole={setRoleValid}/>
+            <RoleSelection data={value} inputChange={inputChange} validIsRole={setRoleValid} edit={edit}/>
             <p className="errors">{errors?  errors : ""}</p>
         </td>
     )

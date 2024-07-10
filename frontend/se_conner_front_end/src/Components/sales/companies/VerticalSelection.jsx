@@ -4,7 +4,7 @@ import useTextTransform from "../../../hooks/useTextTransform";
 import { useDispatch, useSelector } from "react-redux";
 import { companyActions } from "../../../store/company";
 
-function VerticalSelection({label, name, value, onChange, errors}){
+function VerticalSelection({edit, label, name, value, onChange, errors}){
     const {httpRequest} = useHttp();
     const {capitialize} = useTextTransform();
     const dispatch = useDispatch();
@@ -42,6 +42,7 @@ function VerticalSelection({label, name, value, onChange, errors}){
             {label && <label>{label}</label>}
             <select name={name}
                 value={value}
+                disabled={!edit}
                 onChange={(e)=>onChange(e)}
             >
                 <option value="">Choose Vertical</option>
