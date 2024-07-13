@@ -1,8 +1,9 @@
 import React, {useMemo, useState} from "react";
-import useHttp from "../../hooks/useHttp";
-import useTemplate from "../../hooks/useTemplate";
+import useHttp from "../../../hooks/useHttp";
+import useTemplate from "../../../hooks/useTemplate";
 
 function NewTemplateForm({setUpdate}){
+
     const {httpRequest} = useHttp();
     const {validateNameInput, validateName} = useTemplate();
     const [name, setName] = useState("");
@@ -16,20 +17,25 @@ function NewTemplateForm({setUpdate}){
         }
     }   
 
+    function resetForm(){
+        setName("");
+        setUpdate((prev)=>!prev);
+    }
+
 
     async function submitForm(e){
         e.preventDefault()
+        
         const configRequest={
             method: 'POST',
-            url: 'api/v1/questions/templates',
-            data: {"name": name}
+            url: '/api/v1/discovery-question-templates',
+            data: {name : name}
         }
 
         function applyData(res){
             console.log(res)
             if (res.status === 200) {
-                setName("");
-                setUpdate((prev)=>!prev);
+                resetForm();
             }
         }
 

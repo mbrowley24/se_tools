@@ -1,8 +1,8 @@
 import React, {useEffect, useReducer} from "react";
-import usePageInfo from "../../hooks/usePageInfo";
-import useHttp from "../../hooks/useHttp";  
-import Header from "../header/Header";
-import Questions from "../questions/panels/Questions";
+import usePageInfo from "../../../hooks/usePageInfo";
+import useHttp from "../../../hooks/useHttp";  
+import Header from "../../header/Header";
+import Questions from "../../questions/panels/Questions";
 
 function NewTemplateView({}){
     const {httpRequest} = useHttp();

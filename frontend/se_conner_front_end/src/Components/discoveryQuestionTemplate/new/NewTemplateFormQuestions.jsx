@@ -1,5 +1,5 @@
 import React from "react";
-import TextField from "../form/TextField";
+import TextField from "../../form/TextField";
 
 
 function NewTemplateFormName({inputChange, name, value}){

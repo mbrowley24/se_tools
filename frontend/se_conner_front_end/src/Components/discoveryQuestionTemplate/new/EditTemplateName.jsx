@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import useTemplate from "../../hooks/useTemplate";
-import TextField from "../form/TextField";
-import useHttp from "../../hooks/useHttp";
+import useTemplate from "../../../hooks/useTemplate";
+import TextField from "../../form/TextField";
+import useHttp from "../../../hooks/useHttp";
 
 function EditTemplateName({data, id}){
     const {httpRequest} = useHttp();

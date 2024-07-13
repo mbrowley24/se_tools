@@ -215,6 +215,8 @@
     overflow: auto;
 }
 
+
+
 .template table{
     background-color: rgb(255, 255, 255, .85);
     /* height: 50vh; */
@@ -326,3 +328,78 @@ div::-webkit-scrollbar-thumb {
     background-color: rgb(64, 64, 64, 1);
 }
 
+.template .template_question{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1%;
+    /* margin-bottom: 1%; */
+    width: 50%;
+    height: 25vh;
+    border-radius: .30rem;
+    background-color: rgb(150, 150, 150, .85);
+    overflow: auto;
+}
+
+.template .template_question .tool_bar{
+    display: flex;
+    width: 75%;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1%;
+    padding-right: 1%;
+    margin-bottom: 0%;
+}
+
+.template .template_question .tool_bar .author{
+    width: 50%;
+    padding-top: 1%;
+    text-align: start;
+    /* margin-left: .5%; */
+    font-size: medium;
+}
+
+.template .template_question .tool_bar .add{
+    display: flex;
+    width: 50%;
+    padding-top: 1.5%;
+    justify-content: end;
+    font-size: medium;
+}
+
+.template .template_question .tool_bar .add p{
+    display: inline-block;
+    padding-bottom: 1%;
+}
+
+.template .template_question .tool_bar .add input{
+    width: 10%;
+    height: 2vh;
+}
+
+.template_save{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: 50%;
+}
+.template_save button{
+    background-color: rgb(211, 211, 211, 1);
+    border-radius: .25rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: .25rem;
+    text-align: center;
+    width: 10%;
+}
+.template_save button:disabled{
+    background-color: rgb(280, 280, 280, 1);
+    color: rgb(150, 150, 150, .85);
+    border-radius: .25rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding: .25rem;
+    text-align: center;
+    width: 10%;
+}

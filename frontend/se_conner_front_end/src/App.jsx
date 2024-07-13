@@ -17,10 +17,11 @@ import ProductsView from './Components/sales/products/ProductsView';
 import QuestionView from './Components/questions/panels/QuestionView'
 import RepTableView from './Components/sales/reps/table/RepTableView'
 import NewQuestion from './Components/questions/new/NewQuestion';
-import TemplateView from './Components/discoveryQuestionTemplate/TemplateView'
-import NewTemplateView from './Components/discoveryQuestionTemplate/NewTemplateView'
-import TemplateFormView from './Components/discoveryQuestionTemplate/TemplateFormView'
+import TemplateView from './Components/discoveryQuestionTemplate/new/TemplateView'
+import NewTemplateView from './Components/discoveryQuestionTemplate/new/NewTemplateView'
+import TemplateFormView from './Components/discoveryQuestionTemplate/new/TemplateFormView'
 import EditQuestion from './Components/questions/edit/EditQuestion';
+import AddQuestionView from './Components/discoveryQuestionTemplate/addQuestions/AddQuestionView';
 
 
 function App() {
@@ -39,8 +40,7 @@ function App() {
               <Route path=":id" element={<EditQuestion/>}/>
               <Route path={"templates"}>
                 <Route path={''} element={<TemplateView/>}/>
-                <Route path={"new"} element={<NewTemplateView/>}/>
-                <Route path={':id'} element={<TemplateFormView/>}/>
+                <Route path={':id'} element={<AddQuestionView/>}/>
               </Route>
             </Route>
             <Route path={"/education"}>

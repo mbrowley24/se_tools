@@ -64,6 +64,83 @@ function useTemplate() {
         return nameValidRegex.test(name);
     }
 
+    const templateQuestionInit = {
+        page:{
+            number : 0,
+            size : 10,
+            totalPages : 1,
+            totalElements : 0,
+            first: false,
+            last: false,
+            content: []
+        },
+        question_ids: [],
+        original_question_ids: [],
+    }
+
+    function templateQuestionReducer(state, action){
+        let data = JSON.parse(JSON.stringify(state));
+
+        switch(action.type){
+            case 'page':
+                data.page = action.payload;
+                return data;
+            case 'current_question_ids':
+                data.question_ids = action.payload;
+                return data;
+            
+            case 'set_up':
+                console.log(action.payload)
+                
+                data.page = JSON.parse(JSON.stringify(action.payload.page));
+                
+                data.question_ids = [...action.payload.question_ids];
+                
+                data.original_question_ids = [...action.payload.question_ids];
+                console.log(data)
+                return data;
+            
+            case 'add_question':
+                
+                data.question_ids = [...data.question_ids, action.payload];
+                return data;
+
+            case 'remove_question':
+                    
+                data.question_ids = [...data.question_ids.filter(id => id !== action.payload)];
+                return data;
+            default:
+                return state;
+        }
+    }
+
+
+    function save_question_ids(original, edited){
+        
+        if( original.length === 0 && edited.length === 0){
+            return false;
+        }
+
+        if(original.length > 50){
+
+            return false
+        }
+
+        if(original.length !== edited.length){
+            return true;
+        }
+
+        for(let i = 0; i < original.length; i++){
+            
+            if(original[i] !== edited[i]){
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
     // Initial state
     const initialTempState = {
         // initial state
@@ -171,12 +248,15 @@ function useTemplate() {
     return ({
         checkForChanges,
         initialTempState,
+        save_question_ids,
         templateReducer,
         TEMPLATE_FIELDS,
+        templateQuestionInit,
+        templateQuestionReducer,
         updateQuestionOrder,
         validateNameInput,
         validateName,
-  })
+    });
 }
 
 

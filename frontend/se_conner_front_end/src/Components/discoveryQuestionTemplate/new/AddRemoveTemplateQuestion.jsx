@@ -1,5 +1,5 @@
 import React from "react";
-import "../../css/question_template/add_remove_question.css"
+import "../../../css/question_template/add_remove_question.css"
 
 function AddRemoveTemplateQuestion({data, questionIds, inputChange}){
 

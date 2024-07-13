@@ -1,10 +1,10 @@
 import React, {useEffect, useMemo, useState} from "react";
 import {useNavigate, useParams } from "react-router-dom";
-import Header from "../header/Header";
+import Header from "../../header/Header";
 import TemplateForm from "./TemplateForm";
-import useHttp from "../../hooks/useHttp";
-import useTemplate from "../../hooks/useTemplate";
-import "../../css/question_template/question_template.css";
+import useHttp from "../../../hooks/useHttp";
+import useTemplate from "../../../hooks/useTemplate";
+import "../../../css/question_template/template.css";
 
 function TemplateFormView(){
     const {id} = useParams();

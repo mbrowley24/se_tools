@@ -3,6 +3,31 @@
     margin: 0%;
 }
 
+
+.template_actions{
+    margin-right: auto;
+    margin-left: auto;
+    display: flex;
+    justify-content: space-around;
+    width: 75%;
+}
+
+
+.no_btn{
+    display: inline-block;
+    margin-left: 1%;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    background-color: transparent;
+}
+
+.no_btn:hover{
+    color: white;
+    background-color: rgb(0, 0, 0, 1);
+}
+
 .edit_action{
     display: inline-block;
     margin-left: 10%;

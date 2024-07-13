@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useState} from "react";
-import useHttp from "../../hooks/useHttp";
+import useHttp from "../../../hooks/useHttp";
 import AddRemoveTemplateQuestion from "./AddRemoveTemplateQuestion";
-import "../../css/question_template/add_remove_question.css";
+import "../../../css/question_template/add_remove_question.css";
 
 
 function TemplateFormAddQuestion({ id, data, setData, setUpdate, isChanged}){
