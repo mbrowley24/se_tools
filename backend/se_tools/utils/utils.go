@@ -42,18 +42,20 @@ func (u *Utilities) WriteJSON(w http.ResponseWriter, status int, data interface{
 
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(status)
-	w.Write(js)
+	if _, err = w.Write(js); err != nil {
+		//ToDo do something with this error
+	}
 
 	return nil
 }
 
-// get env variables
-func (u Utilities) Env(text string) (string, error) {
+// ToDo Write my own .env functionalility for full control easy to implement
+// Env get env variables
+func (u *Utilities) Env(text string) (string, error) {
 
 	err := godotenv.Load(".env")
 
 	if err != nil {
-		println(err.Error())
 		println("Error loading .env file in functions")
 		return "", err
 	}
@@ -63,7 +65,9 @@ func (u Utilities) Env(text string) (string, error) {
 
 func (u *Utilities) ErrorJSON(w http.ResponseWriter, err error) {
 
-	u.WriteJSON(w, http.StatusBadRequest, err, "error")
+	if err = u.WriteJSON(w, http.StatusBadRequest, err, "error"); err != nil {
+		//ToDo do something with this error
+	}
 }
 
 // OpenFile open file
@@ -86,7 +90,9 @@ func (u *Utilities) OpenScanner(file *os.File) *bufio.Scanner {
 
 func (u *Utilities) Unauthorized(w http.ResponseWriter) {
 
-	u.WriteJSON(w, http.StatusForbidden, "unauthorized", "error")
+	if err := u.WriteJSON(w, http.StatusForbidden, "unauthorized", "error"); err != nil {
+		//ToDo do something with this error
+	}
 }
 
 func (u *Utilities) PageData(r *http.Request) (int64, int64, int64) {
@@ -102,6 +108,8 @@ func (u *Utilities) PageData(r *http.Request) (int64, int64, int64) {
 		value, err := strconv.Atoi(pageValue)
 
 		if err != nil {
+
+			//ToDO do something with this error
 			println("Error converting string to int")
 
 		} else {
@@ -116,6 +124,8 @@ func (u *Utilities) PageData(r *http.Request) (int64, int64, int64) {
 		value, err := strconv.Atoi(limitValue)
 
 		if err != nil {
+
+			//ToDo do something with this error
 			println("Error converting string to int")
 
 		} else {
@@ -125,7 +135,7 @@ func (u *Utilities) PageData(r *http.Request) (int64, int64, int64) {
 
 	}
 
-	return page, limit, (page * limit)
+	return page, limit, page * limit
 
 }
 

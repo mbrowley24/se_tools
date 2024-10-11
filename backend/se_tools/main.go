@@ -60,10 +60,7 @@ func main() {
 	}(client, ctx)
 
 	//check connection by ping
-	err = client.Ping(ctx, readpref.Primary())
-
-	//check for error
-	if err != nil {
+	if err = client.Ping(ctx, readpref.Primary()); err != nil {
 		log.Fatal(err)
 	}
 
@@ -77,7 +74,10 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	apps.initservice.Init(ctx)
+	if err = apps.initservice.Init(ctx); err != nil {
+
+		panic("data initiation error")
+	}
 
 	//get server routes
 	srv := &http.Server{

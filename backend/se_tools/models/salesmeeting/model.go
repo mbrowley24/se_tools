@@ -1,21 +1,27 @@
 package salesmeeting
 
 import (
+	"se_tools/models/company"
+	"se_tools/models/salesMeetingType"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type SalesMeeting struct {
-	ID primitive.ObjectID `bson:"_id,omitempty"`
+type Model struct {
 	// PublicId is the public identifier of the sales meeting
 	PublicId string `bson:"public_id"`
 	// Name is the name of the sales meeting
-	Name string `bson:"name"`
+	Name string                 `bson:"name"`
+	Type salesMeetingType.Model `bson:"type"`
+	//company Data
+	Company company.Model `bson:"company"`
 	// Description is the description of the sales meeting
 	Description string `bson:"description"`
 	// Date is the date of the sales meeting
 	Date time.Time `bson:"date"`
+	//Notes: kept between 750 and 1000 chars
+	Notes string `bson:"notes"`
 	// InPerson is a boolean indicating if the sales meeting is in person
 	InPerson bool `bson:"in_person"`
 	// SalesOpportunity is the sales opportunity associated with the sales meeting

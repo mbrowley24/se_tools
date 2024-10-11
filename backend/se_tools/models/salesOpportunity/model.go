@@ -5,6 +5,8 @@ import (
 	"se_tools/models/company"
 	"se_tools/models/opportunitystatus"
 	salesproducts "se_tools/models/salesProducts"
+	"se_tools/models/salesmeeting"
+	"se_tools/models/salesrep"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -23,15 +25,15 @@ type Model struct {
 	// Description is the description of the sales opportunity
 	Description string `bson:"description"`
 	// Company is the company associated with the sales opportunity
-	Company company.Embeded `bson:"company"`
+	Company company.Model `bson:"company"`
 	// Status is the status of the sales opportunity
 	Status opportunitystatus.Model `bson:"status"`
 	// SalesRep is the sales representative assigned to the sales opportunity
-	SalesRep primitive.ObjectID `bson:"sales_rep"`
+	SalesRep salesrep.Embeded `bson:"sales_rep"`
 	// sales products is the products associated with the sales opportunity
 	SalesProducts []salesproducts.Model `bson:"sales_products"`
 	// SalesMeetings is the meetings associated with the sales opportunity
-	SalesMeetings []primitive.ObjectID `bson:"sales_meetings"`
+	SalesMeetings []salesmeeting.Model `bson:"sales_meetings"`
 	// SalesEngineer is the sales engineer assigned to the sales opportunity
 	SalesEngineer appUser.Embeded `bson:"sales_engineer"`
 	// CreatedAt is the date and time the sales opportunity was created
