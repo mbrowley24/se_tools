@@ -16,7 +16,7 @@ type Model struct {
 	Email         string             `bson:"email"`
 	Phone         string             `bson:"phone"`
 	SalesEngineer appUser.Embeded    `bson:"sales_engineer"`
-	Role          salesroles.Embeded `bson:"role"`
+	Role          salesroles.Model   `bson:"role"`
 	Quota         float64            `bson:"quota"`
 	CreatedAt     time.Time          `bson:"created_at"`
 	UpdateAt      time.Time          `bson:"updated_at"`

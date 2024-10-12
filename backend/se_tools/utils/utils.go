@@ -3,14 +3,13 @@ package utils
 import (
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 type Utilities struct {
@@ -51,16 +50,25 @@ func (u *Utilities) WriteJSON(w http.ResponseWriter, status int, data interface{
 
 // ToDo Write my own .env functionalility for full control easy to implement
 // Env get env variables
-func (u *Utilities) Env(text string) (string, error) {
+func (u *Utilities) Env() error {
 
-	err := godotenv.Load(".env")
+	file, err := os.Open(".env")
 
 	if err != nil {
 		println("Error loading .env file in functions")
-		return "", err
+		return err
 	}
 
-	return os.Getenv(text), nil
+	fileScanner := bufio.NewScanner(file)
+
+	for fileScanner.Scan() {
+
+		line := fileScanner.Text()
+
+		fmt.Println(line)
+	}
+
+	return nil
 }
 
 func (u *Utilities) ErrorJSON(w http.ResponseWriter, err error) {

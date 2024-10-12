@@ -3,13 +3,13 @@ package roleservices
 import (
 	"context"
 	"path/filepath"
+	"se_tools/models/auths"
 	"se_tools/models/roles"
 	"se_tools/repository"
 	"se_tools/utils"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -65,7 +65,7 @@ func (s *Services) CreateRoles(ctx context.Context, db *mongo.Database) error {
 		// do something with the line
 		line := scanner.Text()
 		role.Name = line
-		role.Authorities = []primitive.ObjectID{}
+		role.Authorities = []auths.Model{}
 
 		now := time.Now()
 		role.CreatedAt = now

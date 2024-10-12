@@ -30,8 +30,11 @@ func (m *Middleware) CheckToken(next http.Handler) http.Handler {
 
 		if authHeader == "" {
 
-			err := errors.New("unauthoried")
-			m.utils.WriteJSON(w, http.StatusForbidden, err, "error")
+			err := errors.New("unauthorized")
+			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
+
+				//Todo handle this error
+			}
 			return
 			//could set anonymous user
 		}
@@ -43,8 +46,11 @@ func (m *Middleware) CheckToken(next http.Handler) http.Handler {
 		//check for 2 parts in header parts
 		if len(headParts) != 2 {
 
-			err := errors.New("unauthoried")
-			m.utils.WriteJSON(w, http.StatusForbidden, err, "error")
+			err := errors.New("unauthorized")
+			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
+
+				//ToDo handle this error
+			}
 
 			return
 		}
@@ -52,8 +58,11 @@ func (m *Middleware) CheckToken(next http.Handler) http.Handler {
 		//check token header
 		if headParts[0] != "Bearer" {
 
-			err := errors.New("unauthoried")
-			m.utils.WriteJSON(w, http.StatusForbidden, err, "error")
+			err := errors.New("unauthorized")
+			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
+
+				//ToDo handle this error
+			}
 
 			return
 		}
@@ -64,14 +73,17 @@ func (m *Middleware) CheckToken(next http.Handler) http.Handler {
 		//get secret key from env
 		jwtSecret := os.Getenv("JWT_SECRET")
 
-		//HMAC check against srect
+		//HMAC check against secret
 		claims, err := jwt.HMACCheck([]byte(token), []byte(jwtSecret))
 
 		//check for HMAC check error
 		if err != nil {
 
-			err := errors.New("unauthoried")
-			m.utils.WriteJSON(w, http.StatusForbidden, err, "error")
+			err := errors.New("unauthorized")
+			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
+
+				//Todo handle this error
+			}
 			return
 		}
 
@@ -80,24 +92,33 @@ func (m *Middleware) CheckToken(next http.Handler) http.Handler {
 
 			log.Println(claims.Expires)
 
-			err := errors.New("unauthoried")
-			m.utils.WriteJSON(w, http.StatusForbidden, err, "error")
+			err := errors.New("unauthorized")
+			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
+
+				//Todo handle this error
+			}
 			return
 		}
 
-		//check token is alowed to be accepted
+		//check token is allowed to be accepted
 		if !claims.AcceptAudience("mydomain.com") {
 
-			err := errors.New("unauthoried")
-			m.utils.WriteJSON(w, http.StatusForbidden, err, "error")
+			err := errors.New("unauthorized")
+			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
+
+				//Todo handle this error
+			}
 			return
 		}
 
 		//check claims issuer
 		if claims.Issuer != "mydomain.com" {
 
-			err := errors.New("unauthoried")
-			m.utils.WriteJSON(w, http.StatusForbidden, err, "error")
+			err := errors.New("unauthorized")
+			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
+
+				//Todo handle this error
+			}
 			return
 		}
 

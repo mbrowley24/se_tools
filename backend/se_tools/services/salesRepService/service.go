@@ -3,19 +3,15 @@ package salesrepservice
 import (
 	"context"
 	"fmt"
-	"se_tools/models/appUser"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	optionsdto "se_tools/models/optionsDto"
 	"se_tools/models/salesrep"
-	"se_tools/models/salesroles"
 	"se_tools/repository"
 	"se_tools/services/salesroleservice"
 	userservice "se_tools/services/userService"
 	"se_tools/utils"
-	"time"
-
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type Service struct {
@@ -147,73 +143,6 @@ func (s *Service) FindById(ctx context.Context, db *mongo.Database, id primitive
 	}
 
 	return salesRep, nil
-}
-
-func (s *Service) ModelToDTO(ctx context.Context, salesRep salesrep.Model) (salesrep.DTO, error) {
-
-	//salesEngineer Name with capitalized first and last name
-	salesEngineer := fmt.Sprintf("%s %s", s.Utils.Capitalize(salesRep.SalesEngineer.FirstName), s.Utils.Capitalize(salesRep.SalesEngineer.LastName))
-
-	//role name
-	roleId := s.Utils.Capitalize(salesRep.Role.PublicId)
-
-	return salesrep.DTO{
-		ID:            salesRep.PublicId,
-		FirstName:     s.Utils.Capitalize(salesRep.FirstName),
-		LastName:      s.Utils.Capitalize(salesRep.LastName),
-		Email:         salesRep.Email,
-		Phone:         salesRep.Phone,
-		Role:          roleId,
-		SalesEngineer: salesEngineer,
-		Quota:         salesRep.Quota,
-	}, nil
-}
-
-// Models to DTO
-func (s *Service) ModelsToDTOs(ctx context.Context, salesReps []salesrep.Model) ([]salesrep.DTO, error) {
-
-	var salesRepsDTO []salesrep.DTO
-
-	for _, salesRep := range salesReps {
-
-		dto, err := s.ModelToDTO(ctx, salesRep)
-
-		if err != nil {
-			return nil, err
-		}
-
-		salesRepsDTO = append(salesRepsDTO, dto)
-	}
-
-	return salesRepsDTO, nil
-}
-
-func (s *Service) NewSalesRep(ctx context.Context,
-	collection *mongo.Collection,
-	newRep salesrep.NewSalesRep,
-	eng appUser.User,
-	role salesroles.Model) (bson.D, error) {
-
-	publicId, err := s.GeneratePublicID(ctx, collection)
-
-	if err != nil {
-		return nil, err
-	}
-
-	now := time.Now()
-
-	return bson.D{
-		{Key: "public_id", Value: publicId},
-		{Key: "first_name", Value: newRep.FirstName},
-		{Key: "last_name", Value: newRep.LastName},
-		{Key: "email", Value: newRep.Email},
-		{Key: "phone", Value: newRep.Phone},
-		{Key: "sales_engineer", Value: eng.Embed()},
-		{Key: "role", Value: role.Embed()},
-		{Key: "quota", Value: newRep.Quota},
-		{Key: "created_at", Value: now},
-		{Key: "updated_at", Value: now},
-	}, nil
 }
 
 // single result to model

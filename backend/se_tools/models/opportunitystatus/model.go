@@ -28,8 +28,8 @@ func (m *Model) GetOptions() optionsdto.Option {
 	}
 }
 
-func (m *Model) Embeded() Embeded {
-	return Embeded{
+func (m *Model) Embedded() Embedded {
+	return Embedded{
 		ID:          m.ID,
 		PublicId:    m.PublicId,
 		Name:        m.Name,

@@ -6,11 +6,9 @@ import (
 	"path/filepath"
 	"se_tools/repository"
 	authoritiesservice "se_tools/services/authoritiesService"
-	categoryservice "se_tools/services/categoryService"
 	industryservice "se_tools/services/industryService"
 	roleservices "se_tools/services/roleServices"
 	salesproductservice "se_tools/services/salesProductService"
-	"se_tools/services/salesopportunitystatusservice"
 	"se_tools/services/salesroleservice"
 	userservice "se_tools/services/userService"
 	"se_tools/utils"
@@ -22,17 +20,15 @@ import (
 )
 
 type InitData struct {
-	adminuser      userservice.UserService
-	auth           authoritiesservice.Services
-	category       categoryservice.Service
-	collection     repository.Collection
-	db             repository.DbRepository
-	industry       industryservice.Service
-	salesRoles     salesroleservice.Service
-	salesOppStatus salesopportunitystatusservice.Service
-	salesProducts  salesproductservice.Service
-	roles          roleservices.Services
-	utils          utils.Utilities
+	adminuser     userservice.UserService
+	auth          authoritiesservice.Services
+	collection    repository.Collection
+	db            repository.DbRepository
+	industry      industryservice.Service
+	salesRoles    salesroleservice.Service
+	salesProducts salesproductservice.Service
+	roles         roleservices.Services
+	utils         utils.Utilities
 }
 
 func (i *InitData) RolesAuths(ctx context.Context, db *mongo.Database) error {
@@ -116,14 +112,23 @@ func (i *InitData) RolesAuths(ctx context.Context, db *mongo.Database) error {
 
 func (i *InitData) Init(ctx context.Context) error {
 
-	db, err := i.db.Database(ctx)
+	client, err := mongo.Connect(ctx, i.db.MongoOptions())
 
 	if err != nil {
 
 		return errors.New("internal server error")
 	}
 
-	err = i.roles.CreateRoles(ctx, db)
+	//defer disconnect
+	defer func(client *mongo.Client, ctx context.Context) {
+
+		if err = client.Disconnect(ctx); err != nil {
+			//Todo handle this error
+		}
+
+	}(client, ctx)
+
+	err = i.roles.CreateRoles(ctx)
 
 	if err != nil {
 		println("Error creating roles")

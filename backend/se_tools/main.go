@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"se_tools/routes"
 	initservice "se_tools/services/initService"
 
@@ -28,12 +29,8 @@ func main() {
 	apps := &applications{}
 
 	//Get db connection string
-	dbString, err := apps.utils.Env("DB_URI")
-
-	//check for error
-	if err != nil {
-		println(err.Error())
-		log.Fatal("Error loading .env file")
+	if err := apps.utils.Env(); err != nil {
+		//Todo handle error
 	}
 
 	//get context
@@ -41,7 +38,7 @@ func main() {
 	defer cancel()
 
 	//get db client
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(dbString))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("DB_URI")))
 
 	//check for error
 	if err != nil {
@@ -67,14 +64,16 @@ func main() {
 	log.Println("Connected to MongoDB")
 
 	//get port for server
-	port, err := apps.utils.Env("PORT")
+	port := os.Getenv("PORT")
 
 	//check for error
-	if err != nil {
-		log.Fatal("Error loading .env file")
+	if len(port) == 0 {
+
+		port = "8080"
 	}
 
 	if err = apps.initservice.Init(ctx); err != nil {
+		//Todo handle this error
 
 		panic("data initiation error")
 	}

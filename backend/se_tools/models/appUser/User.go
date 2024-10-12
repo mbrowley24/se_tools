@@ -21,9 +21,9 @@ type User struct {
 	Password      string               `bson:"password" json:"password"`
 	OAuth         string               `bson:"oAuth" json:"oAuth"`
 	Token         string               `bson:"token" json:"token"`
-	CsrfToken     string               `bson:"csrf_token" json:"csrftoken"`
-	LastSeen      time.Time            `bson:"last_seen" json:"lastseen"`
-	LastLogin     time.Time            `bson:"last_login" json:"lastlogin"`
+	CsrfToken     string               `bson:"csrf_token" json:"csrf_token"`
+	LastSeen      time.Time            `bson:"last_seen" json:"last_seen"`
+	LastLogin     time.Time            `bson:"last_login" json:"last_login"`
 	CreatedAt     time.Time            `bson:"created_at" json:"created_at"`
 	UpdatedAt     time.Time            `bson:"updated_at" json:"updated_at"`
 }

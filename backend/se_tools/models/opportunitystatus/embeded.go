@@ -2,7 +2,7 @@ package opportunitystatus
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
-type Embeded struct {
+type Embedded struct {
 	ID primitive.ObjectID `bson:"_id,omitempty"`
 	// PublicId is the public identifier of the sales opportunity
 	PublicId string `bson:"public_id"`
