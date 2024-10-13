@@ -4,13 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
-	"se_tools/routes"
-	initservice "se_tools/services/initService"
-
-	"se_tools/utils"
-
 	"net/http"
+	"os"
+	"se_tools/internals"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,23 +14,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-type applications struct {
-	utils       utils.Utilities
-	routes      routes.Routes
-	initservice initservice.InitData
-}
-
 func main() {
 
-	apps := &applications{}
-
-	//Get db connection string
-	if err := apps.utils.Env(); err != nil {
-		//Todo handle error
-	}
-
 	//get context
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	//get db client
@@ -63,6 +46,11 @@ func main() {
 
 	log.Println("Connected to MongoDB")
 
+	//Start applications
+	app := internals.Internals{}
+
+	app.ApplicationSetup(client)
+
 	//get port for server
 	port := os.Getenv("PORT")
 
@@ -72,16 +60,10 @@ func main() {
 		port = "8080"
 	}
 
-	if err = apps.initservice.Init(ctx); err != nil {
-		//Todo handle this error
-
-		panic("data initiation error")
-	}
-
 	//get server routes
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),
-		Handler:      apps.routes.Routes(),
+		Handler:      app.Handler,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
