@@ -3,19 +3,26 @@ package login
 import (
 	"context"
 	"net/http"
-	"se_tools/internals/repository"
-	userservice "se_tools/internals/services/userService"
+	"se_tools/internals/services"
 	"time"
 )
 
 type Login struct {
-	Repository *repository.AppointmentRepository
+	mux      *http.ServeMux
+	services *services.Services
 }
 
-func (l *Login) Handlers(mux *http.ServeMux) {
+func New(mux *http.ServeMux, services *services.Services) *Login {
 
-	mux.Handle("/api/v1/login", http.HandlerFunc(l.login))
+	return &Login{
+		mux:      mux,
+		services: services,
+	}
+}
 
+func (l *Login) RegisterHandlers() {
+
+	l.mux.Handle("/api/v1/login", http.HandlerFunc(l.login))
 }
 
 func (l *Login) loginHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,21 +51,16 @@ func (l *Login) login(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
 	defer cancel()
 
-	loginService := userservice.LoginService{
-		Collection: l.Repository.UserCollection(),
-		Ctx:        ctx,
-	}
-
 	switch r.Method {
 	case http.MethodPost:
 
-		loginService.Login(w, r)
+		l.PostLoginHandler(ctx, w, r)
 
 	case http.MethodOptions:
 		println("OPTIONS login")
 
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET")
+		w.Header().Set("Access-Control-Allow-Methods", "POST")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.WriteHeader(http.StatusOK)

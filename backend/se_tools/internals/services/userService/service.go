@@ -3,27 +3,26 @@ package userservice
 import (
 	"context"
 	"fmt"
-	"se_tools/internals/models/appUser"
-	"se_tools/internals/models/optionsDto"
-	"se_tools/internals/repository"
-	"se_tools/utils"
-
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"se_tools/internals/models/appUser"
+	"se_tools/internals/models/optionsDto"
 )
 
 type Service struct {
-	Collection repository.Collection
-	Utils      utils.Utilities
+	collection *mongo.Collection
+}
+
+func (s *Service) Start(collection *mongo.Collection) {
+
+	s.collection = collection
 }
 
 func (s *Service) CheckEmail(ctx context.Context, db *mongo.Database, email string) (bool, error) {
 
-	collection := db.Collection(s.Collection.Users())
-
 	filter := bson.M{"email": email}
 
-	count, err := collection.CountDocuments(ctx, filter)
+	count, err := s.collection.CountDocuments(ctx, filter)
 
 	if err != nil {
 		return false, err

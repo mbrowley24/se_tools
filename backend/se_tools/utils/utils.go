@@ -1,13 +1,9 @@
 package utils
 
 import (
-	"bufio"
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"net/http"
-	"os"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -48,29 +44,6 @@ func (u *Utilities) WriteJSON(w http.ResponseWriter, status int, data interface{
 	return nil
 }
 
-// ToDo Write my own .env functionalility for full control easy to implement
-// Env get env variables
-func (u *Utilities) Env() error {
-
-	file, err := os.Open(".env")
-
-	if err != nil {
-		println("Error loading .env file in functions")
-		return err
-	}
-
-	fileScanner := bufio.NewScanner(file)
-
-	for fileScanner.Scan() {
-
-		line := fileScanner.Text()
-
-		fmt.Println(line)
-	}
-
-	return nil
-}
-
 func (u *Utilities) ErrorJSON(w http.ResponseWriter, err error) {
 
 	if err = u.WriteJSON(w, http.StatusBadRequest, err, "error"); err != nil {
@@ -78,74 +51,61 @@ func (u *Utilities) ErrorJSON(w http.ResponseWriter, err error) {
 	}
 }
 
-// OpenFile open file
-func (u *Utilities) OpenFile(filePath string) (*os.File, error) {
+//func (u *Utilities) OpenScanner(file *os.File) *bufio.Scanner {
+//
+//	return bufio.NewScanner(file)
+//}
 
-	file, err := os.Open(filePath)
+//func (u *Utilities) Unauthorized(w http.ResponseWriter) {
+//
+//	if err := u.WriteJSON(w, http.StatusForbidden, "unauthorized", "error"); err != nil {
+//		//ToDo do something with this error
+//	}
+//}
 
-	if err != nil {
-		return nil, err
-	}
-
-	return file, nil
-
-}
-
-func (u *Utilities) OpenScanner(file *os.File) *bufio.Scanner {
-
-	return bufio.NewScanner(file)
-}
-
-func (u *Utilities) Unauthorized(w http.ResponseWriter) {
-
-	if err := u.WriteJSON(w, http.StatusForbidden, "unauthorized", "error"); err != nil {
-		//ToDo do something with this error
-	}
-}
-
-func (u *Utilities) PageData(r *http.Request) (int64, int64, int64) {
-
-	page := int64(0)
-	limit := int64(10)
-
-	values := r.URL.Query()
-
-	if values.Get("page") != "" {
-		pageValue := values.Get("page")
-
-		value, err := strconv.Atoi(pageValue)
-
-		if err != nil {
-
-			//ToDO do something with this error
-			println("Error converting string to int")
-
-		} else {
-
-			page = int64(value)
-		}
-	}
-
-	if values.Get("limit") != "" {
-		limitValue := values.Get("limit")
-
-		value, err := strconv.Atoi(limitValue)
-
-		if err != nil {
-
-			//ToDo do something with this error
-			println("Error converting string to int")
-
-		} else {
-
-			limit = int64(value)
-		}
-
-	}
-
-	return page, limit, page * limit
-
-}
+//func (u *Utilities) PageData(r *http.Request) (int64, int64, int64) {
+//
+//	page := int64(0)
+//	limit := int64(10)
+//
+//	values := r.URL.Query()
+//
+//	if values.Get("page") != "" {
+//		pageValue := values.Get("page")
+//
+//		value, err := strconv.Atoi(pageValue)
+//
+//		if err != nil {
+//
+//			//ToDO do something with this error
+//			println("Error converting string to int")
+//
+//		} else {
+//
+//			page = int64(value)
+//		}
+//	}
+//
+//	if values.Get("limit") != "" {
+//		limitValue := values.Get("limit")
+//
+//		value, err := strconv.Atoi(limitValue)
+//
+//		if err != nil {
+//
+//			//ToDo do something with this error
+//			println("Error converting string to int")
+//
+//		} else {
+//
+//			limit = int64(value)
+//		}
+//
+//	}
+//
+//	return page, limit, page * limit
+//
+//}
 
 // RandomStringGenerator generate random strings
 func (u *Utilities) RandomStringGenerator(length int) string {

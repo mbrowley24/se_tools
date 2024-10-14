@@ -1,4 +1,4 @@
-package salesroleservice
+package productservice
 
 import (
 	"go.mongodb.org/mongo-driver/mongo"
@@ -7,13 +7,13 @@ import (
 
 type Service struct {
 	collection *mongo.Collection
-	utils      *utils.Utilities
+	Utils      *utils.Utilities
 }
 
 func Start(collection *mongo.Collection, utils *utils.Utilities) *Service {
 
 	return &Service{
 		collection: collection,
-		utils:      utils,
+		Utils:      utils,
 	}
 }

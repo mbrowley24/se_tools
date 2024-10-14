@@ -29,9 +29,9 @@ type User struct {
 	UpdatedAt     time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
-func (u *User) Embed() Embeded {
-	return Embeded{
-		ID:        u.ID,
+func (u *User) Embedded() Embedded {
+	return Embedded{
+		Id:        u.ID,
 		PublicId:  u.PublicId,
 		FirstName: u.FirstName,
 		LastName:  u.LastName,

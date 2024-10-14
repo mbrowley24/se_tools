@@ -1,27 +1,39 @@
 package salesopportunityhandlers
 
 import (
+	"context"
 	"net/http"
-	"se_tools/internals/repository"
-	"se_tools/internals/services/salesRepService"
-	"se_tools/internals/services/salesopportunityservice"
-	"se_tools/internals/services/userService"
-	"se_tools/utils"
+	"se_tools/internals/services"
+	"time"
 )
 
 type Handler struct {
-	db              repository.DbRepository
-	salesOppService salesopportunityservice.Service
-	salesRepService salesrepservice.Service
-	userservice     userservice.UserService
-	utils           utils.Utilities
+	mux      *http.ServeMux
+	services *services.Services
 }
 
-func (h *Handler) GetOpportunities(w http.ResponseWriter, r *http.Request) {
+func New(mux *http.ServeMux, services *services.Services) *Handler {
+
+	return &Handler{
+		mux:      mux,
+		services: services,
+	}
+}
+
+func (h *Handler) RegisterHandlers() {
+
+	h.mux.Handle("/api/v1/opportunity", http.HandlerFunc(h.getOpportunitiesHandler))
+}
+
+func (h *Handler) getOpportunitiesHandler(w http.ResponseWriter, r *http.Request) {
+
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
 	switch r.Method {
 
 	case http.MethodGet:
-		//Todo get opportunities
+		h.getOpportunities(ctx, w, r)
 
 	case http.MethodPost:
 		//Todo save opportunity

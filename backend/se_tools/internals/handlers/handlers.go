@@ -2,20 +2,14 @@ package handlers
 
 import (
 	"net/http"
-	login "se_tools/internals/handlers/Login"
-	"se_tools/internals/repository"
+	"se_tools/internals/services"
 )
 
 type Handlers struct {
-	Mux        *http.ServeMux
-	Repository *repository.AppointmentRepository
+	Mux      *http.ServeMux
+	Services *services.Services
 }
 
 func (h *Handlers) RegisterHandlers() {
 
-	loginHandlers := login.Login{
-		Repository: h.Repository,
-	}
-
-	loginHandlers.Handlers(h.Mux)
 }

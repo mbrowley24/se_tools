@@ -3,23 +3,25 @@ package salesrephandler
 import (
 	"context"
 	"net/http"
-	"se_tools/internals/services/salesRepService"
-	"se_tools/internals/services/salesroleservice"
-	"se_tools/internals/services/userService"
-	"se_tools/utils"
+	"se_tools/internals/services"
 	"time"
 )
 
 type Handler struct {
-	SalesRepService  salesrepservice.Service
-	SalesRoleService salesroleservice.Service
-	userService      userservice.Service
-	utils            utils.Utilities
+	mux      *http.ServeMux
+	services *services.Services
 }
 
-func (h *Handler) Handlers(mux *http.ServeMux) {
+func New(mux *http.ServeMux, services *services.Services) *Handler {
+	return &Handler{
+		mux:      mux,
+		services: services,
+	}
+}
 
-	mux.Handle("/api/v1/sales_reps", http.HandlerFunc(h.salesReps))
+func (h *Handler) RegisterHandler() {
+
+	h.mux.Handle("api/v1/sales_reps", http.HandlerFunc(h.salesReps))
 }
 
 func (h *Handler) salesReps(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +32,8 @@ func (h *Handler) salesReps(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 
 	case http.MethodGet:
-		//Todo add get function here to get sales reps
+
+		h.getSalesReps(ctx, w, r)
 
 	case http.MethodPost:
 		//Todo add function to create new sales reps

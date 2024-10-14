@@ -1,28 +1,37 @@
 package companyhandler
 
 import (
+	"context"
 	"net/http"
-	"se_tools/internals/repository"
-	"se_tools/internals/services/companyService"
-	"se_tools/internals/services/salesopportunityservice"
-	"se_tools/internals/services/userService"
-	"se_tools/utils"
+	"se_tools/internals/services"
+	"time"
 )
 
 type Handler struct {
-	companyService     companyservice.Service
-	db                 repository.DbRepository
-	loginService       userservice.UserService
-	opportunityService salesopportunityservice.Service
-	utils              utils.Utilities
+	mux      *http.ServeMux
+	services *services.Services
 }
 
-func (h *Handler) GetCompanies(w http.ResponseWriter, r *http.Request) {
+func New(services *services.Services, mux *http.ServeMux) *Handler {
+	return &Handler{
+		services: services,
+		mux:      mux,
+	}
+}
+
+func (h *Handler) RegisterHandler() {
+
+	h.mux.Handle("/api/v1/companies", http.HandlerFunc(h.getCompaniesHandler))
+}
+
+func (h *Handler) getCompaniesHandler(w http.ResponseWriter, r *http.Request) {
+
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
 
 	switch r.Method {
 	case http.MethodGet:
-		//Todo get companies
-
+		h.getCompanies(ctx, w, r)
 	case http.MethodPost:
 		//Todo save company
 

@@ -27,3 +27,12 @@ func (m *Model) ModelToOption() optionsdto.Option {
 		Name:  m.Name,
 	}
 }
+
+func (m *Model) ModelToDto() DTO {
+
+	return DTO{
+		Id:          m.PublicId,
+		Name:        m.Name,
+		Description: m.Description,
+	}
+}

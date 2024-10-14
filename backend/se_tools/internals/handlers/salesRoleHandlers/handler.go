@@ -1,24 +1,37 @@
 package salesrolehandlers
 
 import (
+	"context"
 	"net/http"
-	"se_tools/internals/repository"
-	"se_tools/internals/services/salesroleservice"
-	"se_tools/utils"
+	"se_tools/internals/services"
+	"time"
 )
 
 type Handler struct {
-	DB               repository.DbRepository
-	SalesRoleService salesroleservice.Service
-	util             utils.Utilities
+	mux     *http.ServeMux
+	service *services.Services
 }
 
-func (h *Handler) SalesRoles(w http.ResponseWriter, r *http.Request) {
+func New(mux *http.ServeMux, service *services.Services) *Handler {
+	return &Handler{
+		mux:     mux,
+		service: service,
+	}
+}
+
+func (h *Handler) RegisterHandlers() {
+
+	h.mux.Handle("/api/v1/sales_roles", http.HandlerFunc(h.salesRoles))
+}
+
+func (h *Handler) salesRoles(w http.ResponseWriter, r *http.Request) {
+
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
 
 	switch r.Method {
 	case http.MethodGet:
-		//Todo get sales role options
-
+		h.getSalesRoles(ctx, w, r)
 	case http.MethodOptions:
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 		w.Header().Set("Access-Control-Allow-Methods", "GET")
