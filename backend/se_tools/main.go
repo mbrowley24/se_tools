@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"se_tools/internals"
+	"se_tools/internals/env"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,6 +16,13 @@ import (
 )
 
 func main() {
+
+	//load environment variable
+	err := env.Load()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	//get context
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -60,6 +68,7 @@ func main() {
 		port = "8080"
 	}
 
+	println(port)
 	//get server routes
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),
