@@ -68,7 +68,6 @@ func main() {
 		port = "8080"
 	}
 
-	println(port)
 	//get server routes
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),

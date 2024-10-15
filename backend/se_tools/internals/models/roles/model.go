@@ -9,6 +9,7 @@ import (
 
 type Role struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty"`
+	PublicId    string             `bson:"public_id"`
 	Name        string             `bson:"name"`
 	Authorities []auths.Model      `bson:"authorities"`
 	CreatedAt   time.Time          `bson:"created_at"`

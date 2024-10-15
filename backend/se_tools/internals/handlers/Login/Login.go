@@ -4,19 +4,22 @@ import (
 	"context"
 	"net/http"
 	"se_tools/internals/services"
+	"se_tools/utils"
 	"time"
 )
 
 type Login struct {
 	mux      *http.ServeMux
 	services *services.Services
+	utils    *utils.Utilities
 }
 
-func New(mux *http.ServeMux, services *services.Services) *Login {
+func New(mux *http.ServeMux, services *services.Services, utils *utils.Utilities) *Login {
 
 	return &Login{
 		mux:      mux,
 		services: services,
+		utils:    utils,
 	}
 }
 
@@ -27,9 +30,12 @@ func (l *Login) RegisterHandlers() {
 
 func (l *Login) loginHandler(w http.ResponseWriter, r *http.Request) {
 
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	switch r.Method {
 	case http.MethodPost:
-		l.login(w, r)
+		l.PostLoginHandler(ctx, w, r)
 
 	case http.MethodOptions:
 		println("OPTIONS login")

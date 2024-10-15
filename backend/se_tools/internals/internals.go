@@ -17,6 +17,7 @@ import (
 	roleservices "se_tools/internals/services/roleServices"
 	salesrepservice "se_tools/internals/services/salesRepService"
 	"se_tools/internals/services/salesroleservice"
+	userservice "se_tools/internals/services/userService"
 	"se_tools/utils"
 )
 
@@ -60,10 +61,51 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	authService := authoritiesservice.Start(appointmentRepo.Authorities(), &appUtils)
 	companyServices := companyservice.Start(appointmentRepo.CompanyCollection(), &appUtils)
 	industryServices := industryservice.Start(appointmentRepo.IndustryCollection(), &appUtils)
+	loginService := userservice.Start(appointmentRepo.UserCollection(), &appUtils)
 	productServices := productservice.Start(appointmentRepo.ProductsCollection(), &appUtils)
 	roleServices := roleservices.Start(appointmentRepo.RolesCollection(), &appUtils)
 	salesRepServices := salesrepservice.Start(appointmentRepo.SalesRolesCollection(), &appUtils)
 	salesRoleServices := salesroleservice.Start(appointmentRepo.SalesRolesCollection(), &appUtils)
+
+	if err := authService.Initialize(); err != nil {
+
+		panic(err)
+	}
+
+	if err := industryServices.Initialize(); err != nil {
+		panic(err)
+	}
+
+	if err := roleServices.Initialize(); err != nil {
+
+		panic(err)
+	}
+
+	authModels, err := authService.AdminAuths()
+
+	if err != nil {
+		panic(err)
+	}
+
+	if err := roleServices.AdminRoleAssignments(authModels); err != nil {
+
+		panic(err)
+	}
+
+	if err := salesRoleServices.Initialize(); err != nil {
+		panic(err)
+	}
+
+	role, err := roleServices.GetRoleByName("admin")
+
+	if err != nil {
+		panic(err)
+	}
+
+	if err := loginService.AdminUser(role); err != nil {
+
+		panic(err)
+	}
 
 	//Struct for dependency injection services to other parts of the application
 	appServices := services.Services{
@@ -78,7 +120,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 
 	//define and register handlers
 	companyhandler.New(&appServices, mux).RegisterHandler()
-	login.New(mux, &appServices).RegisterHandlers()
+	login.New(mux, &appServices, &appUtils).RegisterHandlers()
 	salesopportunityhandlers.New(mux, &appServices).RegisterHandlers()
 	salesrephandler.New(mux, &appServices).RegisterHandler()
 	salesrolehandlers.New(mux, &appServices).RegisterHandlers()

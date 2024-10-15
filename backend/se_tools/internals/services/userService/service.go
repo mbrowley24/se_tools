@@ -32,6 +32,19 @@ func (s *Service) CheckEmail(ctx context.Context, db *mongo.Database, email stri
 
 }
 
+func (s *Service) FindByUsername(ctx context.Context, username string) (appUser.User, error) {
+
+	var user appUser.User
+
+	filter := bson.M{"username": username}
+
+	if err := s.collection.FindOne(ctx, filter).Decode(&user); err != nil {
+		return appUser.User{}, err
+	}
+
+	return user, nil
+}
+
 func (s *Service) SaleEngineerOption(se appUser.User) optionsdto.Option {
 
 	var option optionsdto.Option

@@ -3,23 +3,21 @@ package company
 import (
 	"se_tools/internals/models/appUser"
 	"se_tools/internals/models/industry"
+	"se_tools/internals/models/salesrep"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Model struct {
-	ID primitive.ObjectID `bson:"_id,omitempty"`
-	// PublicId is the public id of the account
-	PublicId string `bson:"public_id"`
-	// Name is the name of the account
-	Name string `bson:"name"`
-	//sales engineer is the sales engineer assigned to the sales opportunity
-	SalesEngineer appUser.Embeded `bson:"sales_engineer"`
-	//industry or vertical
-	Industry industry.Model `bson:"industry"`
-	//created by is the user who created the account
-	CreatedAt time.Time `bson:"created_at"`
-	// UpdatedAt is the date and time the account was last updated
-	UpdatedAt time.Time `bson:"updated_at"`
+	ID            primitive.ObjectID `bson:"_id,omitempty"`
+	PublicId      string             `bson:"public_id"`
+	Name          string             `bson:"name"`
+	Industry      industry.Model     `bson:"industry"`
+	SalesEngineer appUser.Embedded   `bson:"sales_engineer"`
+	CoverageSe    []appUser.Embedded `bson:"coverage_se"`
+	SalesRep      salesrep.Embedded  `bson:"sales_rep"`
+	CreatedBy     appUser.Embedded   `bson:"created_by"`
+	CreatedAt     time.Time          `bson:"created_at"`
+	UpdatedAt     time.Time          `bson:"updated_at"`
 }

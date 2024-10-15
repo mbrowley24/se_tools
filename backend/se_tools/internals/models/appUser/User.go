@@ -18,10 +18,11 @@ type User struct {
 	Active        bool               `bson:"active" json:"active"`
 	Locked        bool               `bson:"locked" json:"locked"`
 	LoginAttempts int                `bson:"login_attempts" json:"login_attempts"`
-	Roles         []roles.Role       `bson:"roles" json:"roles"`
+	Roles         roles.Role         `bson:"role" json:"role"`
 	Password      string             `bson:"password" json:"password"`
 	OAuth         string             `bson:"oAuth" json:"oAuth"`
 	Token         string             `bson:"token" json:"token"`
+	Offset        string             `bson:"offset" json:"offset"`
 	CsrfToken     string             `bson:"csrf_token" json:"csrf_token"`
 	LastSeen      time.Time          `bson:"last_seen" json:"last_seen"`
 	LastLogin     time.Time          `bson:"last_login" json:"last_login"`

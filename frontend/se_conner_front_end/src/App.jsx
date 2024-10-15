@@ -18,8 +18,6 @@ import QuestionView from './Components/questions/panels/QuestionView'
 import RepTableView from './Components/sales/reps/table/RepTableView'
 import NewQuestion from './Components/questions/new/NewQuestion';
 import TemplateView from './Components/discoveryQuestionTemplate/new/TemplateView'
-import NewTemplateView from './Components/discoveryQuestionTemplate/new/NewTemplateView'
-import TemplateFormView from './Components/discoveryQuestionTemplate/new/TemplateFormView'
 import EditQuestion from './Components/questions/edit/EditQuestion';
 import AddQuestionView from './Components/discoveryQuestionTemplate/addQuestions/AddQuestionView';
 
