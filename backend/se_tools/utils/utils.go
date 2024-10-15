@@ -51,62 +51,6 @@ func (u *Utilities) ErrorJSON(w http.ResponseWriter, err error) {
 	}
 }
 
-//func (u *Utilities) OpenScanner(file *os.File) *bufio.Scanner {
-//
-//	return bufio.NewScanner(file)
-//}
-
-//func (u *Utilities) Unauthorized(w http.ResponseWriter) {
-//
-//	if err := u.WriteJSON(w, http.StatusForbidden, "unauthorized", "error"); err != nil {
-//		//ToDo do something with this error
-//	}
-//}
-
-//func (u *Utilities) PageData(r *http.Request) (int64, int64, int64) {
-//
-//	page := int64(0)
-//	limit := int64(10)
-//
-//	values := r.URL.Query()
-//
-//	if values.Get("page") != "" {
-//		pageValue := values.Get("page")
-//
-//		value, err := strconv.Atoi(pageValue)
-//
-//		if err != nil {
-//
-//			//ToDO do something with this error
-//			println("Error converting string to int")
-//
-//		} else {
-//
-//			page = int64(value)
-//		}
-//	}
-//
-//	if values.Get("limit") != "" {
-//		limitValue := values.Get("limit")
-//
-//		value, err := strconv.Atoi(limitValue)
-//
-//		if err != nil {
-//
-//			//ToDo do something with this error
-//			println("Error converting string to int")
-//
-//		} else {
-//
-//			limit = int64(value)
-//		}
-//
-//	}
-//
-//	return page, limit, page * limit
-//
-//}
-
 // RandomStringGenerator generate random strings
 func (u *Utilities) RandomStringGenerator(length int) string {
 
