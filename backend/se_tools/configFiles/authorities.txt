@@ -1,0 +1,12 @@
+read_appointments
+write_appointments
+delete_appointment
+read_se_coverage
+write_se_coverage
+delete_se_coverage
+read_company
+write_company
+delete_company
+read_admin
+write_admin
+delete_admin

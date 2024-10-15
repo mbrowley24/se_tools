@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import useHttp from "../../hooks/useHttp";
 import Input from "../form/TextField";
 import Button from "../form/Button";
 import '../../css/login.css'
 
-function FormLogin({}){
+function FormLogin(){
     const navigate = useNavigate();
     const [login, setLogin] = useState({
         username: "",

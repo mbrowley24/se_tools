@@ -1,4 +1,0 @@
-admin
-contributor
-user
-guest

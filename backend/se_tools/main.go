@@ -4,12 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"se_tools/routes"
-	initservice "se_tools/services/initService"
-
-	"se_tools/utils"
-
 	"net/http"
+	"os"
+	"se_tools/internals"
+	"se_tools/internals/env"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,31 +15,21 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-type applications struct {
-	utils       utils.Utilities
-	routes      routes.Routes
-	initservice initservice.InitData
-}
-
 func main() {
 
-	apps := &applications{}
+	//load environment variable
+	err := env.Load()
 
-	//Get db connection string
-	dbString, err := apps.utils.Env("DB_URI")
-
-	//check for error
 	if err != nil {
-		println(err.Error())
-		log.Fatal("Error loading .env file")
+		log.Fatal(err)
 	}
 
 	//get context
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	//get db client
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(dbString))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(os.Getenv("DB_URI")))
 
 	//check for error
 	if err != nil {
@@ -60,29 +48,30 @@ func main() {
 	}(client, ctx)
 
 	//check connection by ping
-	err = client.Ping(ctx, readpref.Primary())
-
-	//check for error
-	if err != nil {
+	if err = client.Ping(ctx, readpref.Primary()); err != nil {
 		log.Fatal(err)
 	}
 
 	log.Println("Connected to MongoDB")
 
+	//Start applications
+	app := internals.Internals{}
+
+	app.ApplicationSetup(client)
+
 	//get port for server
-	port, err := apps.utils.Env("PORT")
+	port := os.Getenv("PORT")
 
 	//check for error
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	if len(port) == 0 {
 
-	apps.initservice.Init(ctx)
+		port = "8080"
+	}
 
 	//get server routes
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),
-		Handler:      apps.routes.Routes(),
+		Handler:      app.Handler,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}

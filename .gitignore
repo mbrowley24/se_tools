@@ -1,1 +1,3 @@
 backend/se_tools/.env
+/backend/se_tools/crypto/private.key
+/backend/se_tools/crypto/public.key
