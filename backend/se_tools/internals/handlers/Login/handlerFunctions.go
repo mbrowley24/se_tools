@@ -3,7 +3,6 @@ package login
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"se_tools/internals/jwt"
@@ -61,7 +60,7 @@ func (l *Login) PostLoginHandler(ctx context.Context, w http.ResponseWriter, r *
 
 	cookie := http.Cookie{}
 	cookie.Name = "yeoman_token"
-	cookie.Value = fmt.Sprintf("Bearer %s", token)
+	cookie.Value = token
 	cookie.Expires = time.Now().Add(8 * time.Hour)
 	cookie.HttpOnly = true
 

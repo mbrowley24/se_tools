@@ -8,6 +8,7 @@ import (
 	salesopportunityhandlers "se_tools/internals/handlers/salesOpportunityHandlers"
 	salesrolehandlers "se_tools/internals/handlers/salesRoleHandlers"
 	"se_tools/internals/handlers/salesrephandler"
+	"se_tools/internals/middleware"
 	"se_tools/internals/repository"
 	"se_tools/internals/services"
 	authoritiesservice "se_tools/internals/services/authoritiesService"
@@ -66,6 +67,8 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	roleServices := roleservices.Start(appointmentRepo.RolesCollection(), &appUtils)
 	salesRepServices := salesrepservice.Start(appointmentRepo.SalesRolesCollection(), &appUtils)
 	salesRoleServices := salesroleservice.Start(appointmentRepo.SalesRolesCollection(), &appUtils)
+	userService := userservice.StartService(appointmentRepo.UserCollection(), &appUtils)
+	_ = middleware.Start(appointmentRepo.UserCollection(), &appUtils, "params")
 
 	if err := authService.Initialize(); err != nil {
 
@@ -116,6 +119,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 		RoleService:      roleServices,
 		SalesRoleService: salesRoleServices,
 		SalesRepService:  salesRepServices,
+		UserService:      userService,
 	}
 
 	//define and register handlers
