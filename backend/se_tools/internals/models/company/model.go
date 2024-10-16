@@ -21,3 +21,22 @@ type Model struct {
 	CreatedAt     time.Time          `bson:"created_at"`
 	UpdatedAt     time.Time          `bson:"updated_at"`
 }
+
+func (m *Model) ToDTO() DTO {
+
+	var coverageSe []appUser.DTO
+
+	for _, coverage := range m.CoverageSe {
+
+		coverageSe = append(coverageSe, coverage.EmbeddedToDTO())
+	}
+
+	return DTO{
+		ID:            m.PublicId,
+		Name:          m.Name,
+		Industry:      m.Industry.ToOption(),
+		SalesEngineer: m.SalesEngineer.EmbeddedToDTO(),
+		CoverageSe:    coverageSe,
+		SalesRep:      m.SalesRep.ToDTO(),
+	}
+}

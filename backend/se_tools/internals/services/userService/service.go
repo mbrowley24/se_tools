@@ -41,10 +41,8 @@ func (s *Service) FindByUsername(ctx context.Context, username string) (appUser.
 
 	filter := bson.M{"username": username}
 
-	println("here")
 	if err := s.collection.FindOne(ctx, filter).Decode(&user); err != nil {
 
-		println(err.Error())
 		return user, err
 	}
 

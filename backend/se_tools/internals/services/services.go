@@ -1,6 +1,7 @@
 package services
 
 import (
+	appointmentservice "se_tools/internals/services/appointmentService"
 	"se_tools/internals/services/authoritiesService"
 	"se_tools/internals/services/companyService"
 	"se_tools/internals/services/industryService"
@@ -13,13 +14,14 @@ import (
 )
 
 type Services struct {
-	AuthorityService *authoritiesservice.Services
-	CompanyService   *companyservice.Service
-	IndustryService  *industryservice.Service
-	LoginService     *userservice.LoginService
-	ProductService   *productService.Service
-	RoleService      *roleservices.Services
-	SalesRepService  *salesrepservice.Service
-	SalesRoleService *salesroleservice.Service
-	UserService      *userservice.Service
+	AppointmentService *appointmentservice.AppointmentService
+	AuthorityService   *authoritiesservice.Services
+	CompanyService     *companyservice.Service
+	IndustryService    *industryservice.Service
+	LoginService       *userservice.LoginService
+	ProductService     *productService.Service
+	RoleService        *roleservices.Services
+	SalesRepService    *salesrepservice.Service
+	SalesRoleService   *salesroleservice.Service
+	UserService        *userservice.Service
 }

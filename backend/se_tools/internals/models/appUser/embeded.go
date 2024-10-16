@@ -13,7 +13,7 @@ type Embedded struct {
 	PublicId  string             `bson:"public_id" json:"public_id"`
 }
 
-func (e *Embedded) ModelToDTO() DTO {
+func (e *Embedded) EmbeddedToDTO() DTO {
 
 	return DTO{
 		Id:        e.PublicId,

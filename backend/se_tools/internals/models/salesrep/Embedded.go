@@ -14,3 +14,14 @@ type Embedded struct {
 	Role      salesroles.Model   `bson:"role"`
 	Quota     float64            `bson:"quota"`
 }
+
+func (e *Embedded) ToDTO() DTO {
+	return DTO{
+		Id:        e.ID.Hex(),
+		FirstName: e.FirstName,
+		LastName:  e.LastName,
+		Email:     e.Email,
+		Role:      e.Role.ModelToOption(),
+		Quota:     e.Quota,
+	}
+}

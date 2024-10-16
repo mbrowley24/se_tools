@@ -4,6 +4,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 	login "se_tools/internals/handlers/Login"
+	"se_tools/internals/handlers/appointmentsHandler"
 	companyhandler "se_tools/internals/handlers/companyHandler"
 	salesopportunityhandlers "se_tools/internals/handlers/salesOpportunityHandlers"
 	salesrolehandlers "se_tools/internals/handlers/salesRoleHandlers"
@@ -11,6 +12,7 @@ import (
 	"se_tools/internals/middleware"
 	"se_tools/internals/repository"
 	"se_tools/internals/services"
+	"se_tools/internals/services/appointmentService"
 	authoritiesservice "se_tools/internals/services/authoritiesService"
 	companyservice "se_tools/internals/services/companyService"
 	industryservice "se_tools/internals/services/industryService"
@@ -59,6 +61,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	}
 
 	//individual applications services
+	applicationService := appointmentservice.New(appointmentRepo.AppointmentCollection(), &appUtils)
 	authService := authoritiesservice.Start(appointmentRepo.Authorities(), &appUtils)
 	companyServices := companyservice.Start(appointmentRepo.CompanyCollection(), &appUtils)
 	industryServices := industryservice.Start(appointmentRepo.IndustryCollection(), &appUtils)
@@ -68,7 +71,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	salesRepServices := salesrepservice.Start(appointmentRepo.SalesRolesCollection(), &appUtils)
 	salesRoleServices := salesroleservice.Start(appointmentRepo.SalesRolesCollection(), &appUtils)
 	userService := userservice.StartService(appointmentRepo.UserCollection(), &appUtils)
-	_ = middleware.Start(appointmentRepo.UserCollection(), &appUtils, "params")
+	appMiddleware := middleware.Start(appointmentRepo.UserCollection(), &appUtils, "params")
 
 	if err := authService.Initialize(); err != nil {
 
@@ -112,23 +115,25 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 
 	//Struct for dependency injection services to other parts of the application
 	appServices := services.Services{
-		AuthorityService: authService,
-		CompanyService:   companyServices,
-		IndustryService:  industryServices,
-		ProductService:   productServices,
-		RoleService:      roleServices,
-		SalesRoleService: salesRoleServices,
-		SalesRepService:  salesRepServices,
-		UserService:      userService,
+		AppointmentService: applicationService,
+		AuthorityService:   authService,
+		CompanyService:     companyServices,
+		IndustryService:    industryServices,
+		ProductService:     productServices,
+		RoleService:        roleServices,
+		SalesRoleService:   salesRoleServices,
+		SalesRepService:    salesRepServices,
+		UserService:        userService,
 	}
 
 	//define and register handlers
+	appointmentsHandler.New(mux, &appServices, &appUtils)
 	companyhandler.New(&appServices, mux).RegisterHandler()
 	login.New(mux, &appServices, &appUtils).RegisterHandlers()
 	salesopportunityhandlers.New(mux, &appServices).RegisterHandlers()
-	salesrephandler.New(mux, &appServices).RegisterHandler()
+	salesrephandler.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandler()
 	salesrolehandlers.New(mux, &appServices).RegisterHandlers()
 
-	//Cors enable on mux
+	//Cors and check cookie and token
 	i.Handler = i.enableCors(mux)
 }

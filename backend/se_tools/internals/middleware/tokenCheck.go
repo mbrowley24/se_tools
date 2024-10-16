@@ -15,12 +15,12 @@ import (
 	"net/http"
 )
 
-type UrlParams string
+type contextKey string
 
 type Middleware struct {
 	utils      *utils.Utilities
 	collection *mongo.Collection
-	urlParams  UrlParams
+	contextKey contextKey
 }
 
 func Start(collection *mongo.Collection, utils *utils.Utilities, params string) *Middleware {
@@ -28,7 +28,7 @@ func Start(collection *mongo.Collection, utils *utils.Utilities, params string) 
 	return &Middleware{
 		utils:      utils,
 		collection: collection,
-		urlParams:  UrlParams(params),
+		contextKey: contextKey(params),
 	}
 }
 
@@ -47,10 +47,13 @@ func checkCookie(cookie *http.Cookie) error {
 	return nil
 }
 
-func (m *Middleware) CheckToken(ctx context.Context, next http.Handler) http.Handler {
+func (m *Middleware) CheckToken(next http.HandlerFunc) http.HandlerFunc {
 
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Add("Vary", "Authorization")
+
+		ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+		defer cancel()
 
 		cookie, err := r.Cookie("yeoman cookie")
 
@@ -132,7 +135,7 @@ func (m *Middleware) CheckToken(ctx context.Context, next http.Handler) http.Han
 			}
 		}
 
-		userObjId, err := primitive.ObjectIDFromHex(token)
+		userObjId, err := primitive.ObjectIDFromHex(jwtParser.Subject)
 
 		if err != nil {
 
@@ -158,6 +161,12 @@ func (m *Middleware) CheckToken(ctx context.Context, next http.Handler) http.Han
 			}
 		}
 
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+		contextMap := make(map[string]interface{})
+		contextMap["user_id"] = userObjId
+		contextMap["time_zone"] = user.Offset
+
+		contextWithValue := context.WithValue(r.Context(), m.contextKey, contextMap)
+
+		next(w, r.WithContext(contextWithValue))
+	}
 }
