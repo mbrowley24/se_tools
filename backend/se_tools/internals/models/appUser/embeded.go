@@ -11,6 +11,7 @@ type Embedded struct {
 	LastName  string             `bson:"last_name" json:"lastname"`
 	Email     string             `bson:"email" json:"email"`
 	PublicId  string             `bson:"public_id" json:"public_id"`
+	Offset    string             `bson:"offset" json:"offset"`
 }
 
 func (e *Embedded) EmbeddedToDTO() DTO {

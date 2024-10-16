@@ -74,7 +74,9 @@ func (c *Claims) ValidateJWT(token, publicKeyPath string) error {
 	// Verify the signature
 	message := fmt.Sprintf("%s.%s", parts[0], parts[1])
 	signature, err := base64URLDecode(parts[2])
+
 	if err != nil {
+		println("error here")
 		return err
 	}
 
@@ -94,17 +96,19 @@ func (c *Claims) ValidateJWT(token, publicKeyPath string) error {
 // Helper functions for encoding/decoding, key loading, and signing.
 
 func base64URLEncode(data []byte) string {
-	return strings.TrimRight(base64.RawURLEncoding.EncodeToString(data), "=")
+	return strings.TrimRight(base64.URLEncoding.EncodeToString(data), "=")
 }
 
 func base64URLDecode(s string) ([]byte, error) {
+
 	switch len(s) % 4 {
 	case 2:
 		s += "=="
 	case 3:
 		s += "="
 	}
-	return base64.RawURLEncoding.DecodeString(s)
+
+	return base64.URLEncoding.DecodeString(s)
 }
 
 func loadPublicKey(path string) (*rsa.PublicKey, error) {

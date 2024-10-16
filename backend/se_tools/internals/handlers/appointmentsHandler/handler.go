@@ -3,32 +3,34 @@ package appointmentsHandler
 import (
 	"context"
 	"net/http"
+	"se_tools/internals/middleware"
 	"se_tools/internals/services"
 	"se_tools/utils"
 	"time"
 )
 
 type Handler struct {
-	mux      *http.ServeMux
-	services *services.Services
-	utils    *utils.Utilities
+	middleware *middleware.Middleware
+	mux        *http.ServeMux
+	services   *services.Services
+	utils      *utils.Utilities
 }
 
-func New(mux *http.ServeMux, services *services.Services, utils *utils.Utilities) *Handler {
+func New(middleware *middleware.Middleware, mux *http.ServeMux, services *services.Services, utils *utils.Utilities) *Handler {
 	return &Handler{
-		mux:      mux,
-		services: services,
-		utils:    utils,
+		middleware: middleware,
+		mux:        mux,
+		services:   services,
+		utils:      utils,
 	}
 }
 
-func (h *Handler) RegisterHandlers(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) RegisterHandlers() {
 
-	h.mux.Handle("/api/v1/appointments", http.HandlerFunc(h.AppointmentHandlers))
-
+	h.mux.Handle("/api/v1/appointments", h.middleware.CheckToken(h.appointmentHandlers))
 }
 
-func (h *Handler) AppointmentHandlers(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) appointmentHandlers(w http.ResponseWriter, r *http.Request) {
 
 	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
 	defer cancel()

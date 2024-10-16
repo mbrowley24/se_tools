@@ -1,6 +1,7 @@
 package salesrep
 
 import (
+	"fmt"
 	"se_tools/internals/models/appUser"
 	"se_tools/internals/models/salesroles"
 	"time"
@@ -23,25 +24,27 @@ type Model struct {
 	UpdateAt      time.Time          `bson:"updated_at"`
 }
 
-func (m *Model) ModelToDTO() DTO {
+func (m *Model) ModelToSummary() Summary {
 
-	var coverageSe []appUser.DTO
+	var coverageList []string
 
-	//covert embedded SE to Se DTO
 	for _, se := range m.CoverageSE {
 
-		coverageSe = append(coverageSe, se.ModelToDTO())
+		name := fmt.Sprintf("%s %s", se.FirstName, se.LastName)
+
+		coverageList = append(coverageList, name)
 	}
 
-	return DTO{
+	return Summary{
 		Id:            m.PublicId,
 		FirstName:     m.FirstName,
 		LastName:      m.LastName,
 		Email:         m.Email,
 		Phone:         m.Phone,
-		SalesEngineer: m.SalesEngineer.ModelToDTO(),
-		CoverageSE:    coverageSe,
-		Role:          m.Role.ModelToOption(),
+		SalesEngineer: fmt.Sprintf("%s%s", m.SalesEngineer.FirstName, m.SalesEngineer.LastName),
+		CoverageSE:    coverageList,
+		Role:          m.Role.Name,
 		Quota:         m.Quota,
+		UpdateAt:      m.UpdateAt,
 	}
 }

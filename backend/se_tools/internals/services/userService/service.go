@@ -2,11 +2,10 @@ package userservice
 
 import (
 	"context"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"se_tools/internals/models/appUser"
-	"se_tools/internals/models/optionsDto"
 	"se_tools/utils"
 )
 
@@ -49,12 +48,12 @@ func (s *Service) FindByUsername(ctx context.Context, username string) (appUser.
 	return user, nil
 }
 
-func (s *Service) SaleEngineerOption(se appUser.User) optionsdto.Option {
+func (s *Service) UpdateUser(ctx context.Context, filter, update bson.M, options options.UpdateOptions) (*mongo.UpdateResult, error) {
 
-	var option optionsdto.Option
+	result, err := s.collection.UpdateOne(ctx, filter, update, &options)
+	if err != nil {
+		return nil, err
+	}
 
-	option.Value = se.PublicId
-	option.Name = fmt.Sprintf("%s %s", se.FirstName, se.LastName)
-
-	return option
+	return result, nil
 }

@@ -50,14 +50,22 @@ func (h *Handler) getAppointmentHandlers(ctx context.Context, w http.ResponseWri
 	}
 
 	//Convert appointment models to DTo for front-end
-	var appointmentDTOs []appointment.DTO
+	var appointmentDTOs []appointment.Summary
 
 	for _, aptModel := range aptModels {
 
-		appointmentDTOs = append(appointmentDTOs, aptModel.ModelToDTO())
+		aptSummary, err := aptModel.ModelToSummary()
+
+		if err != nil {
+			if err = h.utils.WriteJSON(w, http.StatusInternalServerError, "", "error"); err != nil {
+				return
+			}
+		}
+
+		appointmentDTOs = append(appointmentDTOs, aptSummary)
 	}
 
-	if err = h.utils.WriteJSON(w, http.StatusOK, appointmentDTOs, "aptDatas"); err != nil {
+	if err = h.utils.WriteJSON(w, http.StatusOK, appointmentDTOs, "aptData"); err != nil {
 		return
 	}
 

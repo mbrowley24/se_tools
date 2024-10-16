@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"se_tools/internals/jwt"
 	"se_tools/internals/models/appUser"
@@ -34,12 +33,12 @@ func Start(collection *mongo.Collection, utils *utils.Utilities, params string) 
 
 func checkCookie(cookie *http.Cookie) error {
 
-	if strings.Compare(cookie.Value, "yeoman_token") != 0 {
+	if strings.Compare(cookie.Name, "yeoman_token") != 0 {
 
 		return errors.New("cookie is not value")
 	}
 
-	if cookie.Expires.Before(time.Now()) {
+	if cookie.Expires.After(time.Now()) {
 
 		return errors.New("cookie expired")
 	}
@@ -55,24 +54,18 @@ func (m *Middleware) CheckToken(next http.HandlerFunc) http.HandlerFunc {
 		ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
 		defer cancel()
 
-		cookie, err := r.Cookie("yeoman cookie")
+		cookie, err := r.Cookie("yeoman_token")
 
 		if err != nil {
 
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-
-				return
-				//Todo handle this error
-			}
+			w.WriteHeader(http.StatusUnauthorized)
 			return
-			//could set anonymous user
 		}
 
 		if err = checkCookie(cookie); err != nil {
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-				return
-			}
+
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		var jwtParser jwt.Claims
@@ -83,39 +76,32 @@ func (m *Middleware) CheckToken(next http.HandlerFunc) http.HandlerFunc {
 
 			err = errors.New("unauthorized")
 
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-				return
-			}
+			w.WriteHeader(http.StatusUnauthorized)
+
+			return
 		}
 
 		if jwtParser.Issuer != "yeoman.net" {
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-				return
-			}
+
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		if jwtParser.NotBefore.After(time.Now()) {
 
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-				return
-			}
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		if jwtParser.Issued.After(time.Now()) {
 
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-				return
-			}
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		if jwtParser.Expires.Before(time.Now()) {
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-				return
-			}
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		isAudience := false
@@ -128,41 +114,26 @@ func (m *Middleware) CheckToken(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		if !isAudience {
-
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-				return
-			}
-		}
-
-		userObjId, err := primitive.ObjectIDFromHex(jwtParser.Subject)
-
-		if err != nil {
-
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-				return
-			}
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		var user appUser.User
-		err = m.collection.FindOne(ctx, bson.M{"_id": userObjId}).Decode(&user)
+		err = m.collection.FindOne(ctx, bson.M{"public_id": jwtParser.Subject}).Decode(&user)
 
 		if err != nil {
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-				return
-			}
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		if strings.Compare(user.CsrfToken, jwtParser.CSRF) != 0 {
 
-			err = errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-				return
-			}
+			w.WriteHeader(http.StatusUnauthorized)
+			return
 		}
 
 		contextMap := make(map[string]interface{})
-		contextMap["user_id"] = userObjId
+		contextMap["user_id"] = user.ID.Hex()
 		contextMap["time_zone"] = user.Offset
 
 		contextWithValue := context.WithValue(r.Context(), m.contextKey, contextMap)

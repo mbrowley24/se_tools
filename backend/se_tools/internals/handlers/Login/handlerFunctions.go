@@ -3,6 +3,8 @@ package login
 import (
 	"context"
 	"encoding/json"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"se_tools/internals/jwt"
@@ -39,6 +41,8 @@ func (l *Login) PostLoginHandler(ctx context.Context, w http.ResponseWriter, r *
 		}
 	}
 
+	csrfToken := l.utils.RandomStringGenerator(90)
+
 	claims := jwt.Claims{
 
 		Subject:   user.PublicId,
@@ -47,7 +51,21 @@ func (l *Login) PostLoginHandler(ctx context.Context, w http.ResponseWriter, r *
 		Expires:   time.Now().Add(8 * time.Hour),
 		Issuer:    "yeoman.net",
 		Audiences: []string{"appointment"},
-		CSRF:      l.utils.RandomStringGenerator(60),
+		CSRF:      csrfToken,
+	}
+
+	filter := bson.M{"_id": user.ID}
+
+	update := bson.M{"$set": bson.M{
+		"csrf_token": csrfToken,
+	}}
+
+	opt := options.UpdateOptions{}
+
+	if _, err := l.services.UserService.UpdateUser(ctx, filter, update, opt); err != nil {
+		if err = l.utils.WriteJSON(w, http.StatusInternalServerError, "", "error"); err != nil {
+			return
+		}
 	}
 
 	token, err := claims.GenerateJWT("./crypto/private.key")

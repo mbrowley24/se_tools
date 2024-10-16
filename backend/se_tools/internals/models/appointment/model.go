@@ -15,7 +15,6 @@ import (
 type Model struct {
 	ID             primitive.ObjectID    `bson:"_id,omitempty" json:"_id,omitempty"`
 	PublicId       string                `bson:"public_id"`
-	Name           string                `bson:"name"`
 	Type           appointmentType.Model `bson:"type"`
 	Company        company.Model         `bson:"company"`
 	Description    string                `bson:"description"`
@@ -47,7 +46,6 @@ func (m *Model) ModelToSummary() (Summary, error) {
 
 	return Summary{
 		ID:        m.PublicId,
-		Name:      m.Name,
 		Type:      m.Type.Name,
 		Company:   m.Company.Name,
 		SalesRep:  fmt.Sprintf("%s, %s", m.SalesRep.LastName, m.SalesRep.FirstName),

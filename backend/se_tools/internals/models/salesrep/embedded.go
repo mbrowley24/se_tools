@@ -15,13 +15,14 @@ type Embedded struct {
 	Quota     float64            `bson:"quota"`
 }
 
-func (e *Embedded) ToDTO() DTO {
-	return DTO{
-		Id:        e.ID.Hex(),
+func (e *Embedded) ToSummary() Summary {
+
+	return Summary{
+		Id:        e.PublicId,
 		FirstName: e.FirstName,
 		LastName:  e.LastName,
 		Email:     e.Email,
-		Role:      e.Role.ModelToOption(),
 		Quota:     e.Quota,
+		Role:      e.Role.Name,
 	}
 }

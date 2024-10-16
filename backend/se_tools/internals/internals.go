@@ -20,6 +20,7 @@ import (
 	roleservices "se_tools/internals/services/roleServices"
 	salesrepservice "se_tools/internals/services/salesRepService"
 	"se_tools/internals/services/salesroleservice"
+	timezoneservice "se_tools/internals/services/timezoneService"
 	userservice "se_tools/internals/services/userService"
 	"se_tools/utils"
 )
@@ -62,6 +63,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 
 	//individual applications services
 	applicationService := appointmentservice.New(appointmentRepo.AppointmentCollection(), &appUtils)
+	appMiddleware := middleware.Start(appointmentRepo.UserCollection(), &appUtils, "params")
 	authService := authoritiesservice.Start(appointmentRepo.Authorities(), &appUtils)
 	companyServices := companyservice.Start(appointmentRepo.CompanyCollection(), &appUtils)
 	industryServices := industryservice.Start(appointmentRepo.IndustryCollection(), &appUtils)
@@ -70,8 +72,8 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	roleServices := roleservices.Start(appointmentRepo.RolesCollection(), &appUtils)
 	salesRepServices := salesrepservice.Start(appointmentRepo.SalesRolesCollection(), &appUtils)
 	salesRoleServices := salesroleservice.Start(appointmentRepo.SalesRolesCollection(), &appUtils)
+	timezoneServices := timezoneservice.StartService(appointmentRepo.TimezoneCollection(), &appUtils)
 	userService := userservice.StartService(appointmentRepo.UserCollection(), &appUtils)
-	appMiddleware := middleware.Start(appointmentRepo.UserCollection(), &appUtils, "params")
 
 	if err := authService.Initialize(); err != nil {
 
@@ -83,6 +85,11 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	}
 
 	if err := roleServices.Initialize(); err != nil {
+
+		panic(err)
+	}
+
+	if err := timezoneServices.Initialize(); err != nil {
 
 		panic(err)
 	}
@@ -127,7 +134,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	}
 
 	//define and register handlers
-	appointmentsHandler.New(mux, &appServices, &appUtils)
+	appointmentsHandler.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandlers()
 	companyhandler.New(&appServices, mux).RegisterHandler()
 	login.New(mux, &appServices, &appUtils).RegisterHandlers()
 	salesopportunityhandlers.New(mux, &appServices).RegisterHandlers()

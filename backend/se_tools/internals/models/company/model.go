@@ -1,6 +1,7 @@
 package company
 
 import (
+	"fmt"
 	"se_tools/internals/models/appUser"
 	"se_tools/internals/models/industry"
 	"se_tools/internals/models/salesrep"
@@ -22,21 +23,24 @@ type Model struct {
 	UpdatedAt     time.Time          `bson:"updated_at"`
 }
 
-func (m *Model) ToDTO() DTO {
+func (m *Model) ToDTO() Summary {
 
-	var coverageSe []appUser.DTO
+	var coverageSe []string
 
 	for _, coverage := range m.CoverageSe {
 
-		coverageSe = append(coverageSe, coverage.EmbeddedToDTO())
+		name := fmt.Sprintf("%ss %s", coverage.FirstName, coverage.LastName)
+		coverageSe = append(coverageSe, name)
 	}
 
-	return DTO{
+	return Summary{
 		ID:            m.PublicId,
 		Name:          m.Name,
-		Industry:      m.Industry.ToOption(),
-		SalesEngineer: m.SalesEngineer.EmbeddedToDTO(),
+		Industry:      m.Industry.Name,
+		SalesEngineer: fmt.Sprintf("%s %s", m.SalesEngineer.FirstName, m.SalesEngineer.LastName),
 		CoverageSe:    coverageSe,
-		SalesRep:      m.SalesRep.ToDTO(),
+		SalesRep:      fmt.Sprintf("%s %s", m.SalesRep.FirstName, m.SalesRep.LastName),
+		CreatedBy:     fmt.Sprintf("%s %s", m.CreatedBy.FirstName, m.CreatedBy.LastName),
+		UpdatedAt:     m.UpdatedAt,
 	}
 }
