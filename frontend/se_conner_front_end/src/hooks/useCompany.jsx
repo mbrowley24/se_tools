@@ -1,80 +1,56 @@
 import { useSelector } from "react-redux";
+import useGeneral  from './useGeneral.jsx';
 
 
 function useCompany() {
-    const verticalData = useSelector((state) => state.companyData.verticalData);
-    function validName(name){
-        const pattern = /^[a-zA-Z0-9\s]{2,75}$/;
-        return pattern.test(name);
-    } 
+    const {nameInputValidation, nameValidation} = useGeneral();
 
-    function validCharacters(name){
-        const pattern = /^[a-zA-Z0-9\s]{0,75}$/;
-        return pattern.test(name);
-    }
 
     function checkForErrors(data){
         const errors = {};
 
-        if(data.name.trim().length < 2){
+        if(data.company.name.trim().length < 2){
+
             errors['name'] = 'required';
 
-        }else if(!validName(data.name)){
+        }else if(nameInputValidation(data.name)){
             
-            errors['name'] = 'Invalid name';
+            errors['name'] = '- % . only special character allowed';
         }
 
-        const filteredVertical = verticalData.filter((vertical)=> vertical.value === data.vertical);
+        if(data.company.industry.trim().length === 0){
 
-        if(data.vertical.trim().length === 0){
+            errors['industry'] = 'required';
 
-            errors['vertical'] = 'required';
-
-        }else if(filteredVertical.length === 0){
-            errors['vertical'] = 'Invalid vertical';
         }
 
 
         return errors;
     }
 
-    function detectChange(orginal, edited){
+    function detectChange(original, edited){
 
-        if(!orginal) return false;
+        if(!original) return false;
         if(!edited) return false;
 
-        if(orginal.name !== edited.name){
+        if(original.name !== edited.name){
             return true;
         }
 
-        if(orginal.vertical !== edited.vertical){
-            return true;
-        }
+        return original.vertical !== edited.vertical;
 
-        return false;
-    }
-
-    function checkName(name, value){
-        
-        let companyName = name;
-
-        if(validName(value)){
-            companyName = value;
-        }
-
-        return companyName;
 
     }
 
-    const initalCompnayState ={
-        id: "",
-        name: '',
-        vertical: '',
-        opportunities: 0,
-        contacts: 0,
-        percentage: 0,
-        open: 0,
-        updated: 0,
+    const initialCompanyState ={
+        company:{
+            id: "",
+            name: '',
+            industry: '',
+            sales_rep: '',
+            notes : '',
+        },
+        industries: [],
         errors:{}
     }
 
@@ -87,65 +63,36 @@ function useCompany() {
                 
                 const name = action.payload;
 
-                if(validCharacters(name)){
-                    
-                    if(name.trim().length > 0){
-                        data.name = name;
-                    }
+                if(nameInputValidation(name.trim())){
+
+                    data.company.name = name;
                 }
 
                 data.errors = {...checkForErrors(data)};
 
                 return data;
             
-            case 'vertical':
+            case 'industry':
                 
-                const vertical = action.payload;
-                
-                const filter = verticalData.filter((item)=> item.value === vertical);
+                const industryId = action.payload;
+
+                const filter = data.industries.filter((industry) => industry.value === industryId);
 
                 if(filter.length > 0){
-                    data.vertical = vertical;
+                    data.company.industry = industryId;
                 }
 
                 data.errors = {...checkForErrors(data)};
 
                 return data;
-            
 
-            
-            case 'duplicate':
-
-                const duplicateData = {...action.payload};
-                
-                if(duplicateData.update){
-
-                    if(duplicateData.og_name === data.name){
-                    
-                        delete data.errors['exists'];
-                    
-                    }else{
-
-                        data.errors['exists'] = duplicateData.errors['exists'];
-                    }
-
-                }else{
-                    
-                    delete data.errors['exists'];
-                }
-
-
-                return data;
             
             case 'setup':
                 const setupData = {...action.payload}; 
-                data.id = setupData.id;
-                data.name = setupData.name;
-                data.vertical = setupData.vertical;
-                data.opportunities = setupData.opportunities;
-                data.contacts = setupData.contacts;
-                data.percentage = setupData.percentage;
-                data.open = setupData.open;
+                data.id = setupData.id? setupData.id : "";
+                data.company.name = setupData.name;
+                data.company.industry = setupData.industry;
+                data.contacts = setupData.contacts? setupData.contacts : [];
                 data.updated = setupData.updated;
                 
                 return data;
@@ -154,15 +101,15 @@ function useCompany() {
         }
     }
 
-    function duplicateName(orginalCompany, company, payload){
+    function duplicateName(originalCompany, company, payload){
 
-        if(!orginalCompany) return company;
+        if(!originalCompany) return company;
 
         const companyObj = {...company};
 
         if(payload.update){
 
-            if(orginalCompany.name === company.name){
+            if(originalCompany.name === company.name){
                 
                 delete companyObj.errors['exists'];
 
@@ -182,12 +129,10 @@ function useCompany() {
 
     return({
         checkForErrors,
-        checkName,
         companyReducer,
         detectChange,
         duplicateName,
-        initalCompnayState,
-        validName
+        initialCompanyState,
     })
 };
 

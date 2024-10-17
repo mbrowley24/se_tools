@@ -3,6 +3,12 @@
     padding: 0;
 }
 
+
+label{
+    display: block;
+    color: black;
+}
+
 .error{
     color: red;
     font-size: x-small;
@@ -24,7 +30,8 @@
     border-radius: .2rem;
     margin-left: auto;
     margin-right: auto;
-    background-color: rgb(255, 255, 255);
+    color: black;
+    background-color: rgb(210, 210, 210);
 }
 .form_container_body form{
     flex-direction: column;
@@ -42,7 +49,7 @@
     overflow: auto;
 }
 
-.form_container_body form div{
+.form_group{
     margin-top: 5%;
     margin-bottom: 2%;
     height: 8vh;
@@ -72,29 +79,34 @@
     /* border: 1px solid #000; */
 }
 
+
 .form_container_body form div input{
     display: block;
-    width: 75%;
+    text-align: center;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     height: 2vh;
     border: 1px solid #000;
     border-radius: 5px;
     padding: .75rem;
+    color : black;
+    background-color: white;
 }
 
 .form_container_body form div select{
     display: block;
     width: 75%;
+    text-align: center;
     margin-left: auto;
     margin-right: auto;
     height: 3vh;
     font-size: small;
     color: black;
-    text-align: center;
     border: 1px solid #000;
     border-radius: 5px;
     padding: .15rem;
+    background-color: white;
 }
 
 .form_container_body form div select:focus{
@@ -103,6 +115,7 @@
 
 .form_container_body form div select option{
     color: black;
+    text-align: center;
 }
 
 .form_container_body form div textarea{
@@ -110,10 +123,11 @@
     width: 80%;
     margin-left: auto;
     margin-right: auto;
-    height: 75%;
+    height: 25vh;
     border: 1px solid #000;
     border-radius: 5px;
     padding: .75rem;
+    background-color: white;
 }
 
 

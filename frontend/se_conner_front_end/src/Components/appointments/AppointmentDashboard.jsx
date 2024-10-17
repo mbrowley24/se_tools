@@ -2,7 +2,6 @@ import {useState, useEffect} from 'react'
 import Header from "../header/Header.jsx";
 import AppointmentTableHead from "./AppointmentTableHead.jsx";
 import useHttp from "../../hooks/useHttp.jsx";
-import {Link} from 'react-router-dom'
 import AppointmentTableBody from "./AppointmentTableBody.jsx";
 import "../../css/table/table.css"
 
@@ -45,9 +44,6 @@ function AppointmentDashboard() {
             <div className={'container'}>
                 <div>
                     <h1>Appointments</h1>
-                    <div className={'links'}>
-                        <Link to={'/new/appointment'}>New Appointment</Link>
-                    </div>
                 </div>
                 <table>
                     <AppointmentTableHead/>

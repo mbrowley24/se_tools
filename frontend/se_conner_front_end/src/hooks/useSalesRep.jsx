@@ -165,28 +165,11 @@ function useSalesRep() {
         
         const phone_number = removePhoneFormat(phone);
 
-        if(phone_regex_input.test(phone_number)){
-            return true;
-        }
-        return false;
+        return phone_regex_input.test(phone_number);
+
     }
 
-    function phoneNumberFormat(phone){
 
-        if(!phone) return "";
-        let phone_number = removePhoneFormat(phone);
-
-        if(phone_number.length >= 7 && phone_number.length < 10){
-            
-            phone_number = phone_number.substring(0, 3) + "-" + phone_number.substring(3, phone_number.length);
-
-        }else if(phone_number.length === 10){
-            
-            phone_number = phone_number.substring(0, 3) + "-" + phone_number.substring(3, 6) + "-" + phone_number.substring(6, 10);
-        }
-
-        return phone_number;    
-    }
 
     function formatForBackend(data){
 
@@ -205,95 +188,26 @@ function useSalesRep() {
 
             const phone_number = removePhoneFormat(phone);
     
-            if(phone_regex.test(phone_number)){
-                return true;
-            }
+            return phone_regex.test(phone_number);
 
-            return false;
+
     }
 
-    function addCommas(amount){
-        let amountString = String(amount);
-
-        if(!amountString ){
-            return
-        }
-
-        if(!amountString.includes(".")){
-            amountString += ".00";
-        }
-
-        const number_string = amountString.split("").reverse();
-
-        const commas = [6, 9, 12, 15, 18]
-
-        const new_number = [];
-
-        for(let i = 0; i < number_string.length; i++){
-            
-            
-            if(commas.includes(i)){
-                new_number.push(",");
-            }
-
-            new_number.push(number_string[i]);
-        }
-        return new_number.reverse().join("");
-    }
-
-    function quotaInput(quota_number){
 
 
-        quota_number = removeLeadingZeros(quota_number);
-        console.log(quota_number)
-        
-        if(quota_number.length === 0){
-        
-            quota_number = "0.00"
-        
-        }else if(quota_number.length > 0 && quota_number.length === 1){
-            
-            quota_number = "0.0" + quota_number;
-            
-        
-        }else if(quota_number.length > 0 && quota_number.length === 2){
-            
-            quota_number = "0." + quota_number;
 
-        }else if(quota_number.length > 0 && quota_number.length > 2){
-            
-            
-            
-
-            quota_number = quota_number.substring(0, quota_number.length - 2) + "." + quota_number.substring(quota_number.length - 2, quota_number.length);
-        }
-
-        return quota_number;
-
-    }
 
 
     function quotaInputValidation(quota){
 
         const unformatted_quota = removeQuotaFormat(quota);
 
-        if(quota_regex_input.test(unformatted_quota)){
-            return true;
-        }
+        return quota_regex_input.test(unformatted_quota);
 
-        return false
+
     }
 
-    function quotaValidation(quota){
-        let quota_string = String(quota);
-        const unformatted_quota = removeQuotaFormat(quota_string);
 
-        if(quota_regex_input.test(unformatted_quota)){
-            return true;
-        }
-
-        return false
-    }
 
     function removeLeadingZeros(quota){
         return quota.replace(/^0+/, "");
@@ -304,11 +218,9 @@ function useSalesRep() {
 
         quota_number = removeLeadingZeros(quota_number);
 
-        if(quota_regex.test(quota_number)){
-            return true;
-        }
+        return quota_regex.test(quota_number);
 
-        return false
+
     }
 
     function removePhoneFormat(phone){
@@ -369,11 +281,9 @@ function useSalesRep() {
                 return true;
             }
     
-            if(quota !== rep.quota){
-                return true;
-            }
+            return quota !== rep.quota;
     
-            return false;
+
     }
 
     function validateSalesRep(salesRep){
@@ -426,25 +336,9 @@ function useSalesRep() {
     
 
     return({
-        addCommas,
-        dateFormat,
-        dateValidation,
-        descriptionValidation,
-        emailValidation,
-        formatForBackend,
-        formatSalesRep,
-        FIELDS,
-        hasChanged,
-        nameInput,
-        nameValidation,
-        phoneInput,
+
         phoneNumberFormat,
-        phoneNumberValidation,
-        quotaValidation,
-        salesRepInitialState,
-        updateDateSalesRep,
-        validateSalesRep,
-        validSalesRep,
+
     })
 }
 

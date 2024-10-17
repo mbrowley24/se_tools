@@ -25,8 +25,7 @@ function Select({className, name, value, onChange, label, options, multiple}) {
                 {
                     !options && <option value="">No options available</option>
                 }
-                
-            </select>
+        </select>
         </>
     )
 }

@@ -16,7 +16,7 @@ function Header() {
                         <li className="dropdown">
                             <a>Sales</a>
                             <div className="dropdown-content">
-                                <Link to={"/sales/companies"}>Companies</Link>
+                                <Link to={"/companies"}>Companies</Link>
                                 <Link to={"/sales/forecast"}>Forecast(s)</Link>
                                 <ISPLink/>
                                 {/* <Link to={"/sales/opportunities"}>Opportunities</Link> */}

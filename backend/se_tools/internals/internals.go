@@ -135,7 +135,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 
 	//define and register handlers
 	appointmentsHandler.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandlers()
-	companyhandler.New(&appServices, mux).RegisterHandler()
+	companyhandler.New(appMiddleware, &appServices, mux, &appUtils).RegisterHandler()
 	login.New(mux, &appServices, &appUtils).RegisterHandlers()
 	salesopportunityhandlers.New(mux, &appServices).RegisterHandlers()
 	salesrephandler.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandler()
