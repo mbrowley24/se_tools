@@ -5,6 +5,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"os"
 	"se_tools/internals/models/industry"
@@ -102,4 +103,8 @@ func (s *Service) Initialize() error {
 
 	return nil
 
+}
+
+func (s *Service) FindIndustries(ctx context.Context, filter bson.M, opts options.FindOptions) {
+	//Todo start here make find industries service and create api end point
 }
