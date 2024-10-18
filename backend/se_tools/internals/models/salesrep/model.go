@@ -3,6 +3,7 @@ package salesrep
 import (
 	"fmt"
 	"se_tools/internals/models/appUser"
+	optionsdto "se_tools/internals/models/optionsDto"
 	"se_tools/internals/models/salesroles"
 	"time"
 
@@ -46,5 +47,15 @@ func (m *Model) ModelToSummary() Summary {
 		Role:          m.Role.Name,
 		Quota:         m.Quota,
 		UpdateAt:      m.UpdateAt,
+	}
+}
+
+func (m *Model) ModelToOptions() optionsdto.Option {
+
+	name := fmt.Sprintf("%s %s", m.FirstName, m.LastName)
+
+	return optionsdto.Option{
+		Value: m.PublicId,
+		Name:  name,
 	}
 }

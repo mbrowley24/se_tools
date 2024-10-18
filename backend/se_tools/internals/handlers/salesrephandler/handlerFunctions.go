@@ -7,26 +7,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
 	"se_tools/internals/models/salesrep"
-	"strconv"
 )
 
 // GetSalesReps get a list of sales reps but Users id
 func (h *Handler) getSalesReps(ctx context.Context, w http.ResponseWriter, r *http.Request) {
-
-	limitParam := r.URL.Query().Get("limit")
-	pageParam := r.URL.Query().Get("page")
-
-	limit, err := strconv.Atoi(limitParam)
-
-	if err != nil {
-		limit = 10
-	}
-
-	page, err := strconv.Atoi(pageParam)
-
-	if err != nil {
-		page = 0
-	}
 
 	var salesReps []salesrep.Model
 	var salesRepDTO []salesrep.Summary
@@ -55,7 +39,7 @@ func (h *Handler) getSalesReps(ctx context.Context, w http.ResponseWriter, r *ht
 		}},
 	}}
 
-	opts := options.Find().SetLimit(int64(limit)).SetSkip(int64(page))
+	opts := options.Find().SetSort(bson.D{{Key: "first_name", Value: 1}, {Key: "last_name", Value: 1}})
 
 	result, err := h.services.SalesRepService.FindSalesReps(ctx, filter, opts)
 

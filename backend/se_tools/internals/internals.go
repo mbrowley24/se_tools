@@ -6,6 +6,7 @@ import (
 	login "se_tools/internals/handlers/Login"
 	"se_tools/internals/handlers/appointmentsHandler"
 	companyhandler "se_tools/internals/handlers/companyHandler"
+	"se_tools/internals/handlers/industryHandler"
 	salesopportunityhandlers "se_tools/internals/handlers/salesOpportunityHandlers"
 	salesrolehandlers "se_tools/internals/handlers/salesRoleHandlers"
 	"se_tools/internals/handlers/salesrephandler"
@@ -136,6 +137,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	//define and register handlers
 	appointmentsHandler.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandlers()
 	companyhandler.New(appMiddleware, &appServices, mux, &appUtils).RegisterHandler()
+	industryHandler.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandlers()
 	login.New(mux, &appServices, &appUtils).RegisterHandlers()
 	salesopportunityhandlers.New(mux, &appServices).RegisterHandlers()
 	salesrephandler.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandler()

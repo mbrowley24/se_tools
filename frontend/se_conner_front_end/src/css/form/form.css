@@ -116,11 +116,13 @@ label{
 .form_container_body form div select option{
     color: black;
     text-align: center;
+    text-transform: capitalize;
 }
 
 .form_container_body form div textarea{
     display: block;
     width: 80%;
+    color: black;
     margin-left: auto;
     margin-right: auto;
     height: 25vh;

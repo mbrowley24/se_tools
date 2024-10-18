@@ -105,6 +105,13 @@ func (s *Service) Initialize() error {
 
 }
 
-func (s *Service) FindIndustries(ctx context.Context, filter bson.M, opts options.FindOptions) {
-	//Todo start here make find industries service and create api end point
+func (s *Service) FindIndustries(ctx context.Context, filter bson.M, opts *options.FindOptions) (*mongo.Cursor, error) {
+
+	results, err := s.collection.Find(ctx, filter, opts)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return results, err
 }

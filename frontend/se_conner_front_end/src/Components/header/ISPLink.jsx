@@ -8,27 +8,27 @@ function ISPLink() {
     const userdata = useSelector(state => state.userData)
     const {httpRequest} = useHttp();
 
-    useEffect(() => {
-        
-        if(userdata.admin) return;
-
-        const configRequest = {
-            url: "api/v1/users/isadmin",
-            method: "GET"
-        }
-
-        function applyData(res){
-            
-            dispatch(userActions.setAdmin(res.data));
-        }
-
-        (async()=>{
-
-            httpRequest(configRequest, applyData);
-
-        })();
-
-    }, [])
+    // useEffect(() => {
+    //
+    //     if(userdata.admin) return;
+    //
+    //     const configRequest = {
+    //         url: "api/v1/users/isadmin",
+    //         method: "GET"
+    //     }
+    //
+    //     function applyData(res){
+    //
+    //         dispatch(userActions.setAdmin(res.data));
+    //     }
+    //
+    //     (async()=>{
+    //
+    //         httpRequest(configRequest, applyData);
+    //
+    //     })();
+    //
+    // }, [])
 
     return (
         <>

@@ -1,9 +1,10 @@
 import { useSelector } from "react-redux";
 import useGeneral  from './useGeneral.jsx';
+import error from "eslint-plugin-react/lib/util/error.js";
 
 
 function useCompany() {
-    const {nameInputValidation, nameValidation} = useGeneral();
+    const {nameInputValidation, nameValidation, descriptionValidation} = useGeneral();
 
 
     function checkForErrors(data){
@@ -16,14 +17,43 @@ function useCompany() {
         }else if(nameInputValidation(data.name)){
             
             errors['name'] = '- % . only special character allowed';
+
+        }else{
+
+            delete error['name']
         }
+
+        const industries = data.industries ? [...data.industries] : [];
+
+        const industry_filter = industries.filter((industry) => industry.value === data.company.industry)
 
         if(data.company.industry.trim().length === 0){
 
             errors['industry'] = 'required';
 
+
+        }else if (industry_filter.length === 0){
+
+            errors['industry'] = 'invalid selection';
+
+        }else{
+
+            delete errors['industry']
         }
 
+        const sales_rep = data.sales_rep? [...data.sales_rep] : [];
+        const sales_rep_filter = sales_rep.filter((sales_rep) => sales_rep.value === data.company.sales_rep)
+
+        if(sales_rep.length === 0){
+            errors['sales_rep'] = 'required';
+
+        }else if (sales_rep_filter.length === 0){
+
+            errors['sales_rep'] = "invalid"
+        }else{
+
+            delete errors['sales_rep']
+        }
 
         return errors;
     }
@@ -51,6 +81,7 @@ function useCompany() {
             notes : '',
         },
         industries: [],
+        sales_reps: [],
         errors:{}
     }
 
@@ -86,7 +117,40 @@ function useCompany() {
 
                 return data;
 
-            
+                case 'sales_rep':
+
+                    data.company.sales_rep = action.payload;
+
+                    if(data.company.sales_rep.length === 0){
+                        data.errors['sales_rep'] = 'Required';
+
+                    }else{
+
+                        delete data.errors['sales_rep'];
+                    }
+
+                    return data;
+
+            case 'form_data':
+
+                const industryList = action.payload.form_data.industries? [...action.payload.form_data.industries] : [];
+                const sales_repList = action.payload.form_data.sales_reps? [...action.payload.form_data.sales_reps] : [];
+                data.industries = [...industryList];
+                data.sales_reps = [...sales_repList];
+
+                return data;
+
+            case 'notes':
+
+                const notes = action.payload;
+
+                if(descriptionValidation(notes)){
+                    data.company.notes = action.payload;
+                }
+
+                console.log(data)
+                return data;
+
             case 'setup':
                 const setupData = {...action.payload}; 
                 data.id = setupData.id? setupData.id : "";

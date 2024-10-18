@@ -13,24 +13,21 @@ function NewCompany({}) {
     const {companyReducer, initialCompanyState} = useCompany()
     const [state, dispatch]  = useReducer(companyReducer, initialCompanyState);
 
-    console.log(state);
 
     useEffect(() => {
 
         const configRequest = {
             method: 'GET',
+            url : 'companies/new',
             data : JSON.parse(JSON.stringify(state.company)),
         }
 
         function applyData(res){
-            console.log(res);
+            console.log(res)
+            dispatch({type: 'form_data', payload: res})
         }
 
-        httpRequest(configRequest, applyData).then((res)=>{
-            console.log(res)
-        }).catch((error) =>{
-            console.log(error)
-        })
+        httpRequest(configRequest, applyData)
 
     },[])
 

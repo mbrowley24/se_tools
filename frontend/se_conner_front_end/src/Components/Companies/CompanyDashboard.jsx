@@ -26,9 +26,7 @@ function CompanyDashboard({}) {
 
         }
 
-        (async ()=>{
-            await httpRequest(requestConfig, applyData);
-        })()
+        httpRequest(requestConfig, applyData);
 
     },[])
 

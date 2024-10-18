@@ -18,7 +18,6 @@ function Header() {
                             <div className="dropdown-content">
                                 <Link to={"/companies"}>Companies</Link>
                                 <Link to={"/sales/forecast"}>Forecast(s)</Link>
-                                <ISPLink/>
                                 {/* <Link to={"/sales/opportunities"}>Opportunities</Link> */}
                                 <Link to={"/sales/reps"}>Sales Reps</Link>
                             </div>

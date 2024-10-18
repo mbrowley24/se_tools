@@ -28,6 +28,7 @@ func New(middleware *middleware.Middleware, services *services.Services, mux *ht
 func (h *Handler) RegisterHandler() {
 
 	h.mux.Handle("/api/v1/companies", h.middleware.CheckToken(h.getCompaniesHandler))
+	h.mux.Handle("/api/v1/companies/new", h.middleware.CheckToken(h.newCompanies))
 }
 
 func (h *Handler) getCompaniesHandler(w http.ResponseWriter, r *http.Request) {
@@ -50,5 +51,15 @@ func (h *Handler) getCompaniesHandler(w http.ResponseWriter, r *http.Request) {
 
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func (h *Handler) newCompanies(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
+	switch r.Method {
+	case http.MethodGet:
+		h.companyFormData(ctx, w, r)
 	}
 }
