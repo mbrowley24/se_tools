@@ -24,19 +24,36 @@ function NewCompany({}) {
 
         function applyData(res){
             console.log(res)
-            dispatch({type: 'form_data', payload: res})
+            dispatch({type: 'form_data', payload: res.data})
         }
 
         httpRequest(configRequest, applyData)
 
     },[])
 
+
+    function submit(e){
+        e.preventDefault()
+
+        const configRequest ={
+            method: 'POST',
+            url : 'companies/new',
+            data : state.company,
+        }
+
+        function applyData(res){
+            console.log(res)
+        }
+
+        httpRequest(configRequest, applyData);
+    }
+
     return(
         <div>
             <Header/>
             <div className={"form_container_body"}>
                 <h1>New Company</h1>
-                <CompanyForm state={state} dispatch={dispatch}/>
+                <CompanyForm state={state} dispatch={dispatch} submit={submit} />
             </div>
         </div>
     )

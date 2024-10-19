@@ -34,6 +34,10 @@ func (s *Service) CheckEmail(ctx context.Context, db *mongo.Database, email stri
 
 }
 
+func (s *Service) FilterPublicId(publicId string) bson.M {
+	return bson.M{"public_id": publicId}
+}
+
 func (s *Service) FindByUsername(ctx context.Context, username string) (appUser.User, error) {
 
 	var user appUser.User
@@ -56,4 +60,9 @@ func (s *Service) UpdateUser(ctx context.Context, filter, update bson.M, options
 	}
 
 	return result, nil
+}
+
+func (s *Service) FindUser(ctx context.Context, filter bson.M, opts *options.FindOneOptions) *mongo.SingleResult {
+
+	return s.collection.FindOne(ctx, filter, opts)
 }

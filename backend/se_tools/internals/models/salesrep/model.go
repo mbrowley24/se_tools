@@ -59,3 +59,17 @@ func (m *Model) ModelToOptions() optionsdto.Option {
 		Name:  name,
 	}
 }
+
+func (m *Model) ModelToEmbedded() Embedded {
+
+	return Embedded{
+		ID:        m.ID,
+		PublicId:  m.PublicId,
+		FirstName: m.FirstName,
+		LastName:  m.LastName,
+		Email:     m.Email,
+		Role:      m.Role,
+		Quota:     m.Quota,
+	}
+
+}

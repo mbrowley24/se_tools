@@ -71,7 +71,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	loginService := userservice.Start(appointmentRepo.UserCollection(), &appUtils)
 	productServices := productservice.Start(appointmentRepo.ProductsCollection(), &appUtils)
 	roleServices := roleservices.Start(appointmentRepo.RolesCollection(), &appUtils)
-	salesRepServices := salesrepservice.Start(appointmentRepo.SalesRolesCollection(), &appUtils)
+	salesRepServices := salesrepservice.Start(appointmentRepo.SalesRepCollection(), &appUtils)
 	salesRoleServices := salesroleservice.Start(appointmentRepo.SalesRolesCollection(), &appUtils)
 	timezoneServices := timezoneservice.StartService(appointmentRepo.TimezoneCollection(), &appUtils)
 	userService := userservice.StartService(appointmentRepo.UserCollection(), &appUtils)

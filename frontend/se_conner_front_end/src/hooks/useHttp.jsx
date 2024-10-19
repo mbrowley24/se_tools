@@ -24,7 +24,7 @@ const useHttp = () =>{
             }).then((response) => {
 
                 if(response.status === 200){
-                    applyData(response.data);
+                    applyData(response);
                     setIsLoading(false);
                 }
             }).catch((error)=>{

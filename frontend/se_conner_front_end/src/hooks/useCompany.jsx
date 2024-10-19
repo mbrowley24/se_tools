@@ -14,7 +14,7 @@ function useCompany() {
 
             errors['name'] = 'required';
 
-        }else if(nameInputValidation(data.name)){
+        }else if(!nameValidation(data.name)){
             
             errors['name'] = '- % . only special character allowed';
 
@@ -53,6 +53,19 @@ function useCompany() {
         }else{
 
             delete errors['sales_rep']
+        }
+
+
+        if(data.company.notes.length > 500){
+
+            errors['notes'] = 'Error: more than 500 characters'
+
+        }else if(!descriptionValidation(data.company.notes)){
+
+            errors['notes'] = "in valid character"
+        }else{
+
+            delete errors['notes']
         }
 
         return errors;
@@ -128,16 +141,16 @@ function useCompany() {
 
                         delete data.errors['sales_rep'];
                     }
-
+                    data.errors = {...checkForErrors(data)};
                     return data;
 
             case 'form_data':
-
+                console.log(action.payload)
                 const industryList = action.payload.form_data.industries? [...action.payload.form_data.industries] : [];
                 const sales_repList = action.payload.form_data.sales_reps? [...action.payload.form_data.sales_reps] : [];
                 data.industries = [...industryList];
                 data.sales_reps = [...sales_repList];
-
+                data.errors = {...checkForErrors(data)};
                 return data;
 
             case 'notes':
@@ -147,8 +160,7 @@ function useCompany() {
                 if(descriptionValidation(notes)){
                     data.company.notes = action.payload;
                 }
-
-                console.log(data)
+                data.errors = {...checkForErrors(data)};
                 return data;
 
             case 'setup':
@@ -158,7 +170,7 @@ function useCompany() {
                 data.company.industry = setupData.industry;
                 data.contacts = setupData.contacts? setupData.contacts : [];
                 data.updated = setupData.updated;
-                
+                data.errors = {...checkForErrors(data)};
                 return data;
             default:
                 return state;

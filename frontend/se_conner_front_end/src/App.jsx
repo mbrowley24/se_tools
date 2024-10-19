@@ -5,6 +5,7 @@ import About from './Components/about/about'
 import AppointmentDashboard from "./Components/appointments/AppointmentDashboard.jsx";
 import CompanyDashboard from "./Components/Companies/CompanyDashboard.jsx";
 import NewCompany from "./Components/Companies/new/NewCompany.jsx";
+import SalesReps from "./Components/sales_reps/SalesReps.jsx";
 
 
 
@@ -18,6 +19,9 @@ function App() {
             <Route path="/login" element={<LoginView/>} />
             <Route path='/about' element={<About/>} />
             <Route path={'dashboard'} element={<AppointmentDashboard/>}/>
+            <Route path={'sales_reps'}>
+              <Route path={''} element={<SalesReps/>}/>
+            </Route>
             <Route path={'companies'}>
               <Route path={''} element={<CompanyDashboard/>} />
               <Route path={'new'} element={<NewCompany/>} />

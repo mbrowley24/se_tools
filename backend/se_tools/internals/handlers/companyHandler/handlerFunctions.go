@@ -2,14 +2,20 @@ package companyhandler
 
 import (
 	"context"
+	"encoding/json"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
+	"se_tools/internals/models/Contact"
+	"se_tools/internals/models/appUser"
 	"se_tools/internals/models/company"
 	"se_tools/internals/models/industry"
 	optionsdto "se_tools/internals/models/optionsDto"
+	"se_tools/internals/models/salesrep"
 	"se_tools/internals/models/salesroles"
 	"strconv"
+	"strings"
+	"time"
 )
 
 func (h *Handler) getCompanies(ctx context.Context, w http.ResponseWriter, r *http.Request) {
@@ -106,6 +112,108 @@ func (h *Handler) companyFormData(ctx context.Context, w http.ResponseWriter, r 
 
 	if err := h.utils.WriteJSON(w, http.StatusOK, dataMap, "form_data"); err != nil {
 		return
+	}
+
+}
+
+func (h *Handler) newCompany(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+
+	var companyModel company.Model
+	var contacts []Contact.Contact
+	var coverageSe []appUser.Embedded
+	var industryModel industry.Model
+	var newCompany company.NewUpdated
+	var salesEngineer appUser.User
+	var salesRep salesrep.Model
+
+	//generate and set publicId
+	publicId, err := h.services.CompanyService.GeneratePublicId(ctx)
+
+	if err != nil {
+		if err := h.utils.WriteJSON(w, http.StatusInternalServerError, "", "error"); err != nil {
+			return
+		}
+	}
+
+	companyModel.PublicId = publicId
+
+	//assigns contacts and se coverage to model
+	companyModel.Contacts = contacts
+	companyModel.CoverageSe = coverageSe
+
+	if err := json.NewDecoder(r.Body).Decode(&newCompany); err != nil {
+
+		if err := h.utils.WriteJSON(w, http.StatusInternalServerError, "", ""); err != nil {
+
+			return
+		}
+	}
+
+	params := r.Context().Value("params").(map[string]interface{})
+
+	//validate new company return err of
+	if err := newCompany.Validate(h.utils); err != nil {
+
+		errorList := strings.Split(err.Error(), ":")
+		errorMap := make(map[string]string)
+
+		errorMap[errorList[0]] = errorList[1]
+
+		if err := h.utils.WriteJSON(w, http.StatusInternalServerError, errorMap, "error"); err != nil {
+
+			return
+		}
+	}
+
+	//add notes and names after validations
+	companyModel.Notes = strings.TrimSpace(newCompany.Notes)
+	companyModel.Name = strings.TrimSpace(newCompany.Name)
+
+	userFilter := h.services.UserService.FilterPublicId(params["user_id"].(string))
+
+	if err := h.services.UserService.FindUser(ctx, userFilter, nil).Decode(&salesEngineer); err != nil {
+
+		if err := h.utils.WriteJSON(w, http.StatusInternalServerError, "", "error"); err != nil {
+			return
+		}
+	}
+
+	embeddedSalesEngineer := salesEngineer.Embedded()
+
+	//assign sales engineer and created By createdBy does not change once set
+	companyModel.SalesEngineer = embeddedSalesEngineer
+	companyModel.CreatedBy = embeddedSalesEngineer
+
+	industryFilter := h.services.IndustryService.FilterPublicId(newCompany.Industry)
+	if err := h.services.IndustryService.FindIndustry(ctx, industryFilter, nil).Decode(&industryModel); err != nil {
+
+		if err := h.utils.WriteJSON(w, http.StatusInternalServerError, "", "error"); err != nil {
+			return
+		}
+	}
+
+	companyModel.Industry = industryModel
+
+	salesRepFilter := h.services.SalesRepService.FilterPublicId(newCompany.SalesRep)
+
+	if err := h.services.SalesRepService.FindSalesRep(ctx, salesRepFilter, nil).Decode(&salesRep); err != nil {
+		if err := h.utils.WriteJSON(w, http.StatusInternalServerError, "", "error"); err != nil {
+			return
+		}
+	}
+
+	//assign sales reps
+	companyModel.SalesRep = salesRep.ModelToEmbedded()
+
+	now := time.Now()
+
+	companyModel.UpdatedAt = now
+	companyModel.CreatedAt = now
+
+	if _, err := h.services.CompanyService.Save(ctx, companyModel); err != nil {
+		if err := h.utils.WriteJSON(w, http.StatusInternalServerError, "", "error"); err != nil {
+			return
+		}
 	}
 
 }

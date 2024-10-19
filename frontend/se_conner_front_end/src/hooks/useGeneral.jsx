@@ -9,10 +9,10 @@ function useGeneral() {
 
 
 
-    const name_regex = /^[a-zA-Z0-9.\\\s\-&]{5,75}$/;
+    const name_regex = /^[a-zA-Z0-9.\\\s\-&]{2,75}$/;
     const name_regex_input = /^[a-zA-Z0-9.\\\s\-&]{0,75}$/;
     const meeting_title_regex = /^[a-zA-Z0-9.\\\s\-&]{5,100}$/;
-    const description_regex = /^[a-zA-Z0-9\s.,!?%&@'"\-()\[\]:;/]{0,500}$/;
+    const description_regex = /^[a-zA-Z0-9\s.,!?%&@'"\-:;/]{0,500}$/;
     const phone_regex = /^[0-9]{10}$/;
     const date_regex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
     const time_regex = /^[0-9]{2}:[0-9]{2}$/;

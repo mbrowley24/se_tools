@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 
 
 
 function CompanyForm({submit, state, dispatch }) {
-
+    console.log(state);
+    const valid = useMemo(()=> Object.keys(state.errors).length === 0, [state]);
 
 
     function inputChange(e) {
@@ -24,6 +25,7 @@ function CompanyForm({submit, state, dispatch }) {
                             name={"name"}
                            onChange={(e)=> inputChange(e)}/>
                 </div>
+                {state.errors["name"]? <p className={'error'}>{state.errors['name']}</p> : null}
             </div>
             <div>
                 <label htmlFor="">Industry</label>
@@ -43,6 +45,7 @@ function CompanyForm({submit, state, dispatch }) {
                         })
                     }
                 </select>
+                {state.errors["industry"]? <p className={'error'}>{state.errors['industry']}</p> : null}
             </div>
             <div>
                 <label htmlFor="">Sales Rep</label>
@@ -63,6 +66,7 @@ function CompanyForm({submit, state, dispatch }) {
                         })
                     }
                 </select>
+                {state.errors["sales_rep"]? <p className={'error'}>{state.errors['sales_rep']}</p> : null}
             </div>
             <div>
                 <label htmlFor="">Notes</label>
@@ -73,7 +77,9 @@ function CompanyForm({submit, state, dispatch }) {
                 <p className={'count'}>{state.company.notes.length}</p>
             </div>
             <div>
-                <button>Save</button>
+                <button
+                    disabled={!valid}
+                >Save</button>
             </div>
         </form>
     )

@@ -34,57 +34,60 @@ function useSalesRep() {
     const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; 
 
     const salesRepInitialState = {
-        first_name: "",
-        last_name: "",
-        email: "",
-        phone: "",
-        role: "",
-        quota: "0.00"
+        sales_rep: {
+            id: '',
+            first_name: "",
+            last_name: "",
+            email: "",
+            phone: "",
+            role: "",
+            quota: "0.00"
+        },
+        roles: [],
+        sales_reps :[],
+        errors: {},
+
     }
 
 
-    function updateDateSalesRep(salesRep, e){
-            
-            const {name, value} = e.target;
 
-            const salesRepObj = {...salesRep};
+    function salesRepReducer(state, action) {
 
-            if(name === "first_name"){
-                if(nameInput(value)){
-                    salesRepObj[name] = value;
-                }
-            }else if(name === "last_name"){
-                if(nameInput(value)){
-                    salesRepObj[name] = value;
-                }
-            }else if(name === "email"){
+        const data = JSON.parse(JSON.stringify(state));
 
-                salesRepObj[name] = value;
-            
-            }else if(name === "phone"){
-                
-                const phone = removePhoneFormat(value);
+        switch (action.type) {
 
-                if(phoneInput(phone)){
-                    salesRepObj[name] = phoneNumberFormat(phone);
-                }
+            case "first_name":
 
-            }else if(name === "role"){
+                data.sales_reps.first_name = action.payload;
 
-                salesRepObj[name] = value;
+                return data;
+            case 'last_name':
 
-            }else if(name === "quota"){
-                
-                const quota = removeQuotaFormat(value);
-                
-                if(quotaInputValidation(quota)){
-                    
-                    salesRepObj[name] = quotaInput(quota);
-                }
-            }
+                data.sales_reps.last_name = action.payload;
+                return data;
 
-    
-            return salesRepObj;
+            case 'email':
+                data.sales_reps.email = action.payload;
+                return data;
+
+            case 'phone':
+                data.sales_reps.phone = action.payload;
+                return data;
+
+            case 'role':
+                data.sales_reps.role = action.payload;
+                return data;
+
+            case 'quota':
+
+                data.sales_reps.quota = action.payload;
+
+                return data;
+
+            default:
+                return state
+        }
     }
 
 
@@ -104,20 +107,16 @@ function useSalesRep() {
 
     function dateValidation(date){
 
-        if(date_regex.test(date)){
-            return true;
-        }
+        return date_regex.test(date);
 
-        return false;
+
     }
 
     function descriptionValidation(description){
             
-            if(description_regex.test(description)){
-                return true;
-            }
+            return description_regex.test(description);
     
-            return false;
+
     }
 
     function emailValidation(email){
@@ -336,9 +335,8 @@ function useSalesRep() {
     
 
     return({
-
-        phoneNumberFormat,
-
+        salesRepInitialState,
+        salesRepReducer,
     })
 }
 

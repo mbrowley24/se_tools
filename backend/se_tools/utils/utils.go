@@ -2,8 +2,10 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"math/rand"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -49,6 +51,27 @@ func (u *Utilities) ErrorJSON(w http.ResponseWriter, err error) {
 	if err = u.WriteJSON(w, http.StatusBadRequest, err, "error"); err != nil {
 		//ToDo do something with this error
 	}
+}
+
+func (u *Utilities) NotesDescription(text string) error {
+	re := regexp.MustCompile(`^[a-zA-Z0-9\s.,!?%&@'"\-:;/]{0,500}$`)
+
+	if !re.MatchString(text) {
+		return errors.New("invalid text")
+	}
+
+	return nil
+}
+
+func (u *Utilities) NameCheck(name string) error {
+
+	re := regexp.MustCompile(`^[a-zA-Z0-9.\\\s\-&]{2,75}$`)
+
+	if !re.MatchString(name) {
+		return errors.New("invalid name")
+	}
+
+	return nil
 }
 
 // RandomStringGenerator generate random strings

@@ -15,7 +15,7 @@ label{
 }
 .form_container_body{
     display: block;
-    height: 91vh;
+    height: 90.5vh;
     background-image: url("https://seconnerimages.nyc3.cdn.digitaloceanspaces.com/new_user.jpg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -39,7 +39,7 @@ label{
     justify-content: center;
     margin-top: 1%;
     width: 25%;
-    height: 60vh;
+    height: 65vh;
     margin-left: auto;
     margin-right: auto;
     border-radius: .25rem;
@@ -172,16 +172,16 @@ label{
     background-color: rgb(211, 211, 211, .75);
     border-radius: .25rem;
     padding: .25rem;
-    cursor: none;
+    cursor: not-allowed;
 }
-.form_container_body form div button:disabled{
-    margin-top: 2%;
-    width: 50%;
-    text-align: center;
-    border-radius: .25rem;
-    padding: .25rem;
-    cursor: pointer;
-}
+/*.form_container_body form div button:disabled{*/
+/*    margin-top: 2%;*/
+/*    width: 50%;*/
+/*    text-align: center;*/
+/*    border-radius: .25rem;*/
+/*    padding: .25rem;*/
+/*    cursor: pointer;*/
+/*}*/
 
 .count{
     width: 75%;
