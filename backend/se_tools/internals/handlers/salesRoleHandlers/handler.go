@@ -3,19 +3,25 @@ package salesrolehandlers
 import (
 	"context"
 	"net/http"
+	"se_tools/internals/middleware"
 	"se_tools/internals/services"
+	"se_tools/utils"
 	"time"
 )
 
 type Handler struct {
-	mux     *http.ServeMux
-	service *services.Services
+	middleware *middleware.Middleware
+	mux        *http.ServeMux
+	service    *services.Services
+	utils      *utils.Utilities
 }
 
-func New(mux *http.ServeMux, service *services.Services) *Handler {
+func New(middleware *middleware.Middleware, mux *http.ServeMux, service *services.Services, utils *utils.Utilities) *Handler {
 	return &Handler{
-		mux:     mux,
-		service: service,
+		middleware: middleware,
+		mux:        mux,
+		service:    service,
+		utils:      utils,
 	}
 }
 

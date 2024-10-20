@@ -141,7 +141,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	login.New(mux, &appServices, &appUtils).RegisterHandlers()
 	salesopportunityhandlers.New(mux, &appServices).RegisterHandlers()
 	salesrephandler.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandler()
-	salesrolehandlers.New(mux, &appServices).RegisterHandlers()
+	salesrolehandlers.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandlers()
 
 	//Cors and check cookie and token
 	i.Handler = i.enableCors(mux)

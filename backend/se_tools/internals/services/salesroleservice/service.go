@@ -5,6 +5,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"os"
 	"se_tools/internals/models/salesroles"
@@ -97,4 +98,16 @@ func (s *Service) Initialize() error {
 	}
 
 	return nil
+}
+
+func (s *Service) GetRoles(ctx context.Context, filter bson.M, opts *options.FindOptions) (*mongo.Cursor, error) {
+
+	result, err := s.collection.Find(ctx, filter, opts)
+
+	if err != nil {
+
+		return nil, err
+	}
+
+	return result, err
 }

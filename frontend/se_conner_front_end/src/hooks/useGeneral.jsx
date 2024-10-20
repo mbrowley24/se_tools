@@ -145,6 +145,8 @@ function useGeneral() {
 
         quota_number = removeLeadingZeros(quota_number);
 
+        quota_number = removeQuotaFormat(quota_number);
+
         if(quota_number.length === 0){
 
             quota_number = "0.00"
@@ -166,7 +168,7 @@ function useGeneral() {
             quota_number = quota_number.substring(0, quota_number.length - 2) + "." + quota_number.substring(quota_number.length - 2, quota_number.length);
         }
 
-        return quota_number;
+        return addCommas(quota_number);
 
     }
 
@@ -176,7 +178,7 @@ function useGeneral() {
         let quota_number = removeQuotaFormat(quota);
 
         quota_number = removeLeadingZeros(quota_number);
-
+        console.log(quota_number)
         return quota_regex.test(quota_number);
 
 
@@ -212,8 +214,14 @@ function useGeneral() {
 
     return({
         descriptionValidation,
+        emailValidation,
         nameValidation,
         nameInputValidation,
+        phoneInput,
+        phoneNumberFormat,
+        phoneNumberValidation,
+        quotaInput,
+        quotaValidation,
         regex_map
     })
 }
