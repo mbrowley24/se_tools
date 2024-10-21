@@ -21,6 +21,15 @@ func (u *Utilities) Capitalize(s string) string {
 	return strings.ToUpper(s[:1]) + s[1:]
 }
 
+func (u *Utilities) CheckCSRF(csrf string) error {
+
+	if len(csrf) == 0 {
+		return errors.New("csrf required")
+	}
+
+	return nil
+}
+
 func (u *Utilities) DateFormat() string {
 
 	return "2006-01-02"

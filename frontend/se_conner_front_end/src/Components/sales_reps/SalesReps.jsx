@@ -20,9 +20,12 @@ function SalesReps(){
             url: "sales_reps",
         }
 
-        console.log(configRequest)
         function applyData(res){
-            console.log(res);
+
+            if(res.status === 200){
+                dispatch({type: 'sales_reps', payload: res.data})
+            }
+
         }
 
         httpRequest(configRequest, applyData);

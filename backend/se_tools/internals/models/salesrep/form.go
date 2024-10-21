@@ -10,6 +10,7 @@ type Form struct {
 	Phone     string `json:"phone"`
 	Role      string `json:"role"`
 	Quota     string `json:"quota"`
+	CSRF      string `json:"csrf"`
 }
 
 func (f *Form) Validate() error {
@@ -33,6 +34,10 @@ func (f *Form) Validate() error {
 	}
 
 	if err := utility.QuotaValidation(f.Quota); err != nil {
+		return err
+	}
+
+	if err := utility.CheckCSRF(f.CSRF); err != nil {
 		return err
 	}
 

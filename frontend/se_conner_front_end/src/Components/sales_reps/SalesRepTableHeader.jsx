@@ -8,10 +8,10 @@ function SalesRepTableHeader() {
     return(
         <thead>
             <tr>
-                <th></th>
                 <th>Name</th>
                 <th>Role</th>
-                <th>Sales Engineer</th>
+                <th>Email</th>
+                <th>Updated</th>
             </tr>
         </thead>
     )

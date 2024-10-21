@@ -72,13 +72,31 @@
 .container table tbody tr:nth-child(odd) td{
     font-size: 1.5vh;
     padding: .5rem;
+    text-transform: capitalize;
     background-color: rgb(211, 211, 211, 1);
 }
 
 .container table tbody tr:nth-child(even) td{
     font-size: 1.5vh;
     padding: .5rem;
+    text-transform: capitalize;
     background-color: rgb(150, 150, 150, 1);
+}
+
+.container table tbody tr:nth-child(odd) td a{
+    font-size: 1.5vh;
+    padding: .5rem;
+    color: white;
+    font-weight: bold;
+    text-transform: lowercase;
+}
+
+.container table tbody tr:nth-child(even) td a{
+    font-size: 1.5vh;
+    padding: .5rem;
+    color: white;
+    font-weight: bold;
+    text-transform: lowercase;
 }
 
 .container table tbody tr:nth-last-child(-n+1) td{

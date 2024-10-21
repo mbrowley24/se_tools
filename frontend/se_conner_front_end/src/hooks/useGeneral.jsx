@@ -9,8 +9,10 @@ function useGeneral() {
 
 
 
-    const name_regex = /^[a-zA-Z0-9.\\\s\-&]{2,75}$/;
-    const name_regex_input = /^[a-zA-Z0-9.\\\s\-&]{0,75}$/;
+    const name_regex = /^[a-zA-Z0-9.\\\s\-]{2,75}$/;
+    const name_regex_input = /^[a-zA-Z0-9.\\\s\-]{0,75}$/;
+    const company_name_regex = /^[a-zA-Z0-9.\\\s\-&]{2,75}$/;
+    const company_name_regex_input = /^[a-zA-Z0-9.\\\s\-&]{0,75}$/;
     const meeting_title_regex = /^[a-zA-Z0-9.\\\s\-&]{5,100}$/;
     const description_regex = /^[a-zA-Z0-9\s.,!?%&@'"\-:;/]{0,500}$/;
     const phone_regex = /^[0-9]{10}$/;
@@ -94,6 +96,11 @@ function useGeneral() {
 
     }
 
+    function companyNameValidation(name){
+
+        return company_name_regex.test(name);
+    }
+
     function nameValidation(name){
 
         return name_regex.test(name);
@@ -103,6 +110,10 @@ function useGeneral() {
     function nameInputValidation(name){
 
         return name_regex_input.test(name);
+    }
+
+    function companyNameInputValidation(name){
+        return company_name_regex_input.test(name);
     }
 
 
@@ -198,6 +209,15 @@ function useGeneral() {
 
 
 
+    function formatDate(dateString){
+        const date = new Date(dateString);
+
+        return date.toLocaleDateString('en-us', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric'
+        })
+    }
 
     function removeLeadingZeros(quota){
         return quota.replace(/^0+/, "");
@@ -213,8 +233,11 @@ function useGeneral() {
     }
 
     return({
+        companyNameInputValidation,
+        companyNameValidation,
         descriptionValidation,
         emailValidation,
+        formatDate,
         nameValidation,
         nameInputValidation,
         phoneInput,

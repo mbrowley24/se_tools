@@ -44,7 +44,7 @@ function useSalesRep() {
             phone: "",
             role: "",
             quota: "0.00",
-            CSRF: "",
+            csrf: "",
         },
         roles: [],
         sales_reps :[],
@@ -62,7 +62,6 @@ function useSalesRep() {
 
             case "first_name":
 
-                console.log(action.payload)
                 if(nameInputValidation(action.payload)){
 
                     data.sales_rep.first_name = action.payload;
@@ -143,9 +142,15 @@ function useSalesRep() {
 
             case 'csrf':
 
-                console.log(action.payload)
                 data.sales_rep.csrf = action.payload.csrf;
 
+                return data;
+
+            case 'sales_reps':
+
+                data.sales_reps = [...action.payload.sales_reps];
+
+                console.log(data)
                 return data;
 
             default:

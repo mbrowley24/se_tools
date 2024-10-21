@@ -21,6 +21,7 @@ type Model struct {
 	CoverageSE    []appUser.Embedded `bson:"coverage_se"`
 	Role          salesroles.Model   `bson:"role"`
 	Quota         int64              `bson:"quota"`
+	Version       int                `bson:"v"`
 	CreatedAt     time.Time          `bson:"created_at"`
 	UpdateAt      time.Time          `bson:"updated_at"`
 }
