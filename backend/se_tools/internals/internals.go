@@ -10,6 +10,7 @@ import (
 	salesopportunityhandlers "se_tools/internals/handlers/salesOpportunityHandlers"
 	salesrolehandlers "se_tools/internals/handlers/salesRoleHandlers"
 	"se_tools/internals/handlers/salesrephandler"
+	"se_tools/internals/handlers/userHandlers"
 	"se_tools/internals/middleware"
 	"se_tools/internals/repository"
 	"se_tools/internals/services"
@@ -142,7 +143,7 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	salesopportunityhandlers.New(mux, &appServices).RegisterHandlers()
 	salesrephandler.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandler()
 	salesrolehandlers.New(appMiddleware, mux, &appServices, &appUtils).RegisterHandlers()
-
+	userHandlers.Start(appMiddleware, mux, &appServices, &appUtils).RegisterHandlers()
 	//Cors and check cookie and token
 	i.Handler = i.enableCors(mux)
 }

@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"se_tools/internals/models/salesrep"
 	"se_tools/utils"
 )
 
@@ -65,4 +66,55 @@ func (s *Service) GeneratePublicId(ctx context.Context) (string, error) {
 	}
 
 	return publicId, nil
+}
+
+func (s *Service) InsertOne(ctx context.Context,
+	model salesrep.Model,
+	opts *options.InsertOneOptions) (*mongo.InsertOneResult, error) {
+
+	inserted, err := s.collection.InsertOne(ctx, model, opts)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return inserted, nil
+}
+
+func (s *Service) PipelineFilterFindSalesRepsJoinSalesEngineer(matchFilter bson.D) mongo.Pipeline {
+
+	return mongo.Pipeline{
+		{{"$match", matchFilter}}, // Filter for specific users
+		{{"$lookup", bson.D{
+			{"from", "users"},
+			{"localField", "user.user_id"}, // Dot notation for embedded field
+			{"foreignField", "user_id"},
+			{"as", "user_info"},
+		}}},
+		{{"$unwind", "$user_info"}},
+	}
+}
+
+func (s *Service) PipeLineFilterJoinSalesEngineers() mongo.Pipeline {
+
+	return mongo.Pipeline{
+		{{"$lookup", bson.D{
+			{"from", "users"},                    // The collection to join
+			{"localField", "sales_engineer._id"}, // The field from 'orders'
+			{"foreignField", "_id"},              // The field from 'users'
+			{"as", "sales_engineer_info"},        // Output array field
+		}}},
+		{{"$unwind", "$sales_engineer_info"}},
+	}
+}
+
+func (s *Service) Pipeline(ctx context.Context, filter bson.M, opts *options.AggregateOptions) (*mongo.Cursor, error) {
+
+	cursor, err := s.collection.Aggregate(ctx, filter, opts)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return cursor, nil
 }

@@ -178,7 +178,7 @@ function useGeneral() {
         let quota_number = removeQuotaFormat(quota);
 
         quota_number = removeLeadingZeros(quota_number);
-        console.log(quota_number)
+
         return quota_regex.test(quota_number);
 
 
@@ -222,7 +222,9 @@ function useGeneral() {
         phoneNumberValidation,
         quotaInput,
         quotaValidation,
-        regex_map
+        regex_map,
+        removeQuotaFormat,
+        removePhoneFormat
     })
 }
 

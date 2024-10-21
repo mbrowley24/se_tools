@@ -38,6 +38,7 @@ func (h *Handler) salesRoles(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		h.getSalesRoles(ctx, w, r)
+
 	case http.MethodOptions:
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
 		w.Header().Set("Access-Control-Allow-Methods", "GET")

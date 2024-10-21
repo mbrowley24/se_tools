@@ -27,7 +27,7 @@ func New(middleware *middleware.Middleware, mux *http.ServeMux, services *servic
 
 func (h *Handler) RegisterHandler() {
 
-	h.mux.Handle("api/v1/sales_reps", h.middleware.CheckToken(h.salesReps))
+	h.mux.Handle("/api/v1/sales_reps", h.middleware.CheckToken(h.salesReps))
 }
 
 func (h *Handler) salesReps(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +42,7 @@ func (h *Handler) salesReps(w http.ResponseWriter, r *http.Request) {
 		h.getSalesReps(ctx, w, r)
 
 	case http.MethodPost:
-		//Todo add function to create new sales reps
+		h.postSalesRep(ctx, w, r)
 
 	case http.MethodOptions:
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")

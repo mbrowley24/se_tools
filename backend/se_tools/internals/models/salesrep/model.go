@@ -20,34 +20,9 @@ type Model struct {
 	SalesEngineer appUser.Embedded   `bson:"sales_engineer"`
 	CoverageSE    []appUser.Embedded `bson:"coverage_se"`
 	Role          salesroles.Model   `bson:"role"`
-	Quota         float64            `bson:"quota"`
+	Quota         int64              `bson:"quota"`
 	CreatedAt     time.Time          `bson:"created_at"`
 	UpdateAt      time.Time          `bson:"updated_at"`
-}
-
-func (m *Model) ModelToSummary() Summary {
-
-	var coverageList []string
-
-	for _, se := range m.CoverageSE {
-
-		name := fmt.Sprintf("%s %s", se.FirstName, se.LastName)
-
-		coverageList = append(coverageList, name)
-	}
-
-	return Summary{
-		Id:            m.PublicId,
-		FirstName:     m.FirstName,
-		LastName:      m.LastName,
-		Email:         m.Email,
-		Phone:         m.Phone,
-		SalesEngineer: fmt.Sprintf("%s%s", m.SalesEngineer.FirstName, m.SalesEngineer.LastName),
-		CoverageSE:    coverageList,
-		Role:          m.Role.Name,
-		Quota:         m.Quota,
-		UpdateAt:      m.UpdateAt,
-	}
 }
 
 func (m *Model) ModelToOptions() optionsdto.Option {
@@ -72,4 +47,18 @@ func (m *Model) ModelToEmbedded() Embedded {
 		Quota:     m.Quota,
 	}
 
+}
+
+func (m *Model) ModelToSummary(firstName, lastName string) Summary {
+	return Summary{
+		Id:            m.PublicId,
+		FirstName:     m.FirstName,
+		LastName:      m.LastName,
+		Email:         m.Email,
+		Phone:         m.Phone,
+		SalesEngineer: fmt.Sprintf("%s %s", firstName, lastName),
+		Role:          m.Role.Name,
+		Quota:         m.Quota,
+		UpdateAt:      m.UpdateAt,
+	}
 }

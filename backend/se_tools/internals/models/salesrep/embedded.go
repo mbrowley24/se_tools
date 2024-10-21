@@ -12,7 +12,7 @@ type Embedded struct {
 	LastName  string             `bson:"last_name"`
 	Email     string             `bson:"email"`
 	Role      salesroles.Model   `bson:"role"`
-	Quota     float64            `bson:"quota"`
+	Quota     int64              `bson:"quota"`
 }
 
 func (e *Embedded) ToSummary() Summary {

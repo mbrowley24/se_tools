@@ -17,15 +17,15 @@ function SalesReps(){
 
         const configRequest = {
             method: "GET",
-            url: "/sales_reps",
+            url: "sales_reps",
         }
 
-
-        function actionApply(res){
+        console.log(configRequest)
+        function applyData(res){
             console.log(res);
         }
 
-        httpRequest(configRequest, actionApply);
+        httpRequest(configRequest, applyData);
 
     },[])
 

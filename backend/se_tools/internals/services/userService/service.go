@@ -3,6 +3,7 @@ package userservice
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"se_tools/internals/models/appUser"
@@ -32,6 +33,10 @@ func (s *Service) CheckEmail(ctx context.Context, db *mongo.Database, email stri
 
 	return count > 0, nil
 
+}
+
+func (s *Service) FilterId(id primitive.ObjectID) bson.M {
+	return bson.M{"_id": id}
 }
 
 func (s *Service) FilterPublicId(publicId string) bson.M {

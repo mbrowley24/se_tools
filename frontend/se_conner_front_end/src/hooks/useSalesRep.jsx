@@ -4,7 +4,7 @@ import useGeneral from './useGeneral.jsx'
 function useSalesRep() {
 
     const {emailValidation, nameInputValidation, nameValidation, phoneInput, phoneNumberFormat,
-           phoneNumberValidation, quotaInput, quotaValidation} = useGeneral()
+           phoneNumberValidation, quotaInput, quotaValidation, removePhoneFormat, removeQuotaFormat} = useGeneral()
 
     const FIELDS ={
         value: "value",
@@ -43,7 +43,8 @@ function useSalesRep() {
             email: "",
             phone: "",
             role: "",
-            quota: "0.00"
+            quota: "0.00",
+            CSRF: "",
         },
         roles: [],
         sales_reps :[],
@@ -61,9 +62,10 @@ function useSalesRep() {
 
             case "first_name":
 
+                console.log(action.payload)
                 if(nameInputValidation(action.payload)){
 
-                    data.sales_reps.first_name = action.payload;
+                    data.sales_rep.first_name = action.payload;
 
                 }
 
@@ -74,7 +76,7 @@ function useSalesRep() {
             case 'last_name':
 
                 if(nameInputValidation(action.payload)){
-                    data.sales_reps.last_name = action.payload;
+                    data.sales_rep.last_name = action.payload;
                 }
 
                 data.errors = {...checkForErrors(data)}
@@ -83,7 +85,7 @@ function useSalesRep() {
 
             case 'email':
 
-                data.sales_reps.email = action.payload;
+                data.sales_rep.email = action.payload;
 
                 data.errors = {...checkForErrors(data)}
 
@@ -93,7 +95,7 @@ function useSalesRep() {
 
                 if(phoneInput(action.payload)){
 
-                    data.sales_reps.phone = phoneNumberFormat(action.payload);
+                    data.sales_rep.phone = phoneNumberFormat(action.payload);
                 }
 
 
@@ -107,8 +109,11 @@ function useSalesRep() {
 
                 if(roles_filter.length === 1){
 
-                    data.sales_reps.role = action.payload;
+                    data.sales_rep.role = action.payload;
 
+                }else if(action.payload.length === 0){
+
+                    data.sales_rep.role = action.payload;
                 }
 
                 data.errors = {...checkForErrors(data)}
@@ -116,24 +121,31 @@ function useSalesRep() {
                 return data;
 
             case 'quota':
-                console.log(action.payload)
-                console.log(quotaValidation(action.payload))
+
                 if(quotaValidation(action.payload)){
 
                     data.sales_rep.quota = quotaInput(action.payload)
 
                 }
 
+
                 data.errors = {...checkForErrors(data)}
+
 
                 return data;
 
             case 'roles':
 
-                console.log(action.payload)
                 data.roles = [...action.payload];
 
-                console.log(data)
+                data.errors = {...checkForErrors(data)}
+                return data;
+
+            case 'csrf':
+
+                console.log(action.payload)
+                data.sales_rep.csrf = action.payload.csrf;
+
                 return data;
 
             default:
@@ -269,9 +281,22 @@ function useSalesRep() {
             
         return errors;
     }
+
+
+    function normalizeData(data){
+
+        data.first_name = data.first_name.toLowerCase();
+        data.last_name = data.last_name.toLowerCase();
+        data.email = data.email.toLowerCase();
+        data.phone = removePhoneFormat(data.phone)
+        data.quota = removeQuotaFormat(data.quota)
+
+        return data;
+    }
     
 
     return({
+        normalizeData,
         salesRepInitialState,
         salesRepReducer,
     })

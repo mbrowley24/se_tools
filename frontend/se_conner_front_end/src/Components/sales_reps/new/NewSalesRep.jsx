@@ -7,33 +7,70 @@ import '../../../css/form/form_med.css'
 
 
 
+
 function NewSalesRep({}) {
     const {httpRequest} = useHttp()
-    const {salesRepInitialState, salesRepReducer} = useSalesRep();
+    const {normalizeData, salesRepInitialState, salesRepReducer} = useSalesRep();
     const [state, dispatch] = useReducer(salesRepReducer, salesRepInitialState);
 
-    useEffect(()=>{
+    // useEffect(()=>{
+    //
+    //     const configRequest = {
+    //         method: "GET",
+    //         url: 'sales_roles',
+    //     }
+    //
+    //     function applyData(res){
+    //         console.log(res)
+    //         dispatch({type: 'roles',  payload: res.data.roles})
+    //     }
+    //
+    //     httpRequest(configRequest, applyData);
+    //
+    // },[])
+
+    // useEffect(() => {
+    //
+    //     const configRequest = {
+    //         method: "GET",
+    //         url: 'csrf_token',
+    //     }
+    //
+    //     function applyData(res){
+    //
+    //         console.log(res)
+    //         dispatch({type: 'csrf', payload : res.data})
+    //     }
+    //
+    //     httpRequest(configRequest, applyData);
+    // })
+
+    console.log(state.sales_rep)
+
+    function submit(e){
+        e.preventDefault()
 
         const configRequest = {
-            method: "GET",
-            url: 'sales_roles',
+            url : 'sales_roles',
+            method: "POST",
+            data: normalizeData(state.sales_rep)
         }
 
         function applyData(res){
+
             console.log(res)
-            dispatch({type: 'roles',  payload: res.data.roles})
         }
 
-        httpRequest(configRequest, applyData);
+        httpRequest(configRequest, applyData)
 
-    },[])
+    }
 
     return (
         <div>
             <Header/>
             <div className={'form_container_body'}>
                 <h1>New Sales Rep</h1>
-                <SalesRepForm state={state} dispatch={dispatch}/>
+                <SalesRepForm submit={submit} state={state} dispatch={dispatch}/>
             </div>
         </div>
     )

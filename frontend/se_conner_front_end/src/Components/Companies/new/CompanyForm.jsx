@@ -51,7 +51,7 @@ function CompanyForm({submit, state, dispatch }) {
                 <label htmlFor="">Sales Rep</label>
                 <select name="sales_rep"
                     value={state.sales_rep}
-                    onChange={(e)=> inputChange(e)}>
+                    onChange={(e)=> inputChange(e)}
                 >
                     <option value="">Select Sales Rep</option>
                     {

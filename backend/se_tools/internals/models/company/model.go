@@ -28,22 +28,11 @@ type Model struct {
 
 func (m *Model) ToDTO() Summary {
 
-	var coverageSe []string
-
-	for _, coverage := range m.CoverageSe {
-
-		name := fmt.Sprintf("%ss %s", coverage.FirstName, coverage.LastName)
-		coverageSe = append(coverageSe, name)
-	}
-
 	return Summary{
-		ID:            m.PublicId,
-		Name:          m.Name,
-		Industry:      m.Industry.Name,
-		SalesEngineer: fmt.Sprintf("%s %s", m.SalesEngineer.FirstName, m.SalesEngineer.LastName),
-		CoverageSe:    coverageSe,
-		SalesRep:      fmt.Sprintf("%s %s", m.SalesRep.FirstName, m.SalesRep.LastName),
-		CreatedBy:     fmt.Sprintf("%s %s", m.CreatedBy.FirstName, m.CreatedBy.LastName),
-		UpdatedAt:     m.UpdatedAt,
+		ID:        m.PublicId,
+		Name:      m.Name,
+		Industry:  m.Industry.Name,
+		SalesRep:  fmt.Sprintf("%s %s", m.SalesRep.FirstName, m.SalesRep.LastName),
+		UpdatedAt: m.UpdatedAt,
 	}
 }

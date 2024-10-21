@@ -19,10 +19,10 @@ function SalesRepForm({submit, state, dispatch}) {
                 <label htmlFor="">First Name</label>
                 <input type="text"
                        name={"first_name"}
-                       onChange={(e)=>inputChange}
+                       onChange={(e)=>inputChange(e)}
                        value={state.sales_rep.first_name}
                 />
-                <p>{state.errors['first_name']? state.errors['first_name'] : ""}</p>
+                <p className={'error'}>{state.errors['first_name']? state.errors['first_name'] : ""}</p>
             </div>
             <div>
                 <label htmlFor="">Last Name</label>
@@ -31,7 +31,7 @@ function SalesRepForm({submit, state, dispatch}) {
                        onChange={(e) =>inputChange(e)}
                        value={state.sales_rep.last_name}
                 />
-                <p>{state.errors['last_name']? state.errors['last_name'] : ""}</p>
+                <p className={'error'}>{state.errors['last_name']? state.errors['last_name'] : ""}</p>
             </div>
             <div>
                 <label htmlFor="">Email Address</label>
@@ -40,16 +40,17 @@ function SalesRepForm({submit, state, dispatch}) {
                         onChange={(e)=>inputChange(e)}
                         value={state.sales_rep.email}
                 />
-                <p>{state.sales_rep['email']? state.sales_rep['email'] : ''}</p>
+                <p className={'error'}>{state.errors['email']? state.errors['email'] : ''}</p>
             </div>
             <div>
                 <label htmlFor="">Phone</label>
                 <input type="text"
                        name="phone"
+
                        onChange={(e)=>inputChange(e)}
                        value={state.sales_rep.phone}
                 />
-                <p>{state.sales_rep['phone']? state.sales_rep['phone'] : ""}</p>
+                <p className={'error'}>{state.errors['phone']? state.errors['phone'] : ""}</p>
             </div>
             <div>
                 <label htmlFor="">Roles</label>
@@ -67,19 +68,22 @@ function SalesRepForm({submit, state, dispatch}) {
                     }
 
                 </select>
-                <p>{state.errors['role']? state.errors['role'] : ''}</p>
+                <p className={'error'}>{state.errors['role']? state.errors['role'] : ''}</p>
             </div>
             <div>
+
                 <label htmlFor="">Quota</label>
-                <input type="text"
+                <input type="string"
                        name="quota"
-                       onChange={(e)=>inputChange(e)}
                        value={state.sales_rep.quota}
+                       onChange={(e)=>inputChange(e)}
                 />
-                <p>{state.errors['quota']? state.errors['quota'] : ''}</p>
+                <p className={'error'}>{state.errors['quota']? state.errors['quota'] : ''}</p>
             </div>
             <div>
-                <button>Save</button>
+                <button
+                    disabled={Object.keys(state.errors).length > 0}
+                >Save</button>
             </div>
         </form>
     )

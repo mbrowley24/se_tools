@@ -3,6 +3,7 @@ package login
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
@@ -43,15 +44,21 @@ func (l *Login) PostLoginHandler(ctx context.Context, w http.ResponseWriter, r *
 
 	csrfToken := l.utils.RandomStringGenerator(90)
 
+	subjectValue := fmt.Sprintf("%s/%s;%s;%s;%s",
+		user.FirstName,
+		user.LastName,
+		user.ID.Hex(),
+		user.Email,
+		user.Offset)
+
 	claims := jwt.Claims{
 
-		Subject:   user.PublicId,
+		Subject:   subjectValue,
 		Issued:    time.Now(),
 		NotBefore: time.Now(),
 		Expires:   time.Now().Add(8 * time.Hour),
 		Issuer:    "yeoman.net",
 		Audiences: []string{"appointment"},
-		CSRF:      csrfToken,
 	}
 
 	filter := bson.M{"_id": user.ID}

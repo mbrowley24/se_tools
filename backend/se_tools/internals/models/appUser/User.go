@@ -32,11 +32,7 @@ type User struct {
 
 func (u *User) Embedded() Embedded {
 	return Embedded{
-		Id:        u.ID,
-		PublicId:  u.PublicId,
-		FirstName: u.FirstName,
-		LastName:  u.LastName,
-		Email:     u.Email,
-		Username:  u.Username,
+		Id:       u.ID,
+		PublicId: u.PublicId,
 	}
 }

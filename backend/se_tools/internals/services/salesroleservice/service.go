@@ -111,3 +111,13 @@ func (s *Service) GetRoles(ctx context.Context, filter bson.M, opts *options.Fin
 
 	return result, err
 }
+
+func (s *Service) FilterPublicId(publicId string) bson.M {
+	return bson.M{"public_id": publicId}
+}
+
+func (s *Service) FindRole(ctx context.Context, filter bson.M) *mongo.SingleResult {
+
+	return s.collection.FindOne(ctx, filter)
+
+}

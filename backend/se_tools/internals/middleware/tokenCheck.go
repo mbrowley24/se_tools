@@ -3,10 +3,8 @@ package middleware
 import (
 	"context"
 	"errors"
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"se_tools/internals/jwt"
-	"se_tools/internals/models/appUser"
 	"se_tools/utils"
 	"strings"
 	"time"
@@ -19,7 +17,7 @@ type contextKey string
 type Middleware struct {
 	utils      *utils.Utilities
 	collection *mongo.Collection
-	contextKey contextKey
+	ContextKey contextKey
 }
 
 func Start(collection *mongo.Collection, utils *utils.Utilities, params string) *Middleware {
@@ -27,7 +25,7 @@ func Start(collection *mongo.Collection, utils *utils.Utilities, params string) 
 	return &Middleware{
 		utils:      utils,
 		collection: collection,
-		contextKey: contextKey(params),
+		ContextKey: contextKey(params),
 	}
 }
 
@@ -50,9 +48,6 @@ func (m *Middleware) CheckToken(next http.HandlerFunc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		//w.Header().Add("Vary", "Authorization")
-
-		ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
-		defer cancel()
 
 		cookie, err := r.Cookie("yeoman_token")
 
@@ -118,25 +113,16 @@ func (m *Middleware) CheckToken(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		var user appUser.User
-		err = m.collection.FindOne(ctx, bson.M{"public_id": jwtParser.Subject}).Decode(&user)
+		subjectList := strings.Split(jwtParser.Subject, ";")
 
-		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
+		contextMap := make(map[string]string)
 
-		if strings.Compare(user.CsrfToken, jwtParser.CSRF) != 0 {
+		contextMap["user_id"] = subjectList[1]
+		contextMap["user_name"] = subjectList[0]
+		contextMap["email"] = subjectList[2]
+		contextMap["time_zone"] = subjectList[3]
 
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-
-		contextMap := make(map[string]interface{})
-		contextMap["user_id"] = user.ID.Hex()
-		contextMap["time_zone"] = user.Offset
-
-		contextWithValue := context.WithValue(r.Context(), m.contextKey, contextMap)
+		contextWithValue := context.WithValue(r.Context(), m.ContextKey, contextMap)
 
 		next(w, r.WithContext(contextWithValue))
 	}
