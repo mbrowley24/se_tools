@@ -85,6 +85,17 @@ func (u *Utilities) NotesDescription(text string) error {
 
 func (u *Utilities) NameCheck(name string) error {
 
+	re := regexp.MustCompile(`^[a-zA-Z0-9.\\\s\-]{2,75}$`)
+
+	if !re.MatchString(name) {
+		return errors.New("invalid name")
+	}
+
+	return nil
+}
+
+func (u *Utilities) CompanyNameCheck(name string) error {
+
 	re := regexp.MustCompile(`^[a-zA-Z0-9.\\\s\-&]{2,75}$`)
 
 	if !re.MatchString(name) {

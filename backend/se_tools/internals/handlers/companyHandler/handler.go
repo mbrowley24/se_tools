@@ -61,5 +61,8 @@ func (h *Handler) newCompanies(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		h.companyFormData(ctx, w, r)
+
+	case http.MethodPost:
+		h.newCompany(ctx, w, r)
 	}
 }

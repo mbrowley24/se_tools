@@ -3,6 +3,7 @@ package salesrepservice
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"se_tools/internals/models/salesrep"
@@ -22,6 +23,10 @@ func Start(collection *mongo.Collection, utils *utils.Utilities) *Service {
 	}
 }
 
+func (s *Service) FilterSalesEngineerId(id primitive.ObjectID) bson.M {
+
+	return bson.M{"sales_engineer_id": id}
+}
 func (s *Service) FilterPublicId(publicId string) bson.M {
 
 	return bson.M{"public_id": publicId}
@@ -81,17 +86,36 @@ func (s *Service) InsertOne(ctx context.Context,
 	return inserted, nil
 }
 
-func (s *Service) PipelineFilterFindSalesRepsJoinSalesEngineer(matchFilter bson.D) mongo.Pipeline {
+func (s *Service) FilterDTO(matchFilter bson.D) mongo.Pipeline {
 
 	return mongo.Pipeline{
-		{{"$match", matchFilter}}, // Filter for specific users
-		{{"$lookup", bson.D{
-			{"from", "users"},
-			{"localField", "user.user_id"}, // Dot notation for embedded field
-			{"foreignField", "user_id"},
-			{"as", "user_info"},
-		}}},
-		{{"$unwind", "$user_info"}},
+		{
+			{"$match", matchFilter},
+		},
+		{
+			{
+				"$lookup", bson.D{
+					{"from", "users"},
+					{"localField", "sales_engineer._id"},
+					{"foreignField", "_id"},
+					{"as", "sales_engineer_info"}},
+			},
+			{
+				Key: "$lookup", Value: bson.D{
+					{Key: "from", Value: "users"},
+					{Key: "localField", Value: "coverage_se._id"},
+					{Key: "foreignField", Value: "_id"},
+					{Key: "as", Value: "coverage_se_info"}},
+			},
+			{
+				Key: "$lookup", Value: bson.D{
+					{Key: "from", Value: "roles"},
+					{Key: "localField", Value: "role._id"},
+					{Key: "foreignField", Value: "_id"},
+					{Key: "as", Value: "coverage_se_info"}},
+			},
+		},
+		{{"$unwind", "$coverage_se_info"}},
 	}
 }
 
@@ -100,15 +124,14 @@ func (s *Service) PipeLineFilterJoinSalesEngineers() mongo.Pipeline {
 	return mongo.Pipeline{
 		{{"$lookup", bson.D{
 			{"from", "users"},                    // The collection to join
-			{"localField", "sales_engineer._id"}, // The field from 'orders'
-			{"foreignField", "_id"},              // The field from 'users'
+			{"localField", "sales_engineer._id"}, // The field from 'salesRep'
+			{"foreignField", "_id"},              // The field from 'user aka sales eng'
 			{"as", "sales_engineer_info"},        // Output array field
 		}}},
-		{{"$unwind", "$sales_engineer_info"}},
 	}
 }
 
-func (s *Service) Pipeline(ctx context.Context, filter bson.M, opts *options.AggregateOptions) (*mongo.Cursor, error) {
+func (s *Service) Pipeline(ctx context.Context, filter mongo.Pipeline, opts *options.AggregateOptions) (*mongo.Cursor, error) {
 
 	cursor, err := s.collection.Aggregate(ctx, filter, opts)
 

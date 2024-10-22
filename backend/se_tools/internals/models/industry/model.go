@@ -1,6 +1,7 @@
 package industry
 
 import (
+	"se_tools/internals/models/embedded"
 	optionsdto "se_tools/internals/models/optionsDto"
 	"time"
 
@@ -20,5 +21,12 @@ func (m *Model) ToOption() optionsdto.Option {
 	return optionsdto.Option{
 		Value: m.PublicId,
 		Name:  m.Name,
+	}
+}
+
+func (m *Model) ToEmbedded() embedded.Model {
+	return embedded.Model{
+		Id:       m.ID,
+		PublicId: m.PublicId,
 	}
 }

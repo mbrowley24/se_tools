@@ -26,7 +26,7 @@
     margin-right: auto;
     background-color: rgb(255, 255, 255);
 }
-.form_container_body form{
+.form_container_body_sm form{
     flex-direction: column;
     align-items: center;
     justify-content: center;

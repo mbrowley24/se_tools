@@ -33,7 +33,7 @@ label{
     color: black;
     background-color: rgb(210, 210, 210);
 }
-.form_container_body form{
+.form_container_body_med form{
     flex-direction: column;
     align-items: center;
     justify-content: center;

@@ -4,7 +4,7 @@ import error from "eslint-plugin-react/lib/util/error.js";
 
 
 function useCompany() {
-    const {nameInputValidation, nameValidation, descriptionValidation} = useGeneral();
+    const {companyNameValidation, companyNameInputValidation, descriptionValidation} = useGeneral();
 
 
     function checkForErrors(data){
@@ -14,7 +14,7 @@ function useCompany() {
 
             errors['name'] = 'required';
 
-        }else if(!nameValidation(data.name)){
+        }else if(!companyNameValidation(data.name)){
             
             errors['name'] = '- % . only special character allowed';
 
@@ -41,15 +41,12 @@ function useCompany() {
             delete errors['industry']
         }
 
-        const sales_rep = data.sales_rep? [...data.sales_rep] : [];
-        const sales_rep_filter = sales_rep.filter((sales_rep) => sales_rep.value === data.company.sales_rep)
+        const sales_reps = data.sales_reps? [...data.sales_reps] : [];
+        const sales_rep_filter = sales_reps.filter((sales_rep) => sales_rep.value === data.company.sales_rep)
 
-        if(sales_rep.length === 0){
+        if(sales_rep_filter.length === 0){
             errors['sales_rep'] = 'required';
 
-        }else if (sales_rep_filter.length === 0){
-
-            errors['sales_rep'] = "invalid"
         }else{
 
             delete errors['sales_rep']
@@ -67,6 +64,7 @@ function useCompany() {
 
             delete errors['notes']
         }
+
 
         return errors;
     }
@@ -92,6 +90,12 @@ function useCompany() {
             industry: '',
             sales_rep: '',
             notes : '',
+            csrf:'',
+        },
+        page:{
+            companies :[],
+            page: 0,
+            limit: 1
         },
         industries: [],
         sales_reps: [],
@@ -107,7 +111,7 @@ function useCompany() {
                 
                 const name = action.payload;
 
-                if(nameInputValidation(name.trim())){
+                if(companyNameInputValidation(name.trim())){
 
                     data.company.name = name;
                 }
@@ -145,12 +149,15 @@ function useCompany() {
                     return data;
 
             case 'form_data':
-                console.log(action.payload)
+
                 const industryList = action.payload.form_data.industries? [...action.payload.form_data.industries] : [];
                 const sales_repList = action.payload.form_data.sales_reps? [...action.payload.form_data.sales_reps] : [];
                 data.industries = [...industryList];
                 data.sales_reps = [...sales_repList];
+                data.company.csrf = action.payload.csrf;
+
                 data.errors = {...checkForErrors(data)};
+                console.log(data)
                 return data;
 
             case 'notes':
@@ -172,6 +179,19 @@ function useCompany() {
                 data.updated = setupData.updated;
                 data.errors = {...checkForErrors(data)};
                 return data;
+
+            case 'page':
+                console.log(action.payload.data)
+
+                data.page = {
+                    companies :[...action.payload.data.companies],
+                    num: action.payload.data.page,
+                    limit: action.payload.data.limit,
+                }
+
+                return data
+
+
             default:
                 return state;
         }

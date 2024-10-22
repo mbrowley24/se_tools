@@ -1,4 +1,5 @@
 import React, {useEffect, useReducer} from 'react';
+import {useNavigate} from 'react-router-dom';
 import useCompany from "../../../hooks/useCompany.jsx";
 import useHttp from '../../../hooks/useHttp.jsx';
 import Header from "../../header/Header.jsx";
@@ -10,6 +11,7 @@ import '../../../css/form/form.css'
 
 function NewCompany({}) {
     const {httpRequest} = useHttp()
+    const navigate = useNavigate();
     const {companyReducer, initialCompanyState} = useCompany()
     const [state, dispatch]  = useReducer(companyReducer, initialCompanyState);
 
@@ -23,7 +25,7 @@ function NewCompany({}) {
         }
 
         function applyData(res){
-            console.log(res)
+
             dispatch({type: 'form_data', payload: res.data})
         }
 
@@ -42,7 +44,11 @@ function NewCompany({}) {
         }
 
         function applyData(res){
-            console.log(res)
+
+            if(res.status === 200){
+                navigate('/companies')
+
+            }
         }
 
         httpRequest(configRequest, applyData);

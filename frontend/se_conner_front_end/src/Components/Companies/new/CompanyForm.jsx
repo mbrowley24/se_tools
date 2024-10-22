@@ -3,7 +3,7 @@ import React, {useMemo} from 'react';
 
 
 function CompanyForm({submit, state, dispatch }) {
-    console.log(state);
+
     const valid = useMemo(()=> Object.keys(state.errors).length === 0, [state]);
 
 
@@ -78,7 +78,7 @@ function CompanyForm({submit, state, dispatch }) {
             </div>
             <div>
                 <button
-                    disabled={!valid}
+                    disabled={Object.keys(state.errors).length > 0}
                 >Save</button>
             </div>
         </form>

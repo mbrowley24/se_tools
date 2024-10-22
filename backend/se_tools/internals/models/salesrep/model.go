@@ -2,9 +2,8 @@ package salesrep
 
 import (
 	"fmt"
-	"se_tools/internals/models/appUser"
+	"se_tools/internals/models/embedded"
 	optionsdto "se_tools/internals/models/optionsDto"
-	"se_tools/internals/models/salesroles"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,9 +16,9 @@ type Model struct {
 	LastName      string             `bson:"last_name"`
 	Email         string             `bson:"email"`
 	Phone         string             `bson:"phone"`
-	SalesEngineer appUser.Embedded   `bson:"sales_engineer"`
-	CoverageSE    []appUser.Embedded `bson:"coverage_se"`
-	Role          salesroles.Model   `bson:"role"`
+	SalesEngineer embedded.Model     `bson:"sales_engineer"`
+	CoverageSE    []embedded.Model   `bson:"coverage_se"`
+	Role          embedded.Model     `bson:"role"`
 	Quota         int64              `bson:"quota"`
 	Version       int                `bson:"v"`
 	CreatedAt     time.Time          `bson:"created_at"`
@@ -36,30 +35,11 @@ func (m *Model) ModelToOptions() optionsdto.Option {
 	}
 }
 
-func (m *Model) ModelToEmbedded() Embedded {
+func (m *Model) ModelToEmbedded() embedded.Model {
 
-	return Embedded{
-		ID:        m.ID,
-		PublicId:  m.PublicId,
-		FirstName: m.FirstName,
-		LastName:  m.LastName,
-		Email:     m.Email,
-		Role:      m.Role,
-		Quota:     m.Quota,
+	return embedded.Model{
+		Id:       m.ID,
+		PublicId: m.PublicId,
 	}
 
-}
-
-func (m *Model) ModelToSummary(firstName, lastName string) Summary {
-	return Summary{
-		Id:            m.PublicId,
-		FirstName:     m.FirstName,
-		LastName:      m.LastName,
-		Email:         m.Email,
-		Phone:         m.Phone,
-		SalesEngineer: fmt.Sprintf("%s %s", firstName, lastName),
-		Role:          m.Role.Name,
-		Quota:         m.Quota,
-		UpdateAt:      m.UpdateAt,
-	}
 }

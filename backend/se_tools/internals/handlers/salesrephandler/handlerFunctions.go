@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"net/http"
 	"se_tools/internals/models/appUser"
+	"se_tools/internals/models/embedded"
 	"se_tools/internals/models/salesrep"
 	"strconv"
 	"strings"
@@ -17,8 +17,8 @@ import (
 // GetSalesReps get a list of sales reps but Users id
 func (h *Handler) getSalesReps(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
-	var salesReps []salesrep.Model
-	var salesRepDTO []salesrep.Summary
+	var salesRepDTOs []salesrep.DTO
+	var salesRepSummaries []salesrep.Summary
 
 	//get data from context in the form of a map
 	contextMap := r.Context().Value(h.middleware.ContextKey).(map[string]string)
@@ -33,18 +33,18 @@ func (h *Handler) getSalesReps(ctx context.Context, w http.ResponseWriter, r *ht
 	}
 
 	//Query filter for sales reps that are assigned to the SE or match on of the SE that are covering sales rep
-	filter := bson.M{"$or": []bson.M{
-		{"sales_engineer._id": userObjectId},
-		{"coverage_se._id": bson.M{
-			"$elemMatch": bson.M{
-				"$eq": userObjectId,
-			},
+	filter := bson.D{
+		{"$or", bson.A{
+			bson.D{{"sales_engineer._id", userObjectId}},
+			bson.D{{"coverage_se._id", bson.D{
+				{"$elemMatch", bson.D{
+					{"$eq", userObjectId},
+				}},
+			}}},
 		}},
-	}}
-
-	opts := options.Find().SetSort(bson.D{{Key: "first_name", Value: 1}, {Key: "last_name", Value: 1}})
-
-	results, err := h.services.SalesRepService.FindSalesReps(ctx, filter, opts)
+	}
+	pipelineFilter := h.services.SalesRepService.FilterDTO(filter)
+	results, err := h.services.SalesRepService.Pipeline(ctx, pipelineFilter, nil)
 
 	if err != nil {
 
@@ -53,28 +53,21 @@ func (h *Handler) getSalesReps(ctx context.Context, w http.ResponseWriter, r *ht
 	}
 
 	//decode sales reh. Place sales reps in a DTO before sending to front-end
-	if err = results.All(ctx, &salesReps); err != nil {
+	if err = results.All(ctx, &salesRepDTOs); err != nil {
+
 		w.WriteHeader(http.StatusInternalServerError)
-	}
-
-	salesEngineerName, ok := contextMap["user_name"]
-
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	salesEngineerNameSlice := strings.Split(salesEngineerName, "/")
-
 	//convert sales reps to DTO for front-end use
-	for _, salesRep := range salesReps {
+	for _, salesRep := range salesRepDTOs {
 
-		salesRepDTO = append(salesRepDTO, salesRep.ModelToSummary(salesEngineerNameSlice[0], salesEngineerNameSlice[1]))
+		salesRepSummaries = append(salesRepSummaries, salesRep.DTOToSummary())
 	}
 
 	//return data to user. The data at this point should be converted to DTO to remove sensitive data and primary key
 	//info from the database
-	if err = h.utils.WriteJSON(w, http.StatusOK, salesRepDTO, "sales_reps"); err != nil {
+	if err = h.utils.WriteJSON(w, http.StatusOK, salesRepSummaries, "sales_reps"); err != nil {
 		return
 	}
 }
@@ -95,7 +88,7 @@ func (h *Handler) postSalesRep(ctx context.Context, w http.ResponseWriter, r *ht
 	}
 
 	salesRepModel.Version = 1
-	salesRepModel.CoverageSE = []appUser.Embedded{}
+	salesRepModel.CoverageSE = []embedded.Model{}
 
 	userId, err := primitive.ObjectIDFromHex(params["user_id"])
 

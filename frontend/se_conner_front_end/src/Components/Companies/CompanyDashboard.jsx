@@ -1,29 +1,28 @@
-import {useEffect, useState} from "react";
+import {useEffect, useReducer} from "react";
 import CompanyTableHead from "./CompanyTableHead.jsx";
 import CompanyTableBody from "./CompanyTableBody.jsx";
 import useHttp from "../../hooks/useHttp.jsx";
+import useCompany from "../../hooks/useCompany.jsx";
 import Header from "../header/Header.jsx";
 import {Link} from 'react-router-dom';
 
 
 function CompanyDashboard({}) {
     const {httpRequest} = useHttp();
-    const [companyData, setCompanyData] = useState({
-        page: 0,
-        limit: 10,
-        companies :[]
-    });
+    const {companyReducer, initialCompanyState} = useCompany();
+    const [state, dispatch] = useReducer(companyReducer, initialCompanyState)
 
 
     useEffect(()=>{
 
         const requestConfig = {
             method: "GET",
-            url: `companies?page=${companyData.page}&limit=${companyData.limit}`
+            url: `companies?page=${state.page.num}&limit=${state.page.limit}`
         }
 
         function applyData(res){
 
+            dispatch({type: "page", payload: res.data})
         }
 
         httpRequest(requestConfig, applyData);
@@ -40,7 +39,7 @@ function CompanyDashboard({}) {
             </div>
             <table>
                 <CompanyTableHead/>
-                <CompanyTableBody companies={companyData.companies}/>
+                <CompanyTableBody companies={state.page.companies}/>
             </table>
         </div>
 
