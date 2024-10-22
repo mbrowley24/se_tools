@@ -40,12 +40,12 @@ func (s *Service) FilterDTO(matchFilter bson.D, limit, skip int, sort string) mo
 					{"from", "users"},                    // The collection to join
 					{"localField", "sales_engineer._id"}, // The field from 'companies'
 					{"foreignField", "_id"},              // The field from 'user aka sales eng'
-					{"as", "sales_engineer_info"}},       // Output array field
+					{"as", "sales_engineer"}},            // Output array field
 			},
 		},
 		{
 			{Key: "$unwind", Value: bson.D{
-				{Key: "path", Value: "$sales_engineer_info"},
+				{Key: "path", Value: "$sales_engineer"},
 				{Key: "preserveNullAndEmptyArrays", Value: true},
 			}},
 		},
@@ -55,7 +55,7 @@ func (s *Service) FilterDTO(matchFilter bson.D, limit, skip int, sort string) mo
 					{"from", "users"},
 					{"localField", "coverage_se._id"},
 					{"foreignField", "_id"},
-					{"as", "coverage_se_info"}},
+					{"as", "coverage_se"}},
 			},
 		},
 		{
@@ -64,7 +64,7 @@ func (s *Service) FilterDTO(matchFilter bson.D, limit, skip int, sort string) mo
 					{"from", "users"},
 					{"localField", "created_by._id"},
 					{"foreignField", "_id"},
-					{"as", "created_by_info"}},
+					{"as", "created_by"}},
 			},
 		},
 		{
@@ -73,7 +73,13 @@ func (s *Service) FilterDTO(matchFilter bson.D, limit, skip int, sort string) mo
 					{"from", "sales_reps"},
 					{"localField", "sales_rep._id"},
 					{"foreignField", "_id"},
-					{"as", "sales_rep_info"}},
+					{"as", "sales_rep"}},
+			},
+		},
+		{
+			{Key: "$unwind", Value: bson.D{
+				{Key: "path", Value: "$sales_rep"},
+				{Key: "preserveNullAndEmptyArrays", Value: true}},
 			},
 		},
 		{
@@ -89,6 +95,12 @@ func (s *Service) FilterDTO(matchFilter bson.D, limit, skip int, sort string) mo
 		{
 			{Key: "$unwind", Value: bson.D{
 				{Key: "path", Value: "$sales_reps"},
+				{Key: "preserveNullAndEmptyArrays", Value: true}},
+			},
+		},
+		{
+			{Key: "$unwind", Value: bson.D{
+				{Key: "path", Value: "$created_by"},
 				{Key: "preserveNullAndEmptyArrays", Value: true}},
 			},
 		},

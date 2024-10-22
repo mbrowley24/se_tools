@@ -7,6 +7,7 @@ import (
 	"se_tools/internals/models/appUser"
 	"se_tools/internals/models/industry"
 	optionsdto "se_tools/internals/models/optionsDto"
+	"se_tools/internals/models/salesrep"
 	"time"
 )
 
@@ -20,7 +21,7 @@ type DTO struct {
 	Industry      industry.Model     `bson:"industry"`
 	Notes         string             `bson:"notes"`
 	SalesEngineer appUser.User       `bson:"sales_engineer"`
-	SalesRep      appUser.User       `bson:"sales_rep"`
+	SalesRep      salesrep.Model     `bson:"sales_rep"`
 	CreatedAt     time.Time          `bson:"created_at"`
 	UpdatedAt     time.Time          `bson:"updated_at"`
 }

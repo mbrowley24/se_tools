@@ -49,7 +49,7 @@ func (h *Handler) getCompanies(ctx context.Context, w http.ResponseWriter, r *ht
 	filter := bson.D{{Key: "sales_engineer._id", Value: userObjId}}
 	filterCompanyPipeline := h.services.CompanyService.FilterDTO(filter, limit, page, "name")
 
-	if results, err := h.services.CompanyService.Pipeline(ctx, filterCompanyPipeline, nil); err != nil {
+	if cursor, err := h.services.CompanyService.Pipeline(ctx, filterCompanyPipeline, nil); err != nil {
 		println(err.Error())
 		println("marker2")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -57,19 +57,20 @@ func (h *Handler) getCompanies(ctx context.Context, w http.ResponseWriter, r *ht
 
 	} else {
 
-		if err := results.All(ctx, &companies); err != nil {
+		if err := cursor.All(ctx, &companies); err != nil {
+			println(err.Error())
 			println("marker1")
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	}
 
-	println(len(companies))
 	var summaries []company.Summary
 
 	for _, dto := range companies {
 		println("this")
 		summaries = append(summaries, dto.ToSummary())
+		//summaries = append(summaries, dto)
 	}
 
 	dataMap := make(map[string]interface{})
