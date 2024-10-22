@@ -7,6 +7,7 @@ import CompanyDashboard from "./Components/Companies/CompanyDashboard.jsx";
 import NewCompany from "./Components/Companies/new/NewCompany.jsx";
 import SalesReps from "./Components/sales_reps/SalesReps.jsx";
 import NewSalesRep from "./Components/sales_reps/new/NewSalesRep.jsx";
+import Dashboard from "./Components/dashboards/Dashboard.jsx";
 
 
 
@@ -19,14 +20,20 @@ function App() {
           <Routes>
             <Route path="/login" element={<LoginView/>} />
             <Route path='/about' element={<About/>} />
-            <Route path={'dashboard'} element={<AppointmentDashboard/>}/>
+            <Route path={'dashboard'} element={<Dashboard/>}/>
+            <Route path={'appointments'}>
+              <Route path={''} element={<AppointmentDashboard/>}/>
+            </Route>
             <Route path={'sales_reps'}>
               <Route path={''} element={<SalesReps/>}/>
               <Route path={'new'} element={<NewSalesRep/>}/>
             </Route>
             <Route path={'companies'}>
               <Route path={''} element={<CompanyDashboard/>} />
-              <Route path={'new'} element={<NewCompany/>} />
+              <Route path={'new'} element={<NewCompany/>}/>
+              <Route path={':id/appointments'}>
+                <Route path={''} element={<AppointmentDashboard/>}/>
+              </Route>
             </Route>
           </Routes>
         </Router>

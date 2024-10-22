@@ -181,7 +181,6 @@ function useCompany() {
                 return data;
 
             case 'page':
-                console.log(action.payload.data)
 
                 data.page = {
                     companies :[...action.payload.data.companies],

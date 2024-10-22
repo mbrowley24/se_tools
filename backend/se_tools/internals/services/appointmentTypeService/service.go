@@ -1,4 +1,4 @@
-package productService
+package appointmenttypeservice
 
 import (
 	"bufio"
@@ -7,7 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"log"
 	"os"
-	"se_tools/internals/models/products"
+	"se_tools/internals/models/appointmentType"
 	"se_tools/utils"
 	"strings"
 	"time"
@@ -15,22 +15,22 @@ import (
 
 type Service struct {
 	collection *mongo.Collection
-	Utils      *utils.Utilities
+	utils      *utils.Utilities
 }
 
 func Start(collection *mongo.Collection, utils *utils.Utilities) *Service {
 
 	return &Service{
 		collection: collection,
-		Utils:      utils,
+		utils:      utils,
 	}
 }
 
 func (s *Service) Initialize() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-
-	file, err := os.Open("./configFiles/products.txt")
+	println(ctx)
+	file, err := os.Open("./configFiles/appointmentTypes.txt")
 
 	defer func(file *os.File) {
 
@@ -41,6 +41,7 @@ func (s *Service) Initialize() error {
 	}(file)
 
 	if err != nil {
+		println(err.Error())
 		return err
 	}
 
@@ -48,13 +49,11 @@ func (s *Service) Initialize() error {
 
 	for scanner.Scan() {
 
-		product := scanner.Text()
-
-		text := strings.Split(product, "/")
+		aptType := scanner.Text()
 
 		//count documents with name. If document count is greater than zero document exists
 		//continue to next iteration. This is a guard against duplicate entries
-		filter := bson.M{"name": text[0]}
+		filter := bson.M{"name": aptType}
 
 		count, err := s.collection.CountDocuments(ctx, filter)
 
@@ -69,7 +68,7 @@ func (s *Service) Initialize() error {
 		//Generate unique public ID. This ID is completely random and intended to be used by frontend
 		//Random number generator is seeded by the time. Count documents until pubIdCount is zero and
 		//publicId is unique in the collection
-		publicId := s.Utils.RandomStringGenerator(30)
+		publicId := s.utils.RandomStringGenerator(30)
 
 		for {
 
@@ -85,25 +84,23 @@ func (s *Service) Initialize() error {
 				break
 			}
 
-			publicId = s.Utils.RandomStringGenerator(30)
+			publicId = s.utils.RandomStringGenerator(30)
 		}
 
 		now := time.Now()
 
-		productModel := products.Model{
-			PublicId:    publicId,
-			Name:        strings.TrimSpace(text[0]),
-			Description: strings.TrimSpace(text[1]),
-			CreatedAt:   now,
-			UpdatedAt:   now,
+		appointmentTypeModel := appointmentType.Model{
+			PublicId:  publicId,
+			Name:      strings.TrimSpace(aptType),
+			CreatedAt: now,
+			UpdatedAt: now,
 		}
 
-		if _, err := s.collection.InsertOne(ctx, productModel); err != nil {
+		if _, err := s.collection.InsertOne(ctx, appointmentTypeModel, nil); err != nil {
 			return err
 		}
 
 	}
 
 	return nil
-
 }

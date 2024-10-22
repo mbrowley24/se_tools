@@ -28,6 +28,7 @@ func (h *Handler) getSalesReps(ctx context.Context, w http.ResponseWriter, r *ht
 	userObjectId, err := primitive.ObjectIDFromHex(userId)
 
 	if err != nil {
+		println("marker1")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -47,7 +48,8 @@ func (h *Handler) getSalesReps(ctx context.Context, w http.ResponseWriter, r *ht
 	results, err := h.services.SalesRepService.Pipeline(ctx, pipelineFilter, nil)
 
 	if err != nil {
-
+		println(err.Error())
+		println("marker2")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -55,6 +57,7 @@ func (h *Handler) getSalesReps(ctx context.Context, w http.ResponseWriter, r *ht
 	//decode sales reh. Place sales reps in a DTO before sending to front-end
 	if err = results.All(ctx, &salesRepDTOs); err != nil {
 
+		println("marker3")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

@@ -98,24 +98,48 @@ func (s *Service) FilterDTO(matchFilter bson.D) mongo.Pipeline {
 					{"from", "users"},
 					{"localField", "sales_engineer._id"},
 					{"foreignField", "_id"},
-					{"as", "sales_engineer_info"}},
+					{"as", "sales_engineer"}},
 			},
+		},
+		{
+			{
+				Key: "$unwind", Value: bson.D{
+					{Key: "path", Value: "$sales_engineer"},
+					{Key: "preserveNullAndEmptyArrays", Value: true}},
+			},
+		},
+		{
 			{
 				Key: "$lookup", Value: bson.D{
 					{Key: "from", Value: "users"},
 					{Key: "localField", Value: "coverage_se._id"},
 					{Key: "foreignField", Value: "_id"},
-					{Key: "as", Value: "coverage_se_info"}},
+					{Key: "as", Value: "coverage_se"}},
 			},
+		},
+		{
+			{
+				Key: "$unwind", Value: bson.D{
+					{Key: "path", Value: "$coverage_se"},
+					{Key: "preserveNullAndEmptyArrays", Value: true}},
+			},
+		},
+		{
 			{
 				Key: "$lookup", Value: bson.D{
 					{Key: "from", Value: "roles"},
 					{Key: "localField", Value: "role._id"},
 					{Key: "foreignField", Value: "_id"},
-					{Key: "as", Value: "coverage_se_info"}},
+					{Key: "as", Value: "roles"}},
 			},
 		},
-		{{"$unwind", "$coverage_se_info"}},
+		{
+			{
+				Key: "$unwind", Value: bson.D{
+					{Key: "path", Value: "$roles"},
+					{Key: "preserveNullAndEmptyArrays", Value: true}},
+			},
+		},
 	}
 }
 

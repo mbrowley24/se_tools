@@ -15,6 +15,7 @@ import (
 	"se_tools/internals/repository"
 	"se_tools/internals/services"
 	"se_tools/internals/services/appointmentService"
+	appointmenttypeservice "se_tools/internals/services/appointmentTypeService"
 	authoritiesservice "se_tools/internals/services/authoritiesService"
 	companyservice "se_tools/internals/services/companyService"
 	industryservice "se_tools/internals/services/industryService"
@@ -64,7 +65,8 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	}
 
 	//individual applications services
-	applicationService := appointmentservice.New(appointmentRepo.AppointmentCollection(), &appUtils)
+	appointmentService := appointmentservice.New(appointmentRepo.AppointmentCollection(), &appUtils)
+	appointmentTypeService := appointmenttypeservice.Start(appointmentRepo.AppointmentTypesCollection(), &appUtils)
 	appMiddleware := middleware.Start(appointmentRepo.UserCollection(), &appUtils, "params")
 	authService := authoritiesservice.Start(appointmentRepo.Authorities(), &appUtils)
 	companyServices := companyservice.Start(appointmentRepo.CompanyCollection(), &appUtils)
@@ -77,12 +79,19 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 	timezoneServices := timezoneservice.StartService(appointmentRepo.TimezoneCollection(), &appUtils)
 	userService := userservice.StartService(appointmentRepo.UserCollection(), &appUtils)
 
+	if err := appointmentTypeService.Initialize(); err != nil {
+		panic(err)
+	}
 	if err := authService.Initialize(); err != nil {
 
 		panic(err)
 	}
 
 	if err := industryServices.Initialize(); err != nil {
+		panic(err)
+	}
+
+	if err := productServices.Initialize(); err != nil {
 		panic(err)
 	}
 
@@ -124,15 +133,16 @@ func (i *Internals) ApplicationSetup(client *mongo.Client) {
 
 	//Struct for dependency injection services to other parts of the application
 	appServices := services.Services{
-		AppointmentService: applicationService,
-		AuthorityService:   authService,
-		CompanyService:     companyServices,
-		IndustryService:    industryServices,
-		ProductService:     productServices,
-		RoleService:        roleServices,
-		SalesRoleService:   salesRoleServices,
-		SalesRepService:    salesRepServices,
-		UserService:        userService,
+		AppointmentService:     appointmentService,
+		AppointmentTypeService: appointmentTypeService,
+		AuthorityService:       authService,
+		CompanyService:         companyServices,
+		IndustryService:        industryServices,
+		ProductService:         productServices,
+		RoleService:            roleServices,
+		SalesRoleService:       salesRoleServices,
+		SalesRepService:        salesRepServices,
+		UserService:            userService,
 	}
 
 	//define and register handlers

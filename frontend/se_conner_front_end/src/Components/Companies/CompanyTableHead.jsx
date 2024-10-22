@@ -14,6 +14,7 @@ function CompanyTableHead(props) {
                 <th>Sales Rep</th>
                 <th>Created By</th>
                 <th>Updated At</th>
+                <th>Actions</th>
             </tr>
         </thead>
     )
