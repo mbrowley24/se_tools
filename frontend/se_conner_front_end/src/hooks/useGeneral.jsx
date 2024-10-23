@@ -117,6 +117,7 @@ function useGeneral() {
     }
 
 
+
     function phoneInput(phone){
 
         const phone_number = removePhoneFormat(phone);
@@ -235,6 +236,7 @@ function useGeneral() {
     return({
         companyNameInputValidation,
         companyNameValidation,
+        dateValidation,
         descriptionValidation,
         emailValidation,
         formatDate,

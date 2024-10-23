@@ -5,6 +5,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"os"
 	"se_tools/internals/models/appointmentType"
@@ -29,7 +30,7 @@ func Start(collection *mongo.Collection, utils *utils.Utilities) *Service {
 func (s *Service) Initialize() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-	println(ctx)
+
 	file, err := os.Open("./configFiles/appointmentTypes.txt")
 
 	defer func(file *os.File) {
@@ -41,7 +42,7 @@ func (s *Service) Initialize() error {
 	}(file)
 
 	if err != nil {
-		println(err.Error())
+
 		return err
 	}
 
@@ -103,4 +104,15 @@ func (s *Service) Initialize() error {
 	}
 
 	return nil
+}
+
+func (s *Service) Find(ctx context.Context, m bson.M, opts *options.FindOptions) (*mongo.Cursor, error) {
+
+	result, err := s.collection.Find(ctx, m, opts)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }

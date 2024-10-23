@@ -28,6 +28,7 @@ func New(middleware *middleware.Middleware, mux *http.ServeMux, services *servic
 func (h *Handler) RegisterHandlers() {
 
 	h.mux.Handle("/api/v1/appointments", h.middleware.CheckToken(h.appointmentHandlers))
+	h.mux.Handle("/api/v1/appointments/new", h.middleware.CheckToken(h.newAppointments))
 }
 
 func (h *Handler) appointmentHandlers(w http.ResponseWriter, r *http.Request) {
@@ -41,5 +42,16 @@ func (h *Handler) appointmentHandlers(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPost:
 		//Todo post functions for new appointments
 
+	}
+}
+
+func (h *Handler) newAppointments(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
+	switch r.Method {
+	case http.MethodGet:
+		h.getNewAppointmentHandler(ctx, w, r)
+	case http.MethodPost:
 	}
 }

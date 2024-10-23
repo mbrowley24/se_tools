@@ -8,6 +8,7 @@ import NewCompany from "./Components/Companies/new/NewCompany.jsx";
 import SalesReps from "./Components/sales_reps/SalesReps.jsx";
 import NewSalesRep from "./Components/sales_reps/new/NewSalesRep.jsx";
 import Dashboard from "./Components/dashboards/Dashboard.jsx";
+import NewAppointment from "./Components/appointments/new/NewAppointment.jsx";
 
 
 
@@ -33,6 +34,7 @@ function App() {
               <Route path={'new'} element={<NewCompany/>}/>
               <Route path={':id/appointments'}>
                 <Route path={''} element={<AppointmentDashboard/>}/>
+                <Route path={'new'} element={<NewAppointment/>}/>
               </Route>
             </Route>
           </Routes>
