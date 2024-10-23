@@ -45,7 +45,7 @@ func (t *TimeZoneService) Initialize() error {
 
 	scanner := bufio.NewScanner(file)
 
-	var tzones []interface{}
+	var tZones []interface{}
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -90,10 +90,10 @@ func (t *TimeZoneService) Initialize() error {
 			UpdatedAt:   now,
 		}
 
-		tzones = append(tzones, tZone)
+		tZones = append(tZones, tZone)
 	}
 
-	if _, err := t.collection.InsertMany(ctx, tzones, nil); err != nil {
+	if _, err := t.collection.InsertMany(ctx, tZones, nil); err != nil {
 		return err
 	}
 

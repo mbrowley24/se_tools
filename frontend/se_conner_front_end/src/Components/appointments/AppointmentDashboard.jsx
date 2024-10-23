@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react'
+import {Link, useParams} from 'react-router-dom'
 import Header from "../header/Header.jsx";
 import AppointmentTableHead from "./AppointmentTableHead.jsx";
 import useHttp from "../../hooks/useHttp.jsx";
@@ -7,6 +8,7 @@ import "../../css/table/table.css"
 
 
 function AppointmentDashboard() {
+    const {id} = useParams();
     const {httpRequest} = useHttp();
     const[aptData, setAptData] = useState({
         name: [],
@@ -16,7 +18,6 @@ function AppointmentDashboard() {
 
     useEffect(()=>{
 
-        console.log("ran");
 
         const requestConfig = {
             method: "GET",
@@ -42,8 +43,9 @@ function AppointmentDashboard() {
         <div>
             <Header/>
             <div className={'container'}>
-                <div>
-                    <h1>Appointments</h1>
+                <h1>Appointments</h1>
+                <div className={'links'}>
+                    <Link to={`/companies/${id}/appointments/new`}>New Appointment</Link>
                 </div>
                 <table>
                     <AppointmentTableHead/>
