@@ -3,6 +3,7 @@ module se_tools
 go 1.22.2
 
 require (
+	github.com/pascaldekloe/jwt v1.12.0
 	go.mongodb.org/mongo-driver v1.17.1
 	golang.org/x/crypto v0.28.0
 )

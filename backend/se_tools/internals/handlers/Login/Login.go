@@ -17,7 +17,6 @@ type Login struct {
 func New(mux *http.ServeMux, services *services.Services, utils *utils.Utilities) *Login {
 
 	return &Login{
-
 		mux:      mux,
 		services: services,
 		utils:    utils,

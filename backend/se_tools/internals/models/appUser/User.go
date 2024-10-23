@@ -1,7 +1,10 @@
 package appUser
 
 import (
+<<<<<<< HEAD
 	"se_tools/internals/models/embedded"
+=======
+>>>>>>> main
 	"se_tools/internals/models/roles"
 	"time"
 

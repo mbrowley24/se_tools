@@ -3,6 +3,7 @@ package login
 import (
 	"context"
 	"encoding/json"
+
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -11,13 +12,13 @@ import (
 	"se_tools/internals/jwt"
 	"se_tools/internals/models/appUser"
 	"time"
+
 )
 
 func (l *Login) PostLoginHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
 	var loginCredentials appUser.Credentials
 
-	//gather login infos
 	if err := json.NewDecoder(r.Body).Decode(&loginCredentials); err != nil {
 
 		if err = l.utils.WriteJSON(w, http.StatusInternalServerError, "", ""); err != nil {

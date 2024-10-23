@@ -23,7 +23,6 @@ import (
 	roleservices "se_tools/internals/services/roleServices"
 	salesrepservice "se_tools/internals/services/salesRepService"
 	"se_tools/internals/services/salesroleservice"
-	timezoneservice "se_tools/internals/services/timezoneService"
 	userservice "se_tools/internals/services/userService"
 	"se_tools/utils"
 )
