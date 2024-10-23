@@ -16,11 +16,10 @@ function Header() {
                         <li className="dropdown">
                             <a>Sales</a>
                             <div className="dropdown-content">
-                                <Link to={"/sales/companies"}>Companies</Link>
+                                <Link to={"/companies"}>Companies</Link>
                                 <Link to={"/sales/forecast"}>Forecast(s)</Link>
-                                <ISPLink/>
                                 {/* <Link to={"/sales/opportunities"}>Opportunities</Link> */}
-                                <Link to={"/sales/reps"}>Sales Reps</Link>
+                                <Link to={"/sales_reps"}>Sales Reps</Link>
                             </div>
                         </li>
                         <li className="dropdown">

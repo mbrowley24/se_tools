@@ -2,8 +2,10 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"math/rand"
 	"net/http"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -17,6 +19,15 @@ func (u *Utilities) Capitalize(s string) string {
 		return s
 	}
 	return strings.ToUpper(s[:1]) + s[1:]
+}
+
+func (u *Utilities) CheckCSRF(csrf string) error {
+
+	if len(csrf) == 0 {
+		return errors.New("csrf required")
+	}
+
+	return nil
 }
 
 func (u *Utilities) DateFormat() string {
@@ -44,6 +55,17 @@ func (u *Utilities) WriteJSON(w http.ResponseWriter, status int, data interface{
 	return nil
 }
 
+func (u *Utilities) EmailValidation(email string) error {
+
+	re := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	if !re.MatchString(email) {
+
+		return errors.New("invalid email address")
+	}
+
+	return nil
+}
+
 func (u *Utilities) ErrorJSON(w http.ResponseWriter, err error) {
 
 	if err = u.WriteJSON(w, http.StatusBadRequest, err, "error"); err != nil {
@@ -51,61 +73,58 @@ func (u *Utilities) ErrorJSON(w http.ResponseWriter, err error) {
 	}
 }
 
-//func (u *Utilities) OpenScanner(file *os.File) *bufio.Scanner {
-//
-//	return bufio.NewScanner(file)
-//}
+func (u *Utilities) NotesDescription(text string) error {
+	re := regexp.MustCompile(`^[a-zA-Z0-9\s.,!?%&@'"\-:;/]{0,500}$`)
 
-//func (u *Utilities) Unauthorized(w http.ResponseWriter) {
-//
-//	if err := u.WriteJSON(w, http.StatusForbidden, "unauthorized", "error"); err != nil {
-//		//ToDo do something with this error
-//	}
-//}
+	if !re.MatchString(text) {
+		return errors.New("invalid text")
+	}
 
-//func (u *Utilities) PageData(r *http.Request) (int64, int64, int64) {
-//
-//	page := int64(0)
-//	limit := int64(10)
-//
-//	values := r.URL.Query()
-//
-//	if values.Get("page") != "" {
-//		pageValue := values.Get("page")
-//
-//		value, err := strconv.Atoi(pageValue)
-//
-//		if err != nil {
-//
-//			//ToDO do something with this error
-//			println("Error converting string to int")
-//
-//		} else {
-//
-//			page = int64(value)
-//		}
-//	}
-//
-//	if values.Get("limit") != "" {
-//		limitValue := values.Get("limit")
-//
-//		value, err := strconv.Atoi(limitValue)
-//
-//		if err != nil {
-//
-//			//ToDo do something with this error
-//			println("Error converting string to int")
-//
-//		} else {
-//
-//			limit = int64(value)
-//		}
-//
-//	}
-//
-//	return page, limit, page * limit
-//
-//}
+	return nil
+}
+
+func (u *Utilities) NameCheck(name string) error {
+
+	re := regexp.MustCompile(`^[a-zA-Z0-9.\\\s\-]{2,75}$`)
+
+	if !re.MatchString(name) {
+		return errors.New("invalid name")
+	}
+
+	return nil
+}
+
+func (u *Utilities) CompanyNameCheck(name string) error {
+
+	re := regexp.MustCompile(`^[a-zA-Z0-9.\\\s\-&]{2,75}$`)
+
+	if !re.MatchString(name) {
+		return errors.New("invalid name")
+	}
+
+	return nil
+}
+
+func (u *Utilities) PhoneValidation(phone string) error {
+	re := regexp.MustCompile(`^[0-9]{0,10}$`)
+
+	if !re.MatchString(phone) {
+		return errors.New("invalid phone")
+	}
+
+	return nil
+}
+
+func (u *Utilities) QuotaValidation(quota string) error {
+
+	re := regexp.MustCompile(`^[0-9]{0,15}$`)
+
+	if !re.MatchString(quota) {
+		return errors.New("invalid quota")
+	}
+
+	return nil
+}
 
 // RandomStringGenerator generate random strings
 func (u *Utilities) RandomStringGenerator(length int) string {

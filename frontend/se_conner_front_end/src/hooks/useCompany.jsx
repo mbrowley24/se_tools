@@ -1,80 +1,104 @@
 import { useSelector } from "react-redux";
+import useGeneral  from './useGeneral.jsx';
+import error from "eslint-plugin-react/lib/util/error.js";
 
 
 function useCompany() {
-    const verticalData = useSelector((state) => state.companyData.verticalData);
-    function validName(name){
-        const pattern = /^[a-zA-Z0-9\s]{2,75}$/;
-        return pattern.test(name);
-    } 
+    const {companyNameValidation, companyNameInputValidation, descriptionValidation} = useGeneral();
 
-    function validCharacters(name){
-        const pattern = /^[a-zA-Z0-9\s]{0,75}$/;
-        return pattern.test(name);
-    }
 
     function checkForErrors(data){
         const errors = {};
 
-        if(data.name.trim().length < 2){
+        if(data.company.name.trim().length < 2){
+
             errors['name'] = 'required';
 
-        }else if(!validName(data.name)){
+        }else if(!companyNameValidation(data.name)){
             
-            errors['name'] = 'Invalid name';
+            errors['name'] = '- % . only special character allowed';
+
+        }else{
+
+            delete error['name']
         }
 
-        const filteredVertical = verticalData.filter((vertical)=> vertical.value === data.vertical);
+        const industries = data.industries ? [...data.industries] : [];
 
-        if(data.vertical.trim().length === 0){
+        const industry_filter = industries.filter((industry) => industry.value === data.company.industry)
 
-            errors['vertical'] = 'required';
+        if(data.company.industry.trim().length === 0){
 
-        }else if(filteredVertical.length === 0){
-            errors['vertical'] = 'Invalid vertical';
+            errors['industry'] = 'required';
+
+
+        }else if (industry_filter.length === 0){
+
+            errors['industry'] = 'invalid selection';
+
+        }else{
+
+            delete errors['industry']
+        }
+
+        const sales_reps = data.sales_reps? [...data.sales_reps] : [];
+        const sales_rep_filter = sales_reps.filter((sales_rep) => sales_rep.value === data.company.sales_rep)
+
+        if(sales_rep_filter.length === 0){
+            errors['sales_rep'] = 'required';
+
+        }else{
+
+            delete errors['sales_rep']
+        }
+
+
+        if(data.company.notes.length > 500){
+
+            errors['notes'] = 'Error: more than 500 characters'
+
+        }else if(!descriptionValidation(data.company.notes)){
+
+            errors['notes'] = "in valid character"
+        }else{
+
+            delete errors['notes']
         }
 
 
         return errors;
     }
 
-    function detectChange(orginal, edited){
+    function detectChange(original, edited){
 
-        if(!orginal) return false;
+        if(!original) return false;
         if(!edited) return false;
 
-        if(orginal.name !== edited.name){
+        if(original.name !== edited.name){
             return true;
         }
 
-        if(orginal.vertical !== edited.vertical){
-            return true;
-        }
+        return original.vertical !== edited.vertical;
 
-        return false;
-    }
-
-    function checkName(name, value){
-        
-        let companyName = name;
-
-        if(validName(value)){
-            companyName = value;
-        }
-
-        return companyName;
 
     }
 
-    const initalCompnayState ={
-        id: "",
-        name: '',
-        vertical: '',
-        opportunities: 0,
-        contacts: 0,
-        percentage: 0,
-        open: 0,
-        updated: 0,
+    const initialCompanyState ={
+        company:{
+            id: "",
+            name: '',
+            industry: '',
+            sales_rep: '',
+            notes : '',
+            csrf:'',
+        },
+        page:{
+            companies :[],
+            page: 0,
+            limit: 1
+        },
+        industries: [],
+        sales_reps: [],
         errors:{}
     }
 
@@ -87,82 +111,100 @@ function useCompany() {
                 
                 const name = action.payload;
 
-                if(validCharacters(name)){
-                    
-                    if(name.trim().length > 0){
-                        data.name = name;
-                    }
+                if(companyNameInputValidation(name.trim())){
+
+                    data.company.name = name;
                 }
 
                 data.errors = {...checkForErrors(data)};
 
                 return data;
             
-            case 'vertical':
+            case 'industry':
                 
-                const vertical = action.payload;
-                
-                const filter = verticalData.filter((item)=> item.value === vertical);
+                const industryId = action.payload;
+
+                const filter = data.industries.filter((industry) => industry.value === industryId);
 
                 if(filter.length > 0){
-                    data.vertical = vertical;
+                    data.company.industry = industryId;
                 }
 
                 data.errors = {...checkForErrors(data)};
 
                 return data;
-            
 
-            
-            case 'duplicate':
+                case 'sales_rep':
 
-                const duplicateData = {...action.payload};
-                
-                if(duplicateData.update){
+                    data.company.sales_rep = action.payload;
 
-                    if(duplicateData.og_name === data.name){
-                    
-                        delete data.errors['exists'];
-                    
+                    if(data.company.sales_rep.length === 0){
+                        data.errors['sales_rep'] = 'Required';
+
                     }else{
 
-                        data.errors['exists'] = duplicateData.errors['exists'];
+                        delete data.errors['sales_rep'];
                     }
+                    data.errors = {...checkForErrors(data)};
+                    return data;
 
-                }else{
-                    
-                    delete data.errors['exists'];
-                }
+            case 'form_data':
 
+                const industryList = action.payload.form_data.industries? [...action.payload.form_data.industries] : [];
+                const sales_repList = action.payload.form_data.sales_reps? [...action.payload.form_data.sales_reps] : [];
+                data.industries = [...industryList];
+                data.sales_reps = [...sales_repList];
+                data.company.csrf = action.payload.csrf;
 
+                data.errors = {...checkForErrors(data)};
+                console.log(data)
                 return data;
-            
+
+            case 'notes':
+
+                const notes = action.payload;
+
+                if(descriptionValidation(notes)){
+                    data.company.notes = action.payload;
+                }
+                data.errors = {...checkForErrors(data)};
+                return data;
+
             case 'setup':
                 const setupData = {...action.payload}; 
-                data.id = setupData.id;
-                data.name = setupData.name;
-                data.vertical = setupData.vertical;
-                data.opportunities = setupData.opportunities;
-                data.contacts = setupData.contacts;
-                data.percentage = setupData.percentage;
-                data.open = setupData.open;
+                data.id = setupData.id? setupData.id : "";
+                data.company.name = setupData.name;
+                data.company.industry = setupData.industry;
+                data.contacts = setupData.contacts? setupData.contacts : [];
                 data.updated = setupData.updated;
-                
+                data.errors = {...checkForErrors(data)};
                 return data;
+
+            case 'page':
+
+                data.page = {
+                    companies :[...action.payload.data.companies],
+                    num: action.payload.data.page,
+                    limit: action.payload.data.limit,
+                }
+
+                return data
+
+
             default:
                 return state;
         }
     }
 
-    function duplicateName(orginalCompany, company, payload){
+    function duplicateName(originalCompany, company, payload){
 
-        if(!orginalCompany) return company;
+        if(!originalCompany) return company;
 
         const companyObj = {...company};
 
         if(payload.update){
 
-            if(orginalCompany.name === company.name){
+            if(originalCompany.name === company.name){
                 
                 delete companyObj.errors['exists'];
 
@@ -182,12 +224,10 @@ function useCompany() {
 
     return({
         checkForErrors,
-        checkName,
         companyReducer,
         detectChange,
         duplicateName,
-        initalCompnayState,
-        validName
+        initialCompanyState,
     })
 };
 

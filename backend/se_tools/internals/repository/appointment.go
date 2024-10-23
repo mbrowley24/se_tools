@@ -48,6 +48,10 @@ func (a *AppointmentRepository) SalesRolesCollection() *mongo.Collection {
 	return a.Database.Collection("sales_roles")
 }
 
+func (a *AppointmentRepository) TimezoneCollection() *mongo.Collection {
+	return a.Database.Collection("timezones")
+}
+
 func (a *AppointmentRepository) UserCollection() *mongo.Collection {
 
 	return a.Database.Collection("users")

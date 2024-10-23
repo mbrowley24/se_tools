@@ -3,25 +3,32 @@ package companyhandler
 import (
 	"context"
 	"net/http"
+	"se_tools/internals/middleware"
 	"se_tools/internals/services"
+	"se_tools/utils"
 	"time"
 )
 
 type Handler struct {
-	mux      *http.ServeMux
-	services *services.Services
+	middleware *middleware.Middleware
+	mux        *http.ServeMux
+	services   *services.Services
+	utils      *utils.Utilities
 }
 
-func New(services *services.Services, mux *http.ServeMux) *Handler {
+func New(middleware *middleware.Middleware, services *services.Services, mux *http.ServeMux, utils *utils.Utilities) *Handler {
 	return &Handler{
-		services: services,
-		mux:      mux,
+		middleware: middleware,
+		services:   services,
+		mux:        mux,
+		utils:      utils,
 	}
 }
 
 func (h *Handler) RegisterHandler() {
 
-	h.mux.Handle("/api/v1/companies", http.HandlerFunc(h.getCompaniesHandler))
+	h.mux.Handle("/api/v1/companies", h.middleware.CheckToken(h.getCompaniesHandler))
+	h.mux.Handle("/api/v1/companies/new", h.middleware.CheckToken(h.newCompanies))
 }
 
 func (h *Handler) getCompaniesHandler(w http.ResponseWriter, r *http.Request) {
@@ -44,5 +51,18 @@ func (h *Handler) getCompaniesHandler(w http.ResponseWriter, r *http.Request) {
 
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func (h *Handler) newCompanies(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 3*time.Second)
+	defer cancel()
+
+	switch r.Method {
+	case http.MethodGet:
+		h.companyFormData(ctx, w, r)
+
+	case http.MethodPost:
+		h.newCompany(ctx, w, r)
 	}
 }

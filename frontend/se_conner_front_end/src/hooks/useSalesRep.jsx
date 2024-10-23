@@ -1,8 +1,10 @@
-
+import useGeneral from './useGeneral.jsx'
 
 
 function useSalesRep() {
-    
+
+    const {emailValidation, nameInputValidation, nameValidation, phoneInput, phoneNumberFormat,
+           phoneNumberValidation, quotaInput, quotaValidation, removePhoneFormat, removeQuotaFormat} = useGeneral()
 
     const FIELDS ={
         value: "value",
@@ -23,327 +25,190 @@ function useSalesRep() {
     }
 
 
-    const name_regex = /^[a-zA-Z]{2,75}$/;
-    const name_regex_input = /^[a-zA-Z]{0,75}$/;
-    const description_regex = /^[a-zA-Z0-9."?()*&%$#@;'"!\/<>,:{}[\]+=_\- :&]{0,255}$/;
-    const phone_regex = /^[0-9]{10}$/;
-    const date_regex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
-    const phone_regex_input = /^[0-9]{0,10}$/;
-    const quota_regex_input = /^[0-9]{0,15}$/;
-    const quota_regex = /^[0-9]{0,15}$/;
-    const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; 
+    // const name_regex = /^[a-zA-Z]{2,75}$/;
+    // const name_regex_input = /^[a-zA-Z]{0,75}$/;
+    // const description_regex = /^[a-zA-Z0-9."?()*&%$#@;'"!\/<>,:{}[\]+=_\- :&]{0,255}$/;
+    // const phone_regex = /^[0-9]{10}$/;
+    // const date_regex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+    // const phone_regex_input = /^[0-9]{0,10}$/;
+    // const quota_regex_input = /^[0-9]{0,15}$/;
+    // const quota_regex = /^[0-9]{0,15}$/;
+    // const email_regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     const salesRepInitialState = {
-        first_name: "",
-        last_name: "",
-        email: "",
-        phone: "",
-        role: "",
-        quota: "0.00"
+        sales_rep: {
+            id: '',
+            first_name: "",
+            last_name: "",
+            email: "",
+            phone: "",
+            role: "",
+            quota: "0.00",
+            csrf: "",
+        },
+        roles: [],
+        sales_reps :[],
+        errors: {},
+
     }
 
 
-    function updateDateSalesRep(salesRep, e){
-            
-            const {name, value} = e.target;
 
-            const salesRepObj = {...salesRep};
+    function salesRepReducer(state, action) {
 
-            if(name === "first_name"){
-                if(nameInput(value)){
-                    salesRepObj[name] = value;
-                }
-            }else if(name === "last_name"){
-                if(nameInput(value)){
-                    salesRepObj[name] = value;
-                }
-            }else if(name === "email"){
+        const data = JSON.parse(JSON.stringify(state));
 
-                salesRepObj[name] = value;
-            
-            }else if(name === "phone"){
-                
-                const phone = removePhoneFormat(value);
+        switch (action.type) {
 
-                if(phoneInput(phone)){
-                    salesRepObj[name] = phoneNumberFormat(phone);
+            case "first_name":
+
+                if(nameInputValidation(action.payload)){
+
+                    data.sales_rep.first_name = action.payload;
+
                 }
 
-            }else if(name === "role"){
+                data.errors = {...checkForErrors(data)}
 
-                salesRepObj[name] = value;
+                return data;
 
-            }else if(name === "quota"){
-                
-                const quota = removeQuotaFormat(value);
-                
-                if(quotaInputValidation(quota)){
-                    
-                    salesRepObj[name] = quotaInput(quota);
+            case 'last_name':
+
+                if(nameInputValidation(action.payload)){
+                    data.sales_rep.last_name = action.payload;
                 }
-            }
 
-    
-            return salesRepObj;
-    }
+                data.errors = {...checkForErrors(data)}
 
+                return data;
 
-    function formatSalesRep(salesRepObj){
+            case 'email':
 
-        salesRepObj.phone = removePhoneFormat(salesRepObj.phone);
+                data.sales_rep.email = action.payload;
 
-        salesRepObj.quota = Number(salesRepObj.quota);
-        
-        return salesRepObj;
-    }
+                data.errors = {...checkForErrors(data)}
 
-    function dateFormat(date){
+                return data;
 
-        return date;
-    }
+            case 'phone':
 
-    function dateValidation(date){
+                if(phoneInput(action.payload)){
 
-        if(date_regex.test(date)){
-            return true;
-        }
-
-        return false;
-    }
-
-    function descriptionValidation(description){
-            
-            if(description_regex.test(description)){
-                return true;
-            }
-    
-            return false;
-    }
-
-    function emailValidation(email){
-
-        return email_regex.test(email);
-    }
-
-    function nameInput(name){
-        
-        if(name_regex_input.test(name)){
-            console.log("name input")
-            return true;
-        }
-        
-        return false;
-    }
-
-    function nameValidation(name){
-        
-        if(name_regex.test(name)){
-            return true;
-        }
-        return false;
-    }
-
-    function opportunityValidation(opportunity){
-
-        if(nameValidation(opportunity.name)){
-            if(quotaValidation(opportunity.amount)){
-                if(description_regex.test(opportunity.description)){
-                    if(date_regex.test(opportunity.close_date)){
-                        if(opportunity.status){
-                            if(opportunity.sales_rep){
-                                return true;
-                            }
-                        }
-                    }
+                    data.sales_rep.phone = phoneNumberFormat(action.payload);
                 }
-            }
-        }
-
-    }
-
-    function phoneInput(phone){
-        
-        const phone_number = removePhoneFormat(phone);
-
-        if(phone_regex_input.test(phone_number)){
-            return true;
-        }
-        return false;
-    }
-
-    function phoneNumberFormat(phone){
-
-        if(!phone) return "";
-        let phone_number = removePhoneFormat(phone);
-
-        if(phone_number.length >= 7 && phone_number.length < 10){
-            
-            phone_number = phone_number.substring(0, 3) + "-" + phone_number.substring(3, phone_number.length);
-
-        }else if(phone_number.length === 10){
-            
-            phone_number = phone_number.substring(0, 3) + "-" + phone_number.substring(3, 6) + "-" + phone_number.substring(6, 10);
-        }
-
-        return phone_number;    
-    }
-
-    function formatForBackend(data){
-
-        data.phone = removePhoneFormat(data.phone);
-
-        data.quota = Number(data.quota);
-
-        return data;
-    }
-    
-    
-
-    function phoneNumberValidation(phone){
-            
-        if(!phone) return false;
-
-            const phone_number = removePhoneFormat(phone);
-    
-            if(phone_regex.test(phone_number)){
-                return true;
-            }
-
-            return false;
-    }
-
-    function addCommas(amount){
-        let amountString = String(amount);
-
-        if(!amountString ){
-            return
-        }
-
-        if(!amountString.includes(".")){
-            amountString += ".00";
-        }
-
-        const number_string = amountString.split("").reverse();
-
-        const commas = [6, 9, 12, 15, 18]
-
-        const new_number = [];
-
-        for(let i = 0; i < number_string.length; i++){
-            
-            
-            if(commas.includes(i)){
-                new_number.push(",");
-            }
-
-            new_number.push(number_string[i]);
-        }
-        return new_number.reverse().join("");
-    }
-
-    function quotaInput(quota_number){
 
 
-        quota_number = removeLeadingZeros(quota_number);
-        console.log(quota_number)
-        
-        if(quota_number.length === 0){
-        
-            quota_number = "0.00"
-        
-        }else if(quota_number.length > 0 && quota_number.length === 1){
-            
-            quota_number = "0.0" + quota_number;
-            
-        
-        }else if(quota_number.length > 0 && quota_number.length === 2){
-            
-            quota_number = "0." + quota_number;
+                data.errors = {...checkForErrors(data)}
 
-        }else if(quota_number.length > 0 && quota_number.length > 2){
-            
-            
-            
+                return data;
 
-            quota_number = quota_number.substring(0, quota_number.length - 2) + "." + quota_number.substring(quota_number.length - 2, quota_number.length);
-        }
+            case 'role':
 
-        return quota_number;
+                const roles_filter = data.roles.filter((role) => role.value === action.payload);
 
-    }
+                if(roles_filter.length === 1){
 
+                    data.sales_rep.role = action.payload;
 
-    function quotaInputValidation(quota){
+                }else if(action.payload.length === 0){
 
-        const unformatted_quota = removeQuotaFormat(quota);
-
-        if(quota_regex_input.test(unformatted_quota)){
-            return true;
-        }
-
-        return false
-    }
-
-    function quotaValidation(quota){
-        let quota_string = String(quota);
-        const unformatted_quota = removeQuotaFormat(quota_string);
-
-        if(quota_regex_input.test(unformatted_quota)){
-            return true;
-        }
-
-        return false
-    }
-
-    function removeLeadingZeros(quota){
-        return quota.replace(/^0+/, "");
-    }
-
-    function quotaValidation(quota){
-        let quota_number = removeQuotaFormat(quota);
-
-        quota_number = removeLeadingZeros(quota_number);
-
-        if(quota_regex.test(quota_number)){
-            return true;
-        }
-
-        return false
-    }
-
-    function removePhoneFormat(phone){
-
-        if(!phone) return;
-
-        return phone.replace(/-/g, "");
-    }
-
-    function removeQuotaFormat(quota){
-        let quotaString = String(quota);
-        return quotaString.replace(/[,.]/g, "");
-    }
-
-    function validSalesRep(salesRep){
-        
-        const {first_name, last_name, email, phone, role, quota} = salesRep;
-        
-        if(nameValidation(first_name)){
-            if(nameValidation(last_name)){
-                if(emailValidation(email)){
-                    if(phoneNumberValidation(phone)){
-                        if(role){
-                            if(quotaValidation(quota)){
-                                
-                                return true;
-                            }
-                        }
-                    }
+                    data.sales_rep.role = action.payload;
                 }
-            }
+
+                data.errors = {...checkForErrors(data)}
+
+                return data;
+
+            case 'quota':
+
+                if(quotaValidation(action.payload)){
+
+                    data.sales_rep.quota = quotaInput(action.payload)
+
+                }
+
+
+                data.errors = {...checkForErrors(data)}
+
+
+                return data;
+
+            case 'roles':
+
+                data.roles = [...action.payload];
+
+                data.errors = {...checkForErrors(data)}
+                return data;
+
+            case 'csrf':
+
+                data.sales_rep.csrf = action.payload.csrf;
+
+                return data;
+
+            case 'sales_reps':
+
+                data.sales_reps = [...action.payload.sales_reps];
+
+                console.log(data)
+                return data;
+
+            default:
+                return state
         }
-        
-        return false;
     }
+
+    function checkForErrors(data){
+
+        const errors = {};
+
+        if(data.sales_rep.first_name.length === 0){
+
+            errors['first_name'] = 'required'
+
+        }else if(data.sales_rep.first_name.length < 2 || data.sales_rep.first_name.length > 75){
+
+            errors['first_name'] = 'must be between 2 and 75 characters'
+
+        }else if(!nameValidation(data.sales_rep.first_name)){
+
+            errors['first_name'] = 'invalid characters'
+        }
+
+        if(data.sales_rep.last_name.length === 0){
+
+            errors['last_name'] = 'required'
+
+        }else if(data.sales_rep.last_name.length < 2 || data.sales_rep.last_name.length > 75){
+
+            errors['last_name'] = 'must be between 2 and 75 characters'
+
+        }else if(!nameValidation(data.sales_rep.last_name)){
+
+            errors['last_name'] = 'invalid characters'
+        }
+
+        if(!emailValidation(data.sales_rep.email)){
+
+            errors['email'] = 'email invalid';
+        }
+
+        if(!phoneNumberValidation(data.sales_rep.phone)){
+
+            errors['phone'] = 'invalid phone number'
+        }
+
+        const valid_role = data.roles.filter((role) => role.value === data.sales_rep.role);
+
+        if(valid_role.length === 0){
+            errors['role'] = 'required';
+        }
+
+        return errors;
+
+    }
+
+
 
     function hasChanged(salesRep, rep){
             
@@ -369,11 +234,9 @@ function useSalesRep() {
                 return true;
             }
     
-            if(quota !== rep.quota){
-                return true;
-            }
+            return quota !== rep.quota;
     
-            return false;
+
     }
 
     function validateSalesRep(salesRep){
@@ -423,28 +286,24 @@ function useSalesRep() {
             
         return errors;
     }
+
+
+    function normalizeData(data){
+
+        data.first_name = data.first_name.toLowerCase();
+        data.last_name = data.last_name.toLowerCase();
+        data.email = data.email.toLowerCase();
+        data.phone = removePhoneFormat(data.phone)
+        data.quota = removeQuotaFormat(data.quota)
+
+        return data;
+    }
     
 
     return({
-        addCommas,
-        dateFormat,
-        dateValidation,
-        descriptionValidation,
-        emailValidation,
-        formatForBackend,
-        formatSalesRep,
-        FIELDS,
-        hasChanged,
-        nameInput,
-        nameValidation,
-        phoneInput,
-        phoneNumberFormat,
-        phoneNumberValidation,
-        quotaValidation,
+        normalizeData,
         salesRepInitialState,
-        updateDateSalesRep,
-        validateSalesRep,
-        validSalesRep,
+        salesRepReducer,
     })
 }
 

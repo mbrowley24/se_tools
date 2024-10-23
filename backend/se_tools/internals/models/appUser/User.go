@@ -1,6 +1,10 @@
 package appUser
 
 import (
+<<<<<<< HEAD
+	"se_tools/internals/models/embedded"
+=======
+>>>>>>> main
 	"se_tools/internals/models/roles"
 	"time"
 
@@ -30,13 +34,9 @@ type User struct {
 	UpdatedAt     time.Time          `bson:"updated_at" json:"updated_at"`
 }
 
-func (u *User) Embedded() Embedded {
-	return Embedded{
-		Id:        u.ID,
-		PublicId:  u.PublicId,
-		FirstName: u.FirstName,
-		LastName:  u.LastName,
-		Email:     u.Email,
-		Username:  u.Username,
+func (u *User) Embedded() embedded.Model {
+	return embedded.Model{
+		Id:       u.ID,
+		PublicId: u.PublicId,
 	}
 }

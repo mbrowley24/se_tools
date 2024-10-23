@@ -1,4 +1,4 @@
-import {emailValidation, phoneInput, phoneNumberValidation, regex_map, removePhoneFormat} from '../helper/general';
+import {} from './useGeneral.jsx'
 
 
 function useContact(){
@@ -89,23 +89,6 @@ function useContact(){
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
         return emailRegex.test(email);
-    }
-
-
-    function phoneNumberFormat(phone){
-
-        let phone_number = removePhoneFormat(phone);
-
-        if(phone_number.length >= 7 && phone_number.length < 10){
-            
-            phone_number = phone_number.substring(0, 3) + "-" + phone_number.substring(3, phone_number.length);
-
-        }else if(phone_number.length === 10){
-            
-            phone_number = phone_number.substring(0, 3) + "-" + phone_number.substring(3, 6) + "-" + phone_number.substring(6, 10);
-        }
-
-        return phone_number;    
     }
 
 
@@ -201,7 +184,6 @@ function useContact(){
         checkTitle,
         contactReducer,
         contactState,
-        phoneNumberFormat
     })
 
 }

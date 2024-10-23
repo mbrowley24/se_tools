@@ -3,13 +3,19 @@
     padding: 0;
 }
 
+
+label{
+    display: block;
+    color: black;
+}
+
 .error{
     color: red;
     font-size: x-small;
 }
 .form_container_body{
     display: block;
-    height: 91vh;
+    height: 90.5vh;
     background-image: url("https://seconnerimages.nyc3.cdn.digitaloceanspaces.com/new_user.jpg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -24,7 +30,8 @@
     border-radius: .2rem;
     margin-left: auto;
     margin-right: auto;
-    background-color: rgb(255, 255, 255);
+    color: black;
+    background-color: rgb(210, 210, 210);
 }
 .form_container_body form{
     flex-direction: column;
@@ -32,7 +39,7 @@
     justify-content: center;
     margin-top: 1%;
     width: 25%;
-    height: 60vh;
+    height: 65vh;
     margin-left: auto;
     margin-right: auto;
     border-radius: .25rem;
@@ -42,7 +49,7 @@
     overflow: auto;
 }
 
-.form_container_body form div{
+.form_group{
     margin-top: 5%;
     margin-bottom: 2%;
     height: 8vh;
@@ -72,29 +79,34 @@
     /* border: 1px solid #000; */
 }
 
+
 .form_container_body form div input{
     display: block;
-    width: 75%;
+    text-align: center;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     height: 2vh;
     border: 1px solid #000;
     border-radius: 5px;
     padding: .75rem;
+    color : black;
+    background-color: white;
 }
 
 .form_container_body form div select{
     display: block;
     width: 75%;
+    text-align: center;
     margin-left: auto;
     margin-right: auto;
     height: 3vh;
     font-size: small;
     color: black;
-    text-align: center;
     border: 1px solid #000;
     border-radius: 5px;
     padding: .15rem;
+    background-color: white;
 }
 
 .form_container_body form div select:focus{
@@ -103,17 +115,21 @@
 
 .form_container_body form div select option{
     color: black;
+    text-align: center;
+    text-transform: capitalize;
 }
 
 .form_container_body form div textarea{
     display: block;
     width: 80%;
+    color: black;
     margin-left: auto;
     margin-right: auto;
-    height: 75%;
+    height: 25vh;
     border: 1px solid #000;
     border-radius: 5px;
     padding: .75rem;
+    background-color: white;
 }
 
 
@@ -156,16 +172,16 @@
     background-color: rgb(211, 211, 211, .75);
     border-radius: .25rem;
     padding: .25rem;
-    cursor: none;
+    cursor: not-allowed;
 }
-.form_container_body form div button:disabled{
-    margin-top: 2%;
-    width: 50%;
-    text-align: center;
-    border-radius: .25rem;
-    padding: .25rem;
-    cursor: pointer;
-}
+/*.form_container_body form div button:disabled{*/
+/*    margin-top: 2%;*/
+/*    width: 50%;*/
+/*    text-align: center;*/
+/*    border-radius: .25rem;*/
+/*    padding: .25rem;*/
+/*    cursor: pointer;*/
+/*}*/
 
 .count{
     width: 75%;

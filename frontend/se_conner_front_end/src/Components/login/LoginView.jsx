@@ -14,7 +14,7 @@ function FormLogin(){
     const {httpRequest} = useHttp();
 
 
-    async function handleSubmit(e){
+    function handleSubmit(e){
         e.preventDefault();
 
         const configRequest={
@@ -24,7 +24,7 @@ function FormLogin(){
         }
 
         function applyData(res){
-            
+
             if(res.status === 200){
                 console.log(res);
                 navigate('/dashboard');    
@@ -36,7 +36,7 @@ function FormLogin(){
             }
         }
 
-        await httpRequest(configRequest, applyData);
+        httpRequest(configRequest, applyData);
     }
 
         

@@ -1,8 +1,9 @@
 package salesrep
 
 import (
-	"se_tools/internals/models/appUser"
-	"se_tools/internals/models/salesroles"
+	"fmt"
+	"se_tools/internals/models/embedded"
+	optionsdto "se_tools/internals/models/optionsDto"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -15,33 +16,30 @@ type Model struct {
 	LastName      string             `bson:"last_name"`
 	Email         string             `bson:"email"`
 	Phone         string             `bson:"phone"`
-	SalesEngineer appUser.Embedded   `bson:"sales_engineer"`
-	CoverageSE    []appUser.Embedded `bson:"coverage_se"`
-	Role          salesroles.Model   `bson:"role"`
-	Quota         float64            `bson:"quota"`
+	SalesEngineer embedded.Model     `bson:"sales_engineer"`
+	CoverageSE    []embedded.Model   `bson:"coverage_se"`
+	Role          embedded.Model     `bson:"role"`
+	Quota         int64              `bson:"quota"`
+	Version       int                `bson:"v"`
 	CreatedAt     time.Time          `bson:"created_at"`
 	UpdateAt      time.Time          `bson:"updated_at"`
 }
 
-func (m *Model) ModelToDTO() DTO {
+func (m *Model) ModelToOptions() optionsdto.Option {
 
-	var coverageSe []appUser.DTO
+	name := fmt.Sprintf("%s %s", m.FirstName, m.LastName)
 
-	//covert embedded SE to Se DTO
-	for _, se := range m.CoverageSE {
+	return optionsdto.Option{
+		Value: m.PublicId,
+		Name:  name,
+	}
+}
 
-		coverageSe = append(coverageSe, se.ModelToDTO())
+func (m *Model) ModelToEmbedded() embedded.Model {
+
+	return embedded.Model{
+		Id:       m.ID,
+		PublicId: m.PublicId,
 	}
 
-	return DTO{
-		Id:            m.PublicId,
-		FirstName:     m.FirstName,
-		LastName:      m.LastName,
-		Email:         m.Email,
-		Phone:         m.Phone,
-		SalesEngineer: m.SalesEngineer.ModelToDTO(),
-		CoverageSE:    coverageSe,
-		Role:          m.Role.ModelToOption(),
-		Quota:         m.Quota,
-	}
 }

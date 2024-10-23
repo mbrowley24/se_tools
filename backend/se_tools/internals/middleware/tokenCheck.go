@@ -3,140 +3,127 @@ package middleware
 import (
 	"context"
 	"errors"
-	"log"
+	"go.mongodb.org/mongo-driver/mongo"
+	"se_tools/internals/jwt"
 	"se_tools/utils"
-
-	"net/http"
-	"os"
 	"strings"
 	"time"
 
-	"github.com/pascaldekloe/jwt"
+	"net/http"
 )
 
-type UrlParams string
+type contextKey string
 
 type Middleware struct {
-	utils     utils.Utilities
-	urlParams UrlParams
+	utils      *utils.Utilities
+	collection *mongo.Collection
+	ContextKey contextKey
 }
 
-func (m *Middleware) CheckToken(next http.Handler) http.Handler {
+func Start(collection *mongo.Collection, utils *utils.Utilities, params string) *Middleware {
 
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Vary", "Authorization")
+	return &Middleware{
+		utils:      utils,
+		collection: collection,
+		ContextKey: contextKey(params),
+	}
+}
 
-		authHeader := r.Header.Get("Authorization")
+func checkCookie(cookie *http.Cookie) error {
 
-		if authHeader == "" {
+	if strings.Compare(cookie.Name, "yeoman_token") != 0 {
 
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
+		return errors.New("cookie is not value")
+	}
 
-				//Todo handle this error
-			}
-			return
-			//could set anonymous user
-		}
+	if cookie.Expires.After(time.Now()) {
 
-		//need to add bearer to token
-		//split header from Breaer and token
-		headParts := strings.Split(authHeader, " ")
+		return errors.New("cookie expired")
+	}
 
-		//check for 2 parts in header parts
-		if len(headParts) != 2 {
+	return nil
+}
 
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
+func (m *Middleware) CheckToken(next http.HandlerFunc) http.HandlerFunc {
 
-				//ToDo handle this error
-			}
+	return func(w http.ResponseWriter, r *http.Request) {
+		//w.Header().Add("Vary", "Authorization")
 
-			return
-		}
+		cookie, err := r.Cookie("yeoman_token")
 
-		//check token header
-		if headParts[0] != "Bearer" {
-
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-
-				//ToDo handle this error
-			}
-
-			return
-		}
-
-		//token from jwt
-		token := headParts[1]
-
-		//get secret key from env
-		jwtSecret := os.Getenv("JWT_SECRET")
-
-		//HMAC check against secret
-		claims, err := jwt.HMACCheck([]byte(token), []byte(jwtSecret))
-
-		//check for HMAC check error
 		if err != nil {
 
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-
-				//Todo handle this error
-			}
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
-		//check if token is valid now
-		if !claims.Valid(time.Now()) {
+		if err = checkCookie(cookie); err != nil {
 
-			log.Println(claims.Expires)
-
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-
-				//Todo handle this error
-			}
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
-		//check token is allowed to be accepted
-		if !claims.AcceptAudience("mydomain.com") {
+		var jwtParser jwt.Claims
 
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
+		token := cookie.Value
 
-				//Todo handle this error
-			}
+		if err := jwtParser.ValidateJWT(token, "./crypto/public.key"); err != nil {
+
+			err = errors.New("unauthorized")
+
+			w.WriteHeader(http.StatusUnauthorized)
+
 			return
 		}
 
-		//check claims issuer
-		if claims.Issuer != "mydomain.com" {
+		if jwtParser.Issuer != "yeoman.net" {
 
-			err := errors.New("unauthorized")
-			if err = m.utils.WriteJSON(w, http.StatusForbidden, err, "error"); err != nil {
-
-				//Todo handle this error
-			}
+			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 
-		//url params key
-		m.urlParams = "params"
+		if jwtParser.NotBefore.After(time.Now()) {
 
-		//get params
-		params := r.Context().Value(m.urlParams).(map[string]string)
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
-		//get ownerId from JWT
-		ownerId := claims.Subject
+		if jwtParser.Issued.After(time.Now()) {
 
-		//log.Println(ownerId)
-		//url params map
-		params["ownerId"] = ownerId
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
-		ctx := context.WithValue(r.Context(), m.urlParams, params)
+		if jwtParser.Expires.Before(time.Now()) {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+		isAudience := false
+		for _, aud := range jwtParser.Audiences {
+
+			if strings.Compare(aud, "appointment") == 0 {
+				isAudience = true
+				break
+			}
+		}
+
+		if !isAudience {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		subjectList := strings.Split(jwtParser.Subject, ";")
+
+		contextMap := make(map[string]string)
+
+		contextMap["user_id"] = subjectList[1]
+		contextMap["user_name"] = subjectList[0]
+		contextMap["email"] = subjectList[2]
+		contextMap["time_zone"] = subjectList[3]
+
+		contextWithValue := context.WithValue(r.Context(), m.ContextKey, contextMap)
+
+		next(w, r.WithContext(contextWithValue))
+	}
 }

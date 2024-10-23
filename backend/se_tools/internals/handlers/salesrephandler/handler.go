@@ -3,25 +3,31 @@ package salesrephandler
 import (
 	"context"
 	"net/http"
+	"se_tools/internals/middleware"
 	"se_tools/internals/services"
+	"se_tools/utils"
 	"time"
 )
 
 type Handler struct {
-	mux      *http.ServeMux
-	services *services.Services
+	middleware *middleware.Middleware
+	mux        *http.ServeMux
+	services   *services.Services
+	utils      *utils.Utilities
 }
 
-func New(mux *http.ServeMux, services *services.Services) *Handler {
+func New(middleware *middleware.Middleware, mux *http.ServeMux, services *services.Services, utils *utils.Utilities) *Handler {
 	return &Handler{
-		mux:      mux,
-		services: services,
+		middleware: middleware,
+		mux:        mux,
+		services:   services,
+		utils:      utils,
 	}
 }
 
 func (h *Handler) RegisterHandler() {
 
-	h.mux.Handle("api/v1/sales_reps", http.HandlerFunc(h.salesReps))
+	h.mux.Handle("/api/v1/sales_reps", h.middleware.CheckToken(h.salesReps))
 }
 
 func (h *Handler) salesReps(w http.ResponseWriter, r *http.Request) {
@@ -36,7 +42,7 @@ func (h *Handler) salesReps(w http.ResponseWriter, r *http.Request) {
 		h.getSalesReps(ctx, w, r)
 
 	case http.MethodPost:
-		//Todo add function to create new sales reps
+		h.postSalesRep(ctx, w, r)
 
 	case http.MethodOptions:
 		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")

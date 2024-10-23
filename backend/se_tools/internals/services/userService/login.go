@@ -36,6 +36,15 @@ func (l *LoginService) AdminUser(role roles.Role) error {
 	email := os.Getenv("ADMIN_EMAIL")
 	password := os.Getenv("ADMIN_PASSWORD")
 
+	count, err := l.collection.CountDocuments(ctx, bson.M{"username": userName})
+	if err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return nil
+	}
+
 	hashPw, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
 	if err != nil {

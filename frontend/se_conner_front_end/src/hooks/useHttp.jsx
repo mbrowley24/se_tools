@@ -6,11 +6,10 @@ const useHttp = () =>{
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
 
-    const httpRequest = useCallback(async(requestConfig, applyData)=>{
+    const httpRequest = useCallback((requestConfig, applyData)=>{
         // console.log(requestConfig)
-        try{
             setIsLoading(true);
-            const httpResponse = await  axios({
+            const httpResponse = axios({
                 method: requestConfig.method? requestConfig.method : 'GET',
                 baseURL: "http://localhost:8080/api/v1/",
                 url: requestConfig.url,
@@ -22,18 +21,14 @@ const useHttp = () =>{
                     
                 },
                 signal : requestConfig.signal
-            })
-            
-            // console.log(httpResponse)
-            if(httpResponse.status === 200){
-                applyData(httpResponse);
-                setIsLoading(false)
-            }
-            
-        }catch(error){
-            //console.log(error)
-            if(error && error.response){
+            }).then((response) => {
 
+                if(response.status === 200){
+                    applyData(response);
+                    setIsLoading(false);
+                }
+            }).catch((error)=>{
+                console.log(error)
                 if(error.response.status === 403){
 
                     navigate('/login')
@@ -42,9 +37,9 @@ const useHttp = () =>{
                     applyData(error);
                 }
 
-            }
-        }
-    }, [ navigate])
+            })
+
+    }, [navigate])
 
 
     return(

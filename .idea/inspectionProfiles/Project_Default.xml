@@ -2,5 +2,11 @@
   <profile version="1.0">
     <option name="myName" value="Project Default" />
     <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="GoDfaErrorMayBeNotNil" enabled="true" level="WARNING" enabled_by_default="true">
+      <methods>
+        <method importPath="se_tools/internals/services/companyService" receiver="*Service" name="FindCompanies" />
+        <method importPath="se_tools/internals/services/salesRepService" receiver="*Service" name="FindSalesReps" />
+      </methods>
+    </inspection_tool>
   </profile>
 </component>

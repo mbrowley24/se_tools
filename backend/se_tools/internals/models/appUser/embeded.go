@@ -5,6 +5,10 @@ import (
 )
 
 type Embedded struct {
+<<<<<<< HEAD
+	Id       primitive.ObjectID `bson:"_id,omitempty"`
+	PublicId string             `bson:"public_id"`
+=======
 	Id        primitive.ObjectID `bson:"_id,omitempty"`
 	Username  string             `bson:"username" json:"username"`
 	FirstName string             `bson:"first_name" json:"firstname"`
@@ -21,4 +25,5 @@ func (e *Embedded) ModelToDTO() DTO {
 		LastName:  e.LastName,
 		Email:     e.Email,
 	}
+>>>>>>> main
 }
